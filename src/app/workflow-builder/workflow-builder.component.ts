@@ -1,11 +1,13 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, ChangeDetectorRef, Renderer2 } from '@angular/core';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { AfterViewInit } from '@angular/core';
 import { ComponentRef } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { ViewContainerRef } from '@angular/core';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
+import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
+import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -22,15 +24,10 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   container: ViewContainerRef;
   components: ComponentRef<SingleBlockComponent>[] = [];
   componentsFromRoot: ComponentRef<SingleBlockComponent>[] = [];
-  dynamicComponentsObj: any = {};
+  dynamicComponentsObj: dynamicComponentHash = {};
   xCoOrdinates: number[] = [];
   YCoOrdinates: number[] = [];
-  coOrdinatesOfChildComponents: {
-    childComponentID: string;
-    x: number;
-    y: number;
-    isChild?: boolean;
-  }[] = [];
+  coOrdinatesOfChildComponents: childComponentConfig[] = [];
   linesArr: any[] = [];
   removeSubscriptions: Subscription;
   sendSubscriptions: Subscription;
@@ -49,13 +46,12 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     parentIndex?: number,
     parentComponent?: SingleBlockComponent
   ) {
-    // console.log('parentIndex', parentIndex, parentElementRef);
     // this.container.clear();
     const dynamicComponent: ComponentRef<SingleBlockComponent> =
       this.container.createComponent<SingleBlockComponent>(
         SingleBlockComponent
       );
-    // console.log('Created!!', dynamicComponent.hostView);
+
     const newComponentId = uuidv4();
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('componentId', newComponentId);
@@ -124,9 +120,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     // this.cdr.detectChanges();
     this.removeSubscriptions = dynamicComponent.instance.removeItem.subscribe(
       (componentId: string) => {
-        // this.linesArr.forEach((line) => {
-        //   console.log('line removing', line), line.remove();
-        // });
         console.log('componentId should be removed', componentId);
         this.components = this.components.filter(
           (component) => component.instance.componentId !== componentId
@@ -134,7 +127,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         this.componentsFromRoot = this.componentsFromRoot.filter(
           (component) => component.instance.componentId !== componentId
         );
-        //remove child components
+        //remove child components & its config from `dynamicComponentsObj`
         const parentComponentID =
           this.dynamicComponentsObj[componentId].parentComponentId;
 
@@ -149,11 +142,12 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
               (id: string) => id !== componentId
             );
         }
-        //remove child component coOrdinates
+        //remove child component coOrdinates from `coOrdinatesOfChildComponents`
         this.coOrdinatesOfChildComponents =
           this.coOrdinatesOfChildComponents.filter(
             (data) => data.childComponentID !== componentId
           );
+        //atlast destroy child component
         dynamicComponent.destroy();
       }
     );
