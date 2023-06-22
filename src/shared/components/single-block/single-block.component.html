@@ -1,0 +1,24 @@
+<div
+  id="draggable"
+  ngDraggable
+  (started)="onDragStart($event)"
+  (movingOffset)="onDragOver($event)"
+  class="singleBlock card"
+  #decisionBlock
+>
+  <!-- cdkDrag -->
+  <!-- ----------------------------------------------------------------------- -->
+  <!--  (drop)="onDrop($event)"  draggable="true" 
+  (dragover)="onDragOver($event)"
+  (dragstart)="onDragStart($event)"                    -->
+  <!-- ----------------------------------------------------------------------- -->
+  <div class="card-body">
+    <h5>New Block: Index {{ index }}</h5>
+    <button class="btn btn-success me-3" (click)="addItem($event, index, true)">
+      <i class="fa fa-plus" aria-hidden="true"></i> Add
+    </button>
+    <button class="btn btn-danger" (click)="deleteItem($event, index)">
+      <i class="fa fa-trash" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>

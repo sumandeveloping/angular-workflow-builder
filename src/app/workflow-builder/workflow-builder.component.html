@@ -1,0 +1,22 @@
+<section>
+  <div class="w-100 d-flex justify-space-between">
+    <h4>Build Your Campaign</h4>
+    <div class="btn-group">
+      <a href="#" class="btn btn-primary me-3">Save</a>
+      <a href="#" class="btn btn-secondary">Back</a>
+    </div>
+  </div>
+  <div class="builder">
+    <div class="builder-start">
+      <h4>Segment Box</h4>
+      <button type="button" class="btn btn-success">Add</button>
+      <div class="connecter" (click)="createComponent($event)">
+        <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
+      </div>
+    </div>
+    <!-- ===================== WE need dynamic components here... ========================== -->
+    <div id="dynamicComponentWrapper" #dynamicComponentWrapper>
+      <ng-template #dynamicComponents></ng-template>
+    </div>
+  </div>
+</section>
