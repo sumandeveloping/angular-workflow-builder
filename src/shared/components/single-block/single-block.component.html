@@ -3,25 +3,26 @@
   ngDraggable
   (started)="onDragStart($event)"
   (movingOffset)="onDragOver($event)"
-  class="singleBlock card"
+  class="dynamic-component card"
   #decisionBlock
 >
-  <!-- cdkDrag -->
-  <!-- ----------------------------------------------------------------------- -->
-  <!--  (drop)="onDrop($event)"  draggable="true" 
-  (dragover)="onDragOver($event)"
-  (dragstart)="onDragStart($event)"                    -->
-  <!-- ----------------------------------------------------------------------- -->
   <div class="card-body">
-    <h5>New Block: Index {{ index }}</h5>
-    <button
-      class="btn btn-success me-3"
+    <h5 class="dynamic-component--name">New Block: Index {{ index }}</h5>
+    <a
+      class="dynamic-component--addBtn utility-btn"
       (click)="addComponent($event, index, true)"
     >
-      <i class="fa fa-plus" aria-hidden="true"></i> Add
-    </button>
-    <button class="btn btn-danger" (click)="deleteComponent()">
-      <i class="fa fa-trash" aria-hidden="true"></i>
-    </button>
+      <i class="fa fa-plus" aria-hidden="true"></i>
+    </a>
+    <!-- Edit -->
+    <a class="dynamic-component--editBtn utility-btn">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </a>
+    <a
+      class="dynamic-component--removeBtn utility-btn"
+      (click)="deleteComponent()"
+    >
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </a>
   </div>
 </div>

@@ -88,7 +88,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         componentId?: string;
         isChild?: boolean;
       }) => {
-        console.log('position received', data);
+        console.log('component Position 💥', data, 'isChild', data.isChild);
         this.xCoOrdinates.push(data.x);
         this.YCoOrdinates.push(data.y);
         if (data.isChild)
@@ -99,13 +99,12 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
             isChild: data.isChild,
           });
         console.log(
-          'component Position 💥',
-          this.xCoOrdinates,
-          this.YCoOrdinates,
-          'IsChild??',
-          data?.isChild,
+          'this.coOrdinatesOfChildComponents',
           this.coOrdinatesOfChildComponents
         );
+        //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
+        this.dynamicComponentsObj[data.componentId].xPos = data.x;
+        this.dynamicComponentsObj[data.componentId].yPos = data.y;
       }
     );
 
@@ -151,10 +150,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         dynamicComponent.destroy();
       }
     );
-  }
-
-  drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
   }
 
   ngOnDestroy(): void {

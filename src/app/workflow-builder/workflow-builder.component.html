@@ -7,12 +7,13 @@
     </div>
   </div>
   <div class="builder">
-    <div class="builder-start">
-      <h4>Segment Box</h4>
-      <button type="button" class="btn btn-success">Add</button>
-      <div class="connecter" (click)="createComponent($event)">
-        <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
+    <div class="builder-rootNode">
+      <div class="builder-rootNode--name">
+        <h4>Segment Box</h4>
       </div>
+      <a class="connecter" (click)="createComponent($event)">
+        <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
+      </a>
     </div>
     <!-- ===================== WE need dynamic components here... ========================== -->
     <div id="dynamicComponentWrapper" #dynamicComponentWrapper>

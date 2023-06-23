@@ -73,6 +73,8 @@ export class SingleBlockComponent
 
       this.sendLines.emit(this.line);
     }
+    // adding css styles
+    this.renderer.addClass(this.decisionBlock.nativeElement, 'box-border');
   }
 
   addComponent(
@@ -140,7 +142,12 @@ export class SingleBlockComponent
         `${leftPosition}px`
       );
       //* save the coordinates  x & y
-      this.position = { x: leftPosition, y: 100 };
+      this.position = {
+        x: leftPosition,
+        y: 100,
+        componentId: this.componentId,
+        isChild: false,
+      };
     } else {
       console.log('ELSE PART');
       const marginFromTop = 20;
@@ -161,12 +168,12 @@ export class SingleBlockComponent
         const prevTopPosition = Math.max(...this.parentComponent.YCoOrdinates);
 
         alert(
-          `prev Y position ${prevTopPosition} --- ${topPosition}, ${this.decisionBlock.nativeElement.offsetTop}`
+          `prev Y position ${prevTopPosition} --- ${topPosition}, ${this.decisionBlock.nativeElement.offsetHeight}`
         );
         topPosition =
           prevTopPosition +
           marginFromTop +
-          this.decisionBlock.nativeElement.offsetTop;
+          this.decisionBlock.nativeElement.offsetHeight;
 
         this.renderer.setStyle(
           this.decisionBlock.nativeElement,
@@ -180,12 +187,13 @@ export class SingleBlockComponent
         'left',
         `${this.decisionBlock.nativeElement.offsetLeft}px`
       );
-      console.log('offset top', this.decisionBlock.nativeElement.offsetTop);
+      console.log('top position', topPosition);
       //* save the coordinates  x & y
       this.position = {
         x: this.decisionBlock.nativeElement.offsetLeft,
         y: topPosition,
         componentId: this.componentId,
+        isChild: false,
       };
     }
     this.sendPosition.emit(this.position);
@@ -320,9 +328,4 @@ export class SingleBlockComponent
       line.position();
     });
   }
-  // onDrop(e: any) {
-  //   console.log('DROP Event');
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  // }
 }
