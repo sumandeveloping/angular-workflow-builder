@@ -92,6 +92,9 @@ export class SingleBlockComponent
   }
 
   deleteComponent(): void {
+    this.parentComponent.linesArr = this.parentComponent.linesArr.filter(
+      (item) => item._id != this.line._id
+    );
     this.removeItem.emit(this.componentId);
     this.line.remove();
   }

@@ -118,7 +118,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
     // this.cdr.detectChanges();
     this.removeSubscriptions = dynamicComponent.instance.removeItem.subscribe(
-      (componentId: string) => {
+      async (componentId: string) => {
         console.log('componentId should be removed', componentId);
         this.components = this.components.filter(
           (component) => component.instance.componentId !== componentId
@@ -148,9 +148,52 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
           );
         //atlast destroy child component
         dynamicComponent.destroy();
+        await this.removeInvalidLines();
+        this.removeInvalidChildComponents();
       }
     );
   }
+
+  removeInvalidChildComponents = () => {
+    this.components.forEach(async (componet: any, index: any) => {
+      if (
+        componet.instance.parentElementRef &&
+        componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
+        componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
+        componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
+        componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
+        componet.instance.parentElementRef.nativeElement.offsetParent === null
+      ) {
+        componet.destroy();
+        this.components.splice(index, 1);
+        await this.removeInvalidLines();
+        return this.removeInvalidChildComponents();
+      }
+    });
+  };
+
+  removeInvalidLines = () => {
+    return new Promise((resolve) => {
+      this.linesArr.forEach((line: any, index: any) => {
+        if (line) {
+          (line.start.offsetHeight === 0 &&
+            line.start.offsetLeft === 0 &&
+            line.start.offsetTop === 0 &&
+            line.start.offsetWidth === 0 &&
+            line.start.offsetParent === null) ||
+          (line.end.offsetHeight === 0 &&
+            line.end.offsetLeft === 0 &&
+            line.end.offsetTop === 0 &&
+            line.end.offsetWidth === 0 &&
+            line.end.offsetParent === null)
+            ? (line.remove(), this.linesArr.splice(index, 1))
+            : null;
+          resolve(true);
+        }
+        resolve(true);
+      });
+    });
+  };
 
   ngOnDestroy(): void {
     this.removeSubscriptions.unsubscribe();
