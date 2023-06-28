@@ -1,0 +1,60 @@
+<button
+  id="openModalButton"
+  [hidden]="true"
+  class="btn btn-primary btn-lg"
+  data-bs-toggle="modal"
+  data-bs-target="#modal"
+  aria-label="Modal"
+></button>
+
+<!-- Modal -->
+<div
+  class="modal fade {{ modalDirection }}"
+  id="modal"
+  [attr.data-bs-backdrop]="backdrop"
+  tabindex="-1"
+  aria-labelledby="enrollLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="enrollLabel">{{ modalTitle }}</h5>
+        <button
+          [hidden]="showCross == 'false'"
+          type="button"
+          class="btn-close"
+          id="closeModal"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="closeClicked()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+      </div>
+      <div *ngIf="showFooter == 'true'" class="modal-footer">
+        <button
+          *ngIf="showcancel == 'true'"
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="closeClicked()"
+        >
+          close
+        </button>
+        <button
+          *ngIf="showcancel == 'true'"
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          aria-label="save"
+          (click)="saveClicked()"
+        >
+          {{ submitLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
