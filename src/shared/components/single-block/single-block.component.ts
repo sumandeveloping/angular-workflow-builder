@@ -12,6 +12,7 @@ import {
 import { WorkflowBuilderComponent } from 'src/app/workflow-builder/workflow-builder.component';
 import { DynamicComponent } from 'src/shared/interfaces/dynamic-component.interface';
 import { LineOptions } from 'src/shared/interfaces/line-options.interface';
+import { ModalComponent } from '../modal/modal.component';
 
 declare var LeaderLine: any;
 
@@ -25,6 +26,7 @@ export class SingleBlockComponent
 {
   @ViewChild('decisionBlock', { read: ElementRef, static: true })
   decisionBlock: ElementRef;
+  @ViewChild('modalDialog') modalDialog: ModalComponent;
   @Input() index: number;
   @Input() componentId: string;
   @Input() isCreatedFromChild: boolean = false;
@@ -43,6 +45,12 @@ export class SingleBlockComponent
     endSocket: 'top',
   };
   position: { x: number; y: number; componentId?: string; isChild?: boolean };
+  displayModal: boolean = false;
+  nodeDate = {
+    event: null,
+    parentIndex: null,
+    isChildrComponentCall: null,
+  };
 
   constructor(
     private parentComponent: WorkflowBuilderComponent,
@@ -77,16 +85,13 @@ export class SingleBlockComponent
     this.renderer.addClass(this.decisionBlock.nativeElement, 'box-border');
   }
 
-  addComponent(
-    e: any,
-    parentIndex: number,
-    isChildrComponentCall: boolean
-  ): void {
+  addComponent(): void {
+    this.displayModal = !this.displayModal;
     this.parentComponent.createComponent(
-      e,
-      isChildrComponentCall,
+      this.nodeDate.event,
+      this.nodeDate.isChildrComponentCall,
       this.decisionBlock,
-      parentIndex,
+      this.nodeDate.parentIndex,
       this
     );
   }
@@ -331,4 +336,20 @@ export class SingleBlockComponent
       line.position();
     });
   }
+
+  showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
+    this.nodeDate = {
+      event: e,
+      parentIndex: parentIndex,
+      isChildrComponentCall: isChildrComponentCall,
+    };
+    this.displayModal = !this.displayModal;
+    setTimeout(() => {
+      this.modalDialog.showModal();
+    }, 0);
+  };
+
+  closeModal = () => {
+    this.modalDialog ? this.modalDialog.closeModal() : null;
+  };
 }

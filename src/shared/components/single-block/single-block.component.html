@@ -9,16 +9,18 @@
   <div class="card-body">
     <h5 class="dynamic-component--name">New Block: Index {{ index }}</h5>
     <a
+      type="button"
       class="dynamic-component--addBtn utility-btn"
-      (click)="addComponent($event, index, true)"
+      (click)="showModal($event, index, true)"
     >
       <i class="fa fa-plus" aria-hidden="true"></i>
     </a>
     <!-- Edit -->
-    <a class="dynamic-component--editBtn utility-btn">
+    <a type="button" class="dynamic-component--editBtn utility-btn">
       <i class="fa fa-pencil" aria-hidden="true"></i>
     </a>
     <a
+      type="button"
       class="dynamic-component--removeBtn utility-btn"
       (click)="deleteComponent()"
     >
@@ -26,3 +28,15 @@
     </a>
   </div>
 </div>
+
+<app-modal
+  *ngIf="displayModal"
+  showFooter="true"
+  modalTitle="Title"
+  submitLabel="add"
+  (save)="addComponent()"
+  (close)="displayModal = !displayModal"
+  #modalDialog
+>
+  <h1>Modal Body {{ index }}</h1>
+</app-modal>
