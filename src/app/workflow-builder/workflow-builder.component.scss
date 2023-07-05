@@ -24,6 +24,19 @@
       h4 {
         font-size: 13px;
       }
+      .nodeCategory {
+        display: inline-block;
+        font-size: 9px;
+        margin: 0;
+        padding: 2px 5px;
+        background-color: #4e54ff;
+        color: #f7f7f7;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+      }
     }
 
     .connecter {

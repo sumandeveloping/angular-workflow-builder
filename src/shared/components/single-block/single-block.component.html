@@ -7,7 +7,14 @@
   #decisionBlock
 >
   <div class="card-body">
-    <h5 class="dynamic-component--name">New Block: Index {{ index }}</h5>
+    <h5
+      class="dynamic-component--name"
+      (click)="openModalWithNodeProps($event)"
+    >
+      {{ nodeDetails.parentNodeName }} -
+      <span class="dynamic-component--nodeCategory">{{ nodeCategory }}</span>
+      {{ index }}
+    </h5>
     <a
       type="button"
       class="dynamic-component--addBtn utility-btn"
@@ -38,5 +45,50 @@
   (close)="displayModal = !displayModal"
   #modalDialog
 >
-  <h1>Modal Body {{ index }}</h1>
+  <!-- when we need to display form or data related stuff -->
+  <ng-container *ngIf="showModalForm" ngProjectAs=".modalHeaderContent">
+    <h3 class="modal-header-content">Show segment modal form</h3>
+  </ng-container>
+
+  <!-- when adding nodes -->
+  <ng-container *ngIf="!showModalForm" ngProjectAs=".modalHeaderContent">
+    <!-- header -->
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+      <button type="button" class="btn btn-success">Decisions</button>
+      <button type="button" class="btn btn-primary">Action</button>
+    </div>
+    <!-- end header -->
+  </ng-container>
+  <ng-container *ngIf="!showModalForm" ngProjectAs=".modalBodyContent">
+    <!-- modal body content -->
+    <div class="decision-action-container">
+      <div class="row">
+        <div class="col-md-3 col-lg-3">
+          <div class="list-group decision-action-list">
+            <a
+              *ngFor="let childNode of childNodesToConnect; let i = index"
+              [ngClass]="{
+                'list-group-item': true,
+                'list-group-item-action': true,
+                'list-group-item-light': true,
+                'node-item-link': true,
+                active: childNode.childNodeName === selectedNode?.childNodeName
+              }"
+              aria-current="true"
+              (click)="onSelectChildNodeDisplayProperties($event, childNode)"
+            >
+              {{ childNode.childNodeName }}
+            </a>
+          </div>
+        </div>
+        <div class="col-md-9 col-lg-9">
+          <p class="lead" *ngIf="!displayNode">Please select a activity</p>
+          <div class="decision-list-selected" *ngIf="displayNode">
+            show properties of {{ selectedNode?.childNodeName }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end modal body content -->
+  </ng-container>
 </app-modal>

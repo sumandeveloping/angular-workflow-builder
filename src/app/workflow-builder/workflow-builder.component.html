@@ -1,4 +1,6 @@
 <section>
+  <!-- customNavClass="nav-test-class" customTabsClass="containerrr" -->
+
   <div class="w-100 d-flex justify-space-between">
     <h4>Build Your Campaign</h4>
     <div class="btn-group">
@@ -9,9 +11,13 @@
   <div class="builder">
     <div class="builder-rootNode">
       <div class="builder-rootNode--name">
-        <h4>Segment Box</h4>
+        <h4 (click)="openSegmentModal($event)">
+          <i class="fa fa-list" aria-hidden="true"></i>
+          {{ nodeInformation.parentNodeName }}
+          <span class="nodeCategory">{{ nodeCategory }}</span>
+        </h4>
       </div>
-      <a class="connecter" (click)="createComponent($event)">
+      <a class="connecter" (click)="showModal($event)">
         <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
       </a>
     </div>
@@ -21,3 +27,60 @@
     </div>
   </div>
 </section>
+
+<app-modal
+  *ngIf="displayModal"
+  showFooter="true"
+  modalTitle="Title"
+  submitLabel="Add"
+  (save)="createComponent(nodeDate.event); displayModal = !displayModal"
+  (close)="displayModal = !displayModal; showSegmentModal = false"
+  #modalDialog
+>
+  <!-- when we need to display form or data related stuff -->
+  <ng-container *ngIf="showSegmentModal" ngProjectAs=".modalHeaderContent">
+    <h3 class="modal-header-content">Show segment modal form</h3>
+  </ng-container>
+
+  <!-- when adding nodes -->
+  <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalHeaderContent">
+    <!-- header -->
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+      <button type="button" class="btn btn-success">Decisions</button>
+      <button type="button" class="btn btn-primary">Action</button>
+    </div>
+    <!-- end header -->
+  </ng-container>
+  <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalBodyContent">
+    <!-- modal body content -->
+    <div class="decision-action-container">
+      <div class="row">
+        <div class="col-md-3 col-lg-3">
+          <div class="list-group decision-action-list">
+            <a
+              *ngFor="let childNode of childNodesToConnect; let i = index"
+              [ngClass]="{
+                'list-group-item': true,
+                'list-group-item-action': true,
+                'list-group-item-light': true,
+                'node-item-link': true,
+                active: childNode.childNodeName === selectedNode?.childNodeName
+              }"
+              aria-current="true"
+              (click)="onSelectChildNodeDisplayProperties($event, childNode)"
+            >
+              {{ childNode.childNodeName }}
+            </a>
+          </div>
+        </div>
+        <div class="col-md-9 col-lg-9">
+          <p class="lead" *ngIf="!displayNode">Please select a activity</p>
+          <div class="decision-list-selected" *ngIf="displayNode">
+            show properties of {{ selectedNode?.childNodeName }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end modal body content -->
+  </ng-container>
+</app-modal>

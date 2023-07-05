@@ -30,6 +30,20 @@
     font-size: 13px;
   }
 
+  &--nodeCategory {
+    display: inline-block;
+    font-size: 9px;
+    margin: 0;
+    padding: 2px 5px;
+    background-color: #4e54ff;
+    color: #f7f7f7;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+  }
+
   &--removeBtn {
     top: 4px;
     right: 4px;
@@ -69,7 +83,13 @@
 }
 
 .dynamic-component.box-border {
-  border: 1px solid #b8b8b8 !important;
+  border: 1px solid #b8b8b8;
+}
+.dynamic-component.box-border-action {
+  border: 1px solid #6a97ff;
+}
+.dynamic-component.box-border-decision {
+  border: 1px solid #0fd72e;
 }
 
 .utility-btn {

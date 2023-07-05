@@ -9,6 +9,7 @@
 
 <!-- Modal -->
 <div
+  #modalElement
   class="modal fade {{ modalDirection }}"
   id="modal"
   [attr.data-bs-backdrop]="backdrop"
@@ -16,10 +17,10 @@
   aria-labelledby="enrollLabel"
   aria-hidden="true"
 >
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="enrollLabel">{{ modalTitle }}</h5>
+        <ng-content select=".modalHeaderContent"></ng-content>
         <button
           [hidden]="showCross == 'false'"
           type="button"
@@ -31,7 +32,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <ng-content></ng-content>
+        <ng-content select=".modalBodyContent"></ng-content>
       </div>
       <div *ngIf="showFooter == 'true'" class="modal-footer">
         <button
@@ -42,7 +43,7 @@
           aria-label="Close"
           (click)="closeClicked()"
         >
-          close
+          Close
         </button>
         <button
           *ngIf="showcancel == 'true'"

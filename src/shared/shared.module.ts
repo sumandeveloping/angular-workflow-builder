@@ -4,10 +4,22 @@ import { SingleBlockComponent } from './components/single-block/single-block.com
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AngularDraggableModule } from 'angular2-draggable';
 import { ModalComponent } from './components/modal/modal.component';
+import { DecisionComponent } from './components/decision/decision.component';
+import { ActionComponent } from './components/action/action.component';
 
 @NgModule({
-  declarations: [SingleBlockComponent, ModalComponent],
+  declarations: [
+    SingleBlockComponent,
+    ModalComponent,
+    DecisionComponent,
+    ActionComponent,
+  ],
   imports: [CommonModule, DragDropModule, AngularDraggableModule],
-  exports: [SingleBlockComponent, ModalComponent],
+  exports: [
+    SingleBlockComponent,
+    ModalComponent,
+    DecisionComponent,
+    ActionComponent,
+  ],
 })
 export class SharedModule {}

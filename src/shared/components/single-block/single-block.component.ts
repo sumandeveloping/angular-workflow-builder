@@ -13,6 +13,7 @@ import { WorkflowBuilderComponent } from 'src/app/workflow-builder/workflow-buil
 import { DynamicComponent } from 'src/shared/interfaces/dynamic-component.interface';
 import { LineOptions } from 'src/shared/interfaces/line-options.interface';
 import { ModalComponent } from '../modal/modal.component';
+import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 
 declare var LeaderLine: any;
 
@@ -30,6 +31,7 @@ export class SingleBlockComponent
   @Input() index: number;
   @Input() componentId: string;
   @Input() isCreatedFromChild: boolean = false;
+  @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
   @Input() parentDynamicComponent: SingleBlockComponent;
@@ -46,11 +48,23 @@ export class SingleBlockComponent
   };
   position: { x: number; y: number; componentId?: string; isChild?: boolean };
   displayModal: boolean = false;
+  showModalForm: boolean = false;
   nodeDate = {
     event: null,
     parentIndex: null,
     isChildrComponentCall: null,
   };
+  /* -------------------------------------------------------------------------- */
+  /*                 FOR Data related stuff                                     */
+  /* -------------------------------------------------------------------------- */
+  nodeDetails: any;
+  childNodesToConnect: any;
+  nodeType: string; // truthy / falsy / null
+  nodeCategory: any; // action / decision / null
+  nodeRules: any[];
+  displayNode: boolean = false; //for modal
+  selectedNode: any = {}; //for modal
+  disableModalSave: boolean = true;
 
   constructor(
     private parentComponent: WorkflowBuilderComponent,
@@ -58,6 +72,16 @@ export class SingleBlockComponent
   ) {}
   ngOnInit(): void {
     console.log('On INIT', this.parentComponent.dynamicComponentsObj);
+    console.log('nodeInformation', this.nodeInformation);
+    this.nodeRules = MULTITOUCH_NODE_RULES;
+    const nodesArr = this.nodeRules.filter(
+      (node) => node.parentNodeName == this.nodeInformation.childNodeName
+    );
+    this.nodeDetails = nodesArr[0];
+    console.log('nodeDetails', this.nodeDetails);
+    this.nodeType = this.nodeDetails.parentNodeType;
+    this.nodeCategory = this.nodeDetails.parentNodeCategory;
+    this.childNodesToConnect = this.nodeDetails.childNodeIds;
   }
   ngAfterViewInit(): void {
     //Set Dynamic Position of the components
@@ -82,7 +106,15 @@ export class SingleBlockComponent
       this.sendLines.emit(this.line);
     }
     // adding css styles
-    this.renderer.addClass(this.decisionBlock.nativeElement, 'box-border');
+    // this.renderer.addClass(
+    //   this.decisionBlock.nativeElement,
+    //   `box-border box-border-actions`
+    // );
+    this.renderer.setAttribute(
+      this.decisionBlock.nativeElement,
+      'class',
+      `dynamic-component card box-border box-border-${this.nodeCategory.toLowerCase()}`
+    );
   }
 
   addComponent(): void {
@@ -351,5 +383,22 @@ export class SingleBlockComponent
 
   closeModal = () => {
     this.modalDialog ? this.modalDialog.closeModal() : null;
+  };
+
+  onSelectChildNodeDisplayProperties(e: any, childNode: any) {
+    e.preventDefault();
+    console.log('childNode display', childNode);
+    this.displayNode = true;
+    this.selectedNode = childNode;
+    this.disableModalSave = false;
+    //get the properties of the child node & display...
+  }
+
+  openModalWithNodeProps = (e: any) => {
+    this.showModalForm = true;
+    this.displayModal = !this.displayModal;
+    setTimeout(() => {
+      this.modalDialog.showModal();
+    }, 0);
   };
 }

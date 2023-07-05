@@ -44,3 +44,7 @@
   - Create/Show modal with config options to select action/decision
   - Action/Decision conditional rendering
 - 7. How to remove connector from child when `Parent is removed`
+
+## LINK For Node-Data `https://stackblitz.com/edit/js-lmurru?file=index.js`
+
+## LINK for Modified Node-Rule `https://stackblitz.com/edit/js-qsz8bd?file=index.js`

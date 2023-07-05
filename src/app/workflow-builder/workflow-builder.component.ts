@@ -5,9 +5,11 @@ import { OnInit } from '@angular/core';
 import { ViewContainerRef } from '@angular/core';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ModalComponent } from 'src/shared/components/modal/modal.component';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
+import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -22,6 +24,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   dynamicComponentWrapper: ElementRef;
   @ViewChild('dynamicComponents', { read: ViewContainerRef })
   container: ViewContainerRef;
+  @ViewChild('modalDialog') modalDialog: ModalComponent;
   components: ComponentRef<SingleBlockComponent>[] = [];
   componentsFromRoot: ComponentRef<SingleBlockComponent>[] = [];
   dynamicComponentsObj: dynamicComponentHash = {};
@@ -29,13 +32,44 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   YCoOrdinates: number[] = [];
   coOrdinatesOfChildComponents: childComponentConfig[] = [];
   linesArr: any[] = [];
+  displayModal: boolean = false;
+  nodeDate = {
+    event: null,
+    parentIndex: null,
+    isChildrComponentCall: null,
+  };
   removeSubscriptions: Subscription;
   sendSubscriptions: Subscription;
   linesSubscriptions: Subscription;
 
+  /* -------------------------------------------------------------------------- */
+  /*                                    DATA RELATED STUFF                                    */
+  /* -------------------------------------------------------------------------- */
+  showSegmentModal: boolean = false;
+  parentNodeArr: any[];
+  nodeInformation: any;
+  nodeType: string; // truthy / falsy / null
+  nodeCategory: any; // action / decision / null
+  childNodesObj: any;
+  childNodesToConnect: any;
+  nodeRules: any[];
+  displayNode: boolean = false; //for modal
+  selectedNode: any = {}; //for modal
+  disableModalSave: boolean = true;
+
   constructor() {} // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.nodeRules = MULTITOUCH_NODE_RULES;
+    this.parentNodeArr = this.nodeRules.filter(
+      (node) => node.parentNodeName === 'Segment'
+    );
+    this.nodeInformation = this.parentNodeArr[0];
+    console.log('Node Info', this.nodeInformation);
+    this.nodeType = this.nodeInformation.parentNodeType;
+    this.nodeCategory = this.nodeInformation.parentNodeCategory;
+    this.childNodesToConnect = this.nodeInformation.childNodeIds;
+  }
 
   ngAfterViewInit(): void {}
 
@@ -55,10 +89,20 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     const newComponentId = uuidv4();
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('componentId', newComponentId);
-    if (parentIndex !== null || parentIndex !== undefined) {
+
+    // if(isChildComponentCall){}
+    // if (parentIndex !== null || parentIndex !== undefined)
+    if (isChildComponentCall) {
       dynamicComponent.setInput('parentIndex', parentIndex);
       dynamicComponent.setInput('parentElementRef', parentElementRef);
       dynamicComponent.setInput('parentDynamicComponent', parentComponent);
+      dynamicComponent.setInput(
+        'nodeInformation',
+        parentComponent.selectedNode
+      );
+    } else {
+      //if created from root component (i.e segment)
+      dynamicComponent.setInput('nodeInformation', this.selectedNode);
     }
     this.components.push(dynamicComponent);
     dynamicComponent.setInput(
@@ -194,6 +238,42 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       });
     });
   };
+
+  showModal = (e: any) => {
+    this.nodeDate = {
+      event: e,
+      parentIndex: null,
+      isChildrComponentCall: false,
+    };
+    this.displayModal = !this.displayModal;
+    setTimeout(() => {
+      this.modalDialog.showModal();
+    }, 0);
+  };
+
+  openSegmentModal = (e: any) => {
+    this.showSegmentModal = true;
+    this.displayModal = !this.displayModal;
+    setTimeout(() => {
+      this.modalDialog.showModal();
+    }, 0);
+  };
+
+  closeModal = () => {
+    if (this.modalDialog) {
+      this.modalDialog.closeModal();
+      this.displayModal = false;
+    }
+  };
+
+  onSelectChildNodeDisplayProperties(e: any, childNode: any) {
+    e.preventDefault();
+    console.log('childNode display', childNode);
+    this.displayNode = true;
+    this.selectedNode = childNode;
+    this.disableModalSave = false;
+    //get the properties of the child node & display...
+  }
 
   ngOnDestroy(): void {
     this.removeSubscriptions.unsubscribe();
