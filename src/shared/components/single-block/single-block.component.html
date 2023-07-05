@@ -42,12 +42,12 @@
   modalTitle="Title"
   submitLabel="add"
   (save)="addComponent()"
-  (close)="displayModal = !displayModal"
+  (close)="displayModal = !displayModal; showModalForm = false"
   #modalDialog
 >
   <!-- when we need to display form or data related stuff -->
   <ng-container *ngIf="showModalForm" ngProjectAs=".modalHeaderContent">
-    <h3 class="modal-header-content">Show segment modal form</h3>
+    <h3 class="modal-header-content">Show modal form</h3>
   </ng-container>
 
   <!-- when adding nodes -->
