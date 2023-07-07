@@ -1,4 +1,4 @@
-export const NODE_RULES = [
+export const NODE_RULES_BACKEND = [
   {
     id: '99cdc3d1-4eca-4a59-a7b8-221a8daa42b5',
     createdAt: '2023-03-21T17:57:58.151Z',
@@ -382,7 +382,7 @@ export const NODE_RULES = [
   },
 ];
 
-export const MULTITOUCH_NODE_RULES = [
+export const OLD_NODE_RULES = [
   {
     parentNodeId: 'null',
     parentNodeName: 'null',
@@ -409,11 +409,11 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeName: 'Send Email',
         childNodeCategory: 'ACTION',
       },
-      // {
-      //   id: 'UUID-updateLead',
-      //   childNodeName: 'Update Lead',
-      //   childNodeCategory: 'ACTION',
-      // },
+      {
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeCategory: 'ACTION',
+      },
     ],
   },
   {
@@ -430,16 +430,16 @@ export const MULTITOUCH_NODE_RULES = [
     //   'Submit Form',
     // ],
     childNodeIds: [
-      // {
-      //   id: 'UUID-sendEmail',
-      //   childNodeName: 'Send Email',
-      //   childNodeCategory: 'ACTION',
-      // },
-      // {
-      //   id: 'UUID-updateLead',
-      //   childNodeName: 'Update Lead',
-      //   childNodeCategory: 'ACTION',
-      // },
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeCategory: 'ACTION',
+      },
       {
         id: 'UUID-openEmail',
         childNodeName: 'Open Email',
@@ -676,6 +676,390 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeName: 'Inaction Update Lead',
         nodeType: 'Falsy',
         childNodeCategory: 'DECISION',
+      },
+    ],
+  },
+  // {
+  //   parentNodeId: 'Submit Form',
+  //   parentNodeType: ParentNodeType.FALSY,
+  //   childNodeIds: ['Inaction Send Email', 'Inaction Update Lead'],
+  // },
+];
+
+export const MULTITOUCH_NODE_RULES = [
+  {
+    parentNodeId: 'null',
+    parentNodeName: 'null',
+    parentNodeType: null,
+    parentNodeCategory: 'null',
+    // childNodeIds: ['Segment'],
+    childNodeIds: [
+      {
+        id: 'UUID-segment',
+        childNodeName: 'Segment',
+        parentNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-contactForm',
+        childNodeName: 'Contact Form',
+        parentNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-segment',
+    parentNodeName: 'Segment',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    // childNodeIds: ['Send Email', 'Update Lead'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeCategory: 'ACTION',
+      },
+      // {
+      //   id: 'UUID-updateLead',
+      //   childNodeName: 'Update Lead',
+      //   childNodeCategory: 'ACTION',
+      // },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-contactForm',
+    parentNodeName: 'Contact Form',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    // childNodeIds: ['Send Email', 'Update Lead'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeCategory: 'ACTION',
+      },
+      // {
+      //   id: 'UUID-updateLead',
+      //   childNodeName: 'Update Lead',
+      //   childNodeCategory: 'ACTION',
+      // },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-sendEmail',
+    parentNodeName: 'Send Email',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    // childNodeIds: [
+    //   'Send Email',
+    //   'Update Lead',
+    //   'Open Email',
+    //   'Download Asset',
+    //   'Visit Landing Page',
+    //   'Submit Form',
+    // ],
+    childNodeIds: [
+      // {
+      //   id: 'UUID-sendEmail',
+      //   childNodeName: 'Send Email',
+      //   childNodeCategory: 'ACTION',
+      // },
+      // {
+      //   id: 'UUID-updateLead',
+      //   childNodeName: 'Update Lead',
+      //   childNodeCategory: 'ACTION',
+      // },
+      {
+        id: 'UUID-openEmail',
+        childNodeName: 'Open Email',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-downloadAsset',
+        childNodeName: 'Download Asset',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-visitLandingPage',
+        childNodeName: 'Visit Landing Page',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-submitForm',
+        childNodeName: 'Submit Form',
+        childNodeCategory: 'DECISION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-inactionSendEmail',
+    parentNodeName: 'Inaction Send Email',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    // childNodeIds: [
+    //   'Send Email',
+    //   'Update Lead',
+    //   'Open Email',
+    //   'Download Asset',
+    //   'Visit Landing Page',
+    //   'Submit Form',
+    // ],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-openEmail',
+        childNodeName: 'Open Email',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-downloadAsset',
+        childNodeName: 'Download Asset',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-visitLandingPage',
+        childNodeName: 'Visit Landing Page',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-submitForm',
+        childNodeName: 'Submit Form',
+        childNodeCategory: 'DECISION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-updateLead',
+    parentNodeName: 'Update Lead',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    // childNodeIds: ['Send Email'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-inactionUpdateLead',
+    parentNodeName: 'Inaction Update Lead',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    // childNodeIds: ['Send Email'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  // ===== DECISION BLOCKS ================
+  {
+    parentNodeId: 'UUID-openEmail', // id of 'Open Email'
+    parentNodeName: 'Open Email',
+    parentNodeType: null,
+    // parentNodeType: ParentNodeType.TRUTHY,
+    // childNodeIds: ['Send Email', 'Update Lead'],
+    parentNodeCategory: 'DECISION',
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-updateLeadStatus',
+        childNodeName: 'Update Lead Status',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+
+      {
+        id: 'UUID-changeLeadScore',
+        childNodeName: 'Change Lead Score',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadRating',
+        childNodeName: 'Change Lead Rating',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadOwner',
+        childNodeName: 'Change Lead Owner',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeAssignLeadTo',
+        childNodeName: 'Change Assign Lead To',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-downloadAsset',
+    parentNodeName: 'Download Asset',
+    parentNodeCategory: 'DECISION',
+    parentNodeType: null,
+    // parentNodeType: ParentNodeType.TRUTHY,
+    // childNodeIds: ['Send Email', 'Update Lead'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-updateLeadStatus',
+        childNodeName: 'Update Lead Status',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+
+      {
+        id: 'UUID-changeLeadScore',
+        childNodeName: 'Change Lead Score',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadRating',
+        childNodeName: 'Change Lead Rating',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadOwner',
+        childNodeName: 'Change Lead Owner',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeAssignLeadTo',
+        childNodeName: 'Change Assign Lead To',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  // {
+  //   parentNodeId: 'Download Asset',
+  //   parentNodeType: ParentNodeType.FALSY,
+  //   childNodeIds: ['Inaction Send Email', 'Inaction Update Lead'],
+  // },
+  {
+    parentNodeId: 'UUID-visitLandingPage',
+    parentNodeName: 'Visit Landing Page',
+    parentNodeCategory: 'DECISION',
+    parentNodeType: null,
+    // parentNodeType: ParentNodeType.TRUTHY,
+    // childNodeIds: ['Send Email', 'Update Lead'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-updateLeadStatus',
+        childNodeName: 'Update Lead Status',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+
+      {
+        id: 'UUID-changeLeadScore',
+        childNodeName: 'Change Lead Score',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadRating',
+        childNodeName: 'Change Lead Rating',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadOwner',
+        childNodeName: 'Change Lead Owner',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeAssignLeadTo',
+        childNodeName: 'Change Assign Lead To',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  // {
+  //   parentNodeId: 'Visit Landing Page',
+  //   parentNodeType: ParentNodeType.FALSY,
+  //   childNodeIds: ['Inaction Send Email', 'Inaction Update Lead'],
+  // },
+  {
+    parentNodeId: 'UUID-submitForm',
+    parentNodeName: 'Submit Form',
+    parentNodeCategory: 'DECISION',
+    parentNodeType: null,
+    // parentNodeType: ParentNodeType.TRUTHY,
+    // childNodeIds: ['Send Email', 'Update Lead'],
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-updateLeadStatus',
+        childNodeName: 'Update Lead Status',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+
+      {
+        id: 'UUID-changeLeadScore',
+        childNodeName: 'Change Lead Score',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadRating',
+        childNodeName: 'Change Lead Rating',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeLeadOwner',
+        childNodeName: 'Change Lead Owner',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+      {
+        id: 'UUID-changeAssignLeadTo',
+        childNodeName: 'Change Assign Lead To',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
       },
     ],
   },

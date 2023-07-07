@@ -6,6 +6,8 @@ import { AngularDraggableModule } from 'angular2-draggable';
 import { ModalComponent } from './components/modal/modal.component';
 import { DecisionComponent } from './components/decision/decision.component';
 import { ActionComponent } from './components/action/action.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,13 @@ import { ActionComponent } from './components/action/action.component';
     DecisionComponent,
     ActionComponent,
   ],
-  imports: [CommonModule, DragDropModule, AngularDraggableModule],
+  imports: [
+    CommonModule,
+    DragDropModule,
+    AngularDraggableModule,
+    BrowserAnimationsModule,
+    NgxSpinnerModule,
+  ],
   exports: [
     SingleBlockComponent,
     ModalComponent,
