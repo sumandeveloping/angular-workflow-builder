@@ -216,8 +216,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
                 (data) => data.childComponentID !== childId
               );
           });
-          //** needs to remove from 'this.components' too == later will do it */
-
           delete this.dynamicComponentsObj[componentId];
         }
         if (this.dynamicComponentsObj[parentComponentID]) {
@@ -233,19 +231,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
           this.coOrdinatesOfChildComponents.filter(
             (data) => data.childComponentID !== componentId
           );
-        console.log(
-          'this.dynamicComponentsObj => Delete Event ✂️✂️',
-          this.dynamicComponentsObj
-        );
-        console.log(
-          'this.componentsFromRoot => Delete Event ✂️',
-          this.componentsFromRoot
-        );
-        console.log(
-          'this.coOrdinatesOfChildComponents => Delete Event ✂️',
-          this.coOrdinatesOfChildComponents
-        );
-        console.log('this.components => Delete Event ✂️', this.components);
         //atlast destroy child component
         dynamicComponent.destroy();
         await this.removeInvalidLines();
