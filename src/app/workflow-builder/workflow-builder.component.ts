@@ -255,18 +255,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   }
 
   removeInvalidChildComponents = () => {
-    this.components.forEach(
-      async (componet: ComponentRef<SingleBlockComponent>, index: any) => {
-        let x = componet.instance.parentElementRef.nativeElement;
-        console.log(
-          'ttt',
-          componet.instance.parentElementRef,
-          x.offsetHeight,
-          x.offsetLeft,
-          x.offsetTop,
-          x.offsetWidth,
-          x.offsetParent
-        );
+    setTimeout(() => {
+      this.components.forEach(async (componet: any, index: any) => {
         if (
           componet.instance.parentElementRef &&
           componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
@@ -277,12 +267,11 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         ) {
           componet.destroy();
           this.components.splice(index, 1);
-          console.log('this.components => ', this.components);
           await this.removeInvalidLines();
           return this.removeInvalidChildComponents();
         }
-      }
-    );
+      });
+    }, 0);
   };
 
   removeInvalidLines = () => {
