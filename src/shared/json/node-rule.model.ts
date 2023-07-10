@@ -690,6 +690,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'null',
     parentNodeName: 'null',
+    parentNodeNameType: 'null',
     parentNodeType: null,
     parentNodeCategory: 'null',
     // childNodeIds: ['Segment'],
@@ -697,11 +698,13 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-segment',
         childNodeName: 'Segment',
+        childNodeNameType: 'segment',
         parentNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-contactForm',
         childNodeName: 'Contact Form',
+        childNodeNameType: 'contactForm',
         parentNodeCategory: 'ACTION',
       },
     ],
@@ -709,6 +712,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-segment',
     parentNodeName: 'Segment',
+    parentNodeNameType: 'segment',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
     // childNodeIds: ['Send Email', 'Update Lead'],
@@ -716,6 +720,7 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         childNodeCategory: 'ACTION',
       },
       // {
@@ -728,6 +733,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-contactForm',
     parentNodeName: 'Contact Form',
+    parentNodeNameType: 'contactForm',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
     // childNodeIds: ['Send Email', 'Update Lead'],
@@ -735,6 +741,7 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         childNodeCategory: 'ACTION',
       },
       // {
@@ -747,6 +754,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-sendEmail',
     parentNodeName: 'Send Email',
+    parentNodeNameType: 'sendEmail',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
     // childNodeIds: [
@@ -771,21 +779,25 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-openEmail',
         childNodeName: 'Open Email',
+        childNodeNameType: 'openEmail',
         childNodeCategory: 'DECISION',
       },
       {
         id: 'UUID-downloadAsset',
         childNodeName: 'Download Asset',
+        childNodeNameType: 'downloadAsset',
         childNodeCategory: 'DECISION',
       },
       {
         id: 'UUID-visitLandingPage',
         childNodeName: 'Visit Landing Page',
+        childNodeNameType: 'visitLandingPage',
         childNodeCategory: 'DECISION',
       },
       {
         id: 'UUID-submitForm',
         childNodeName: 'Submit Form',
+        childNodeNameType: 'submitForm',
         childNodeCategory: 'DECISION',
       },
     ],
@@ -793,6 +805,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-inactionSendEmail',
     parentNodeName: 'Inaction Send Email',
+    parentNodeNameType: 'inactionSendEmail',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
     // childNodeIds: [
@@ -807,31 +820,37 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-updateLead',
         childNodeName: 'Update Lead',
+        childNodeNameType: 'updateLead',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-openEmail',
         childNodeName: 'Open Email',
+        childNodeNameType: 'openEmail',
         childNodeCategory: 'DECISION',
       },
       {
         id: 'UUID-downloadAsset',
         childNodeName: 'Download Asset',
+        childNodeNameType: 'downloadAsset',
         childNodeCategory: 'DECISION',
       },
       {
         id: 'UUID-visitLandingPage',
         childNodeName: 'Visit Landing Page',
+        childNodeNameType: 'visitLandingPage',
         childNodeCategory: 'DECISION',
       },
       {
         id: 'UUID-submitForm',
         childNodeName: 'Submit Form',
+        childNodeNameType: 'submitForm',
         childNodeCategory: 'DECISION',
       },
     ],
@@ -839,6 +858,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-updateLead',
     parentNodeName: 'Update Lead',
+    parentNodeNameType: 'updateLead',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
     // childNodeIds: ['Send Email'],
@@ -846,6 +866,7 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         childNodeCategory: 'ACTION',
       },
     ],
@@ -853,6 +874,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-inactionUpdateLead',
     parentNodeName: 'Inaction Update Lead',
+    parentNodeNameType: 'inactionUpdateLead',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
     // childNodeIds: ['Send Email'],
@@ -860,6 +882,7 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         childNodeCategory: 'ACTION',
       },
     ],
@@ -868,6 +891,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-openEmail', // id of 'Open Email'
     parentNodeName: 'Open Email',
+    parentNodeNameType: 'openEmail',
     parentNodeType: null,
     // parentNodeType: ParentNodeType.TRUTHY,
     // childNodeIds: ['Send Email', 'Update Lead'],
@@ -876,12 +900,14 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-updateLeadStatus',
         childNodeName: 'Update Lead Status',
+        childNodeNameType: 'updateLeadStatus',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -889,24 +915,28 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-changeLeadScore',
         childNodeName: 'Change Lead Score',
+        childNodeNameType: 'changeLeadScore',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadRating',
         childNodeName: 'Change Lead Rating',
+        childNodeNameType: 'changeLeadRating',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadOwner',
         childNodeName: 'Change Lead Owner',
+        childNodeNameType: 'changeLeadOwner',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeAssignLeadTo',
         childNodeName: 'Change Assign Lead To',
+        childNodeNameType: 'changeAssignLeadTo',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -915,6 +945,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-downloadAsset',
     parentNodeName: 'Download Asset',
+    parentNodeNameType: 'downloadAsset',
     parentNodeCategory: 'DECISION',
     parentNodeType: null,
     // parentNodeType: ParentNodeType.TRUTHY,
@@ -923,12 +954,14 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-updateLeadStatus',
         childNodeName: 'Update Lead Status',
+        childNodeNameType: 'updateLeadStatus',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -936,24 +969,28 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-changeLeadScore',
         childNodeName: 'Change Lead Score',
+        childNodeNameType: 'changeLeadScore',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadRating',
         childNodeName: 'Change Lead Rating',
+        childNodeNameType: 'changeLeadRating',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadOwner',
         childNodeName: 'Change Lead Owner',
+        childNodeNameType: 'changeLeadOwner',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeAssignLeadTo',
         childNodeName: 'Change Assign Lead To',
+        childNodeNameType: 'changeAssignLeadTo',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -967,6 +1004,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-visitLandingPage',
     parentNodeName: 'Visit Landing Page',
+    parentNodeNameType: 'visitLandingPage',
     parentNodeCategory: 'DECISION',
     parentNodeType: null,
     // parentNodeType: ParentNodeType.TRUTHY,
@@ -975,12 +1013,14 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-updateLeadStatus',
         childNodeName: 'Update Lead Status',
+        childNodeNameType: 'updateLeadStatus',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -988,24 +1028,28 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-changeLeadScore',
         childNodeName: 'Change Lead Score',
+        childNodeNameType: 'changeLeadScore',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadRating',
         childNodeName: 'Change Lead Rating',
+        childNodeNameType: 'changeLeadRating',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadOwner',
         childNodeName: 'Change Lead Owner',
+        childNodeNameType: 'changeLeadOwner',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeAssignLeadTo',
         childNodeName: 'Change Assign Lead To',
+        childNodeNameType: 'changeAssignLeadTo',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -1019,6 +1063,7 @@ export const MULTITOUCH_NODE_RULES = [
   {
     parentNodeId: 'UUID-submitForm',
     parentNodeName: 'Submit Form',
+    parentNodeNameType: 'submitForm',
     parentNodeCategory: 'DECISION',
     parentNodeType: null,
     // parentNodeType: ParentNodeType.TRUTHY,
@@ -1027,12 +1072,14 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
         nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-updateLeadStatus',
         childNodeName: 'Update Lead Status',
+        childNodeNameType: 'updateLeadStatus',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
@@ -1040,24 +1087,28 @@ export const MULTITOUCH_NODE_RULES = [
       {
         id: 'UUID-changeLeadScore',
         childNodeName: 'Change Lead Score',
+        childNodeNameType: 'changeLeadScore',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadRating',
         childNodeName: 'Change Lead Rating',
+        childNodeNameType: 'changeLeadRating',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeLeadOwner',
         childNodeName: 'Change Lead Owner',
+        childNodeNameType: 'changeLeadOwner',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
         id: 'UUID-changeAssignLeadTo',
         childNodeName: 'Change Assign Lead To',
+        childNodeNameType: 'changeAssignLeadTo',
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
