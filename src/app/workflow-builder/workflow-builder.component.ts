@@ -212,21 +212,23 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   }
 
   removeInvalidChildComponents = () => {
-    this.components.forEach(async (componet: any, index: any) => {
-      if (
-        componet.instance.parentElementRef &&
-        componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetParent === null
-      ) {
-        componet.destroy();
-        this.components.splice(index, 1);
-        await this.removeInvalidLines();
-        return this.removeInvalidChildComponents();
-      }
-    });
+    setTimeout(() => {
+      this.components.forEach(async (componet: any, index: any) => {
+        if (
+          componet.instance.parentElementRef &&
+          componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetParent === null
+        ) {
+          componet.destroy();
+          this.components.splice(index, 1);
+          await this.removeInvalidLines();
+          return this.removeInvalidChildComponents();
+        }
+      });
+    }, 0);
   };
 
   removeInvalidLines = () => {
