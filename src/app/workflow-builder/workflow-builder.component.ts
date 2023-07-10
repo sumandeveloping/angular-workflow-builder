@@ -4,6 +4,7 @@ import { ComponentRef } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { ViewContainerRef } from '@angular/core';
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { ModalComponent } from 'src/shared/components/modal/modal.component';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
@@ -54,15 +55,25 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   childNodesToConnect: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
+  loading: boolean = false; //for modal
   selectedNode: any = {}; //for modal
   disableModalSave: boolean = true;
 
-  constructor() {} // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
+  constructor(private spinner: NgxSpinnerService) {} // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
 
   ngOnInit(): void {
     this.nodeRules = MULTITOUCH_NODE_RULES;
     this.parentNodeArr = this.nodeRules.filter(
       (node) => node.parentNodeName === 'Segment'
+    );
+    // this.nodeInformation = this.parentNodeArr[0];
+    // console.log('Node Info', this.nodeInformation);
+    // this.nodeType = this.nodeInformation.parentNodeType;
+    // this.nodeCategory = this.nodeInformation.parentNodeCategory;
+    // this.childNodesToConnect = this.nodeInformation.childNodeIds;
+    //modification
+    this.parentNodeArr = this.nodeRules.filter(
+      (node) => node.parentNodeName == 'null' && node.parentNodeId == 'null'
     );
     this.nodeInformation = this.parentNodeArr[0];
     console.log('Node Info', this.nodeInformation);
@@ -71,7 +82,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.childNodesToConnect = this.nodeInformation.childNodeIds;
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.showModal({});
+  }
 
   public createComponent(
     e: any,
@@ -199,21 +212,23 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   }
 
   removeInvalidChildComponents = () => {
-    this.components.forEach(async (componet: any, index: any) => {
-      if (
-        componet.instance.parentElementRef &&
-        componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetParent === null
-      ) {
-        componet.destroy();
-        this.components.splice(index, 1);
-        await this.removeInvalidLines();
-        return this.removeInvalidChildComponents();
-      }
-    });
+    setTimeout(() => {
+      this.components.forEach(async (componet: any, index: any) => {
+        if (
+          componet.instance.parentElementRef &&
+          componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetParent === null
+        ) {
+          componet.destroy();
+          this.components.splice(index, 1);
+          await this.removeInvalidLines();
+          return this.removeInvalidChildComponents();
+        }
+      });
+    }, 0);
   };
 
   removeInvalidLines = () => {
@@ -266,14 +281,28 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     }
   };
 
-  onSelectChildNodeDisplayProperties(e: any, childNode: any) {
+  onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
     console.log('childNode display', childNode);
-    this.displayNode = true;
     this.selectedNode = childNode;
-    this.disableModalSave = false;
     //get the properties of the child node & display...
-  }
+    this.displayNode = false;
+    this.loading = true;
+    this.spinner.show('nodePropertyLoader');
+    await this.displayNodeProperties();
+    this.displayNode = true;
+    this.loading = false;
+    this.disableModalSave = false;
+  };
+
+  displayNodeProperties = async () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.spinner.hide('nodePropertyLoader');
+        resolve(true);
+      }, 1000);
+    });
+  };
 
   ngOnDestroy(): void {
     this.removeSubscriptions.unsubscribe();

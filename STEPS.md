@@ -47,4 +47,4 @@
 
 ## LINK For Node-Data `https://stackblitz.com/edit/js-lmurru?file=index.js`
 
-## LINK for Modified Node-Rule `https://stackblitz.com/edit/js-qsz8bd?file=index.js`
+## LINK for Modified Node-Rule `https://stackblitz.com/edit/js-uczkr2?file=index.js`

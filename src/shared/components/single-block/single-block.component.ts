@@ -14,6 +14,7 @@ import { DynamicComponent } from 'src/shared/interfaces/dynamic-component.interf
 import { LineOptions } from 'src/shared/interfaces/line-options.interface';
 import { ModalComponent } from '../modal/modal.component';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 declare var LeaderLine: any;
 
@@ -59,16 +60,20 @@ export class SingleBlockComponent
   /* -------------------------------------------------------------------------- */
   nodeDetails: any;
   childNodesToConnect: any;
+  actionNodesToConnect: any;
+  decisionNodesToConnect: any;
   nodeType: string; // truthy / falsy / null
   nodeCategory: any; // action / decision / null
   nodeRules: any[];
   displayNode: boolean = false; //for modal
+  loading: boolean = false; //for modal
   selectedNode: any = {}; //for modal
   disableModalSave: boolean = true;
 
   constructor(
     private parentComponent: WorkflowBuilderComponent,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private spinner: NgxSpinnerService
   ) {}
   ngOnInit(): void {
     console.log('On INIT', this.parentComponent.dynamicComponentsObj);
@@ -77,11 +82,18 @@ export class SingleBlockComponent
     const nodesArr = this.nodeRules.filter(
       (node) => node.parentNodeName == this.nodeInformation.childNodeName
     );
-    this.nodeDetails = nodesArr[0];
+    console.log('nodesArr 🤞', this.nodeRules, nodesArr);
+    this.nodeDetails = nodesArr?.[0];
     console.log('nodeDetails', this.nodeDetails);
     this.nodeType = this.nodeDetails.parentNodeType;
     this.nodeCategory = this.nodeDetails.parentNodeCategory;
     this.childNodesToConnect = this.nodeDetails.childNodeIds;
+    this.actionNodesToConnect = this.childNodesToConnect.filter(
+      (node: any) => node.childNodeCategory === 'ACTION'
+    );
+    this.decisionNodesToConnect = this.childNodesToConnect.filter(
+      (node: any) => node.childNodeCategory === 'DECISION'
+    );
   }
   ngAfterViewInit(): void {
     //Set Dynamic Position of the components
@@ -93,7 +105,6 @@ export class SingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-
       this.sendLines.emit(this.line);
     } else {
       // if dynamic components are created from another dynamic component
@@ -156,7 +167,10 @@ export class SingleBlockComponent
   }
 
   dynamicPositionOfParentComponents(): void {
-    console.log('CALLED FROM PARENT COMPONENT');
+    console.log(
+      'CALLED FROM PARENT COMPONENT',
+      this.parentComponent.componentsFromRoot.length
+    );
     let topPosition: any;
     const componentWidth = this.decisionBlock.nativeElement.offsetWidth;
     const offsetLeft = this.decisionBlock.nativeElement.offsetLeft;
@@ -167,7 +181,8 @@ export class SingleBlockComponent
     //* 1. evaluate x & y
     const leftPosition =
       +(dynamicComponentWrapperWidth / 2).toFixed(2) -
-      componentWidth * this.parentComponent.componentsFromRoot.length;
+      componentWidth * this.parentComponent.componentsFromRoot.length +
+      componentWidth / 2;
     console.log(
       'left Position',
       leftPosition,
@@ -385,14 +400,28 @@ export class SingleBlockComponent
     this.modalDialog ? this.modalDialog.closeModal() : null;
   };
 
-  onSelectChildNodeDisplayProperties(e: any, childNode: any) {
+  onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
     console.log('childNode display', childNode);
-    this.displayNode = true;
     this.selectedNode = childNode;
-    this.disableModalSave = false;
     //get the properties of the child node & display...
-  }
+    this.displayNode = false;
+    this.loading = true;
+    this.spinner.show('nodePropertyLoader');
+    await this.displayNodeProperties();
+    this.displayNode = true;
+    this.loading = false;
+    this.disableModalSave = false;
+  };
+
+  displayNodeProperties = async () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.spinner.hide('nodePropertyLoader');
+        resolve(true);
+      }, 2000);
+    });
+  };
 
   openModalWithNodeProps = (e: any) => {
     this.showModalForm = true;
