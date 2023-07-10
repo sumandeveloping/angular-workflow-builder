@@ -127,6 +127,11 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponentId: '',
       childs: [],
       connecters: [],
+      // sourceActivityId: '',
+      // sourceActivityNameType: '',
+      // outcomeType: '',
+      // destinationActivityId: '',
+      // destinationActivityNameType: '',
     };
     if (isChildComponentCall) {
       this.dynamicComponentsObj[parentComponent.componentId].childs.push(
@@ -186,8 +191,33 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         //remove child components & its config from `dynamicComponentsObj`
         const parentComponentID =
           this.dynamicComponentsObj[componentId].parentComponentId;
+        console.log(
+          'first:🤖',
+          this.dynamicComponentsObj[componentId].parentComponentId
+        );
+        console.log('second:🤖', parentComponentID);
 
-        if (parentComponentID !== '' || parentComponentID !== null) {
+        if (parentComponentID) {
+          console.log('deleteing component property', parentComponentID);
+          delete this.dynamicComponentsObj[componentId];
+        } else if (parentComponentID === '' || parentComponentID === null) {
+          // childs components should be removed if parent gets deleted
+          const childIds: string[] =
+            this.dynamicComponentsObj[componentId].childs;
+          console.log(
+            'WARNING:👽',
+            this.dynamicComponentsObj[componentId],
+            childIds
+          );
+          childIds.forEach((childId: string) => {
+            delete this.dynamicComponentsObj[childId];
+            this.coOrdinatesOfChildComponents =
+              this.coOrdinatesOfChildComponents.filter(
+                (data) => data.childComponentID !== childId
+              );
+          });
+          //** needs to remove from 'this.components' too == later will do it */
+
           delete this.dynamicComponentsObj[componentId];
         }
         if (this.dynamicComponentsObj[parentComponentID]) {
@@ -203,6 +233,19 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
           this.coOrdinatesOfChildComponents.filter(
             (data) => data.childComponentID !== componentId
           );
+        console.log(
+          'this.dynamicComponentsObj => Delete Event ✂️✂️',
+          this.dynamicComponentsObj
+        );
+        console.log(
+          'this.componentsFromRoot => Delete Event ✂️',
+          this.componentsFromRoot
+        );
+        console.log(
+          'this.coOrdinatesOfChildComponents => Delete Event ✂️',
+          this.coOrdinatesOfChildComponents
+        );
+        console.log('this.components => Delete Event ✂️', this.components);
         //atlast destroy child component
         dynamicComponent.destroy();
         await this.removeInvalidLines();
@@ -212,21 +255,34 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   }
 
   removeInvalidChildComponents = () => {
-    this.components.forEach(async (componet: any, index: any) => {
-      if (
-        componet.instance.parentElementRef &&
-        componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
-        componet.instance.parentElementRef.nativeElement.offsetParent === null
-      ) {
-        componet.destroy();
-        this.components.splice(index, 1);
-        await this.removeInvalidLines();
-        return this.removeInvalidChildComponents();
+    this.components.forEach(
+      async (componet: ComponentRef<SingleBlockComponent>, index: any) => {
+        let x = componet.instance.parentElementRef.nativeElement;
+        console.log(
+          'ttt',
+          componet.instance.parentElementRef,
+          x.offsetHeight,
+          x.offsetLeft,
+          x.offsetTop,
+          x.offsetWidth,
+          x.offsetParent
+        );
+        if (
+          componet.instance.parentElementRef &&
+          componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetParent === null
+        ) {
+          componet.destroy();
+          this.components.splice(index, 1);
+          console.log('this.components => ', this.components);
+          await this.removeInvalidLines();
+          return this.removeInvalidChildComponents();
+        }
       }
-    });
+    );
   };
 
   removeInvalidLines = () => {

@@ -76,13 +76,13 @@ export class SingleBlockComponent
     private spinner: NgxSpinnerService
   ) {}
   ngOnInit(): void {
-    console.log('On INIT', this.parentComponent.dynamicComponentsObj);
+    console.log('On INIT ⬇️', this.parentComponent.dynamicComponentsObj);
     console.log('nodeInformation', this.nodeInformation);
     this.nodeRules = MULTITOUCH_NODE_RULES;
     const nodesArr = this.nodeRules.filter(
       (node) => node.parentNodeName == this.nodeInformation.childNodeName
     );
-    console.log('nodesArr 🤞', this.nodeRules, nodesArr);
+    console.log('nodesArr', this.nodeRules, nodesArr);
     this.nodeDetails = nodesArr?.[0];
     console.log('nodeDetails', this.nodeDetails);
     this.nodeType = this.nodeDetails.parentNodeType;
