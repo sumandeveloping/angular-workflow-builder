@@ -191,24 +191,22 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         //remove child components & its config from `dynamicComponentsObj`
         const parentComponentID =
           this.dynamicComponentsObj[componentId].parentComponentId;
-        console.log(
-          'first:🤖',
-          this.dynamicComponentsObj[componentId].parentComponentId
-        );
-        console.log('second:🤖', parentComponentID);
 
         if (parentComponentID) {
-          console.log('deleteing component property', parentComponentID);
+          const childIds: string[] =
+            this.dynamicComponentsObj[componentId].childs;
+          childIds.forEach((childId: string) => {
+            delete this.dynamicComponentsObj[childId];
+            this.coOrdinatesOfChildComponents =
+              this.coOrdinatesOfChildComponents.filter(
+                (data) => data.childComponentID !== childId
+              );
+          });
           delete this.dynamicComponentsObj[componentId];
         } else if (parentComponentID === '' || parentComponentID === null) {
           // childs components should be removed if parent gets deleted
           const childIds: string[] =
             this.dynamicComponentsObj[componentId].childs;
-          console.log(
-            'WARNING:👽',
-            this.dynamicComponentsObj[componentId],
-            childIds
-          );
           childIds.forEach((childId: string) => {
             delete this.dynamicComponentsObj[childId];
             this.coOrdinatesOfChildComponents =
