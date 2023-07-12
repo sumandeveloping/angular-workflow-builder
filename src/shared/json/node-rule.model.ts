@@ -800,8 +800,108 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeNameType: 'submitForm',
         childNodeCategory: 'DECISION',
       },
+      {
+        id: 'UUID-notOpenedEmail',
+        childNodeName: 'Not Opened Email',
+        childNodeNameType: 'notOpenedEmail',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-clickThrough',
+        childNodeName: 'Click Through',
+        childNodeNameType: 'clickThrough',
+        childNodeCategory: 'DECISION',
+      },
+      {
+        id: 'UUID-registerForEventOrWebinar',
+        childNodeName: 'Register For Event Or Webinar',
+        childNodeNameType: 'registerForEventOrWebinar',
+        childNodeCategory: 'DECISION',
+      },
     ],
   },
+  // NEW ACTIONS
+  {
+    parentNodeId: 'UUID-updateLeadStatus',
+    parentNodeName: 'Update Lead Status',
+    parentNodeNameType: 'updateLeadStatus',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-changeLeadScore',
+    parentNodeName: 'Change Lead Score',
+    parentNodeNameType: 'changeLeadScore',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-changeLeadRating',
+    parentNodeName: 'Change Lead Rating',
+    parentNodeNameType: 'changeLeadRating',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-changeLeadOwner',
+    parentNodeName: 'Change Lead Owner',
+    parentNodeNameType: 'changeLeadOwner',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  {
+    parentNodeId: 'UUID-changeAssignLeadTo',
+    parentNodeName: 'Change Assign Lead To',
+    parentNodeNameType: 'changeAssignLeadTo',
+    parentNodeType: null,
+    parentNodeCategory: 'ACTION',
+    childNodeIds: [
+      {
+        id: 'UUID-sendEmail',
+        childNodeName: 'Send Email',
+        childNodeNameType: 'sendEmail',
+        // nodeType: 'Truthy',
+        childNodeCategory: 'ACTION',
+      },
+    ],
+  },
+  // End of new actions
   {
     parentNodeId: 'UUID-inactionSendEmail',
     parentNodeName: 'Inaction Send Email',
@@ -887,7 +987,8 @@ export const MULTITOUCH_NODE_RULES = [
       },
     ],
   },
-  // ===== DECISION BLOCKS ================
+  // ========== END OF ACTION BLOCK =================================
+  // ===== DECISION BLOCKS ===========================
   {
     parentNodeId: 'UUID-openEmail', // id of 'Open Email'
     parentNodeName: 'Open Email',
@@ -901,7 +1002,7 @@ export const MULTITOUCH_NODE_RULES = [
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
         childNodeNameType: 'sendEmail',
-        nodeType: 'Truthy',
+        // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
       {
