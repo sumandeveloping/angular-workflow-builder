@@ -13,11 +13,11 @@ import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
-  selector: 'app-workflow-builder',
-  templateUrl: './workflow-builder.component.html',
-  styleUrls: ['./workflow-builder.component.scss'],
+  selector: 'app-update-workflow-builder',
+  templateUrl: './update-workflow-builder.component.html',
+  styleUrls: ['./update-workflow-builder.component.scss'],
 })
-export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
+export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   @ViewChild('builderStartPoint', { read: ElementRef })
   builderStartPoint: ElementRef;
   @ViewChild('dynamicComponentWrapper', { read: ElementRef, static: false })

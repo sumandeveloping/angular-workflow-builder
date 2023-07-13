@@ -7,9 +7,10 @@ import { WorkflowBuilderComponent } from './workflow-builder/workflow-builder.co
 import { SharedModule } from 'src/shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { UpdateWorkflowBuilderComponent } from './update-workflow-builder/update-workflow-builder.component';
 
 @NgModule({
-  declarations: [AppComponent, WorkflowBuilderComponent],
+  declarations: [AppComponent, WorkflowBuilderComponent, UpdateWorkflowBuilderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
