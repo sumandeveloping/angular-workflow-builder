@@ -1,5 +1,8 @@
 <main class="project-container">
   <!-- <h2>Workflow builder</h2> -->
   <a routerLink="/builder">Go to builder</a>
+  <a [routerLink]="['builder/edit']" [queryParams]="{ id: 'editID' }"
+    >Edit builder</a
+  >
   <router-outlet></router-outlet>
 </main>
