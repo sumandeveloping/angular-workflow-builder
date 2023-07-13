@@ -8,6 +8,10 @@ import { DecisionComponent } from './components/decision/decision.component';
 import { ActionComponent } from './components/action/action.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { SegmentComponent } from './components/segment/segment.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { EmailComponent } from './components/email/email.component';
+import { ContactFormComponent } from './components/contact-form/contact-form.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +19,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     ModalComponent,
     DecisionComponent,
     ActionComponent,
+    SegmentComponent,
+    EmailComponent,
+    ContactFormComponent,
   ],
   imports: [
     CommonModule,
@@ -22,12 +29,16 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     AngularDraggableModule,
     BrowserAnimationsModule,
     NgxSpinnerModule,
+    ReactiveFormsModule,
   ],
   exports: [
     SingleBlockComponent,
     ModalComponent,
     DecisionComponent,
     ActionComponent,
+    SegmentComponent,
+    ContactFormComponent,
+    EmailComponent,
   ],
 })
 export class SharedModule {}

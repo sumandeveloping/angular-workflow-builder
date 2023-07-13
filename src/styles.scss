@@ -19,10 +19,12 @@
   }
 }
 .node-property-loader {
-  min-height: 20rem;
+  min-height: 10rem;
+  height: 15rem;
 }
 .nodeProperty-display-container {
   position: relative;
+  height: 100%;
   .lead {
     font-size: 1.4rem;
   }

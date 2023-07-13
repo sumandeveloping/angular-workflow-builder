@@ -1,0 +1,69 @@
+<!-- <p>segment works!</p> -->
+<form [formGroup]="segmentForm" (ngSubmit)="onSegmentFormSubmit()">
+  <!--  [(ngModel)]="model" -->
+  <div class="formGroup">
+    <div class="form-group">
+      <label class="form-label" for="list-options">Choose your option</label>
+      <select
+        class="form-select form-select-sm"
+        aria-label=".form-select-sm"
+        id="list-options"
+        formControlName="sources"
+        (ngModelChange)="onListOptionsChange($event)"
+      >
+        <option value="">Choose your option</option>
+        <option *ngFor="let options of listOptions" [ngValue]="options.value">
+          {{ options.value }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group" *ngIf="selectedList == 'Segment List'">
+    <label class="form-label" for="name">Select a Segment</label>
+    <select
+      class="form-select form-select-sm"
+      aria-label=".form-select-sm"
+      id="name"
+      formControlName="list"
+    >
+      <option value="">Select a {{ selectedList }}</option>
+
+      <option *ngFor="let segment of segmentList" [ngValue]="segment.id">
+        {{ segment.name }}
+      </option>
+    </select>
+  </div>
+  <div class="form-group" *ngIf="selectedList == 'Campaign List'">
+    <label class="form-label" for="name">Select a Campaign</label>
+    <select
+      class="form-select form-select-sm"
+      aria-label=".form-select-sm"
+      id="name"
+      formControlName="list"
+    >
+      <option value="">Select a {{ selectedList }}</option>
+
+      <option *ngFor="let campaign of campaignList" [ngValue]="campaign.id">
+        {{ campaign.name }}
+      </option>
+    </select>
+  </div>
+  <div class="form-group add-segment">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="!segmentForm.valid"
+    >
+      Add
+    </button>
+    <button
+      type="submit"
+      class="btn btn-secondary cancel-segment"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button>
+  </div>
+
+  <!-- <input type="text" name="" id="name" formControlName="name" /> -->
+</form>
