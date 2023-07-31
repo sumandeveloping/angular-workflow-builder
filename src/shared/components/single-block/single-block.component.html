@@ -50,7 +50,7 @@
 
 <app-modal
   *ngIf="displayModal"
-  showFooter="true"
+  showFooter="false"
   modalTitle="Title"
   submitLabel="add"
   (save)="addComponent()"
@@ -113,6 +113,11 @@
               *ngIf="displayNode && !loading"
             >
               show properties of {{ selectedNode?.childNodeName }}
+              <app-dynamic-form
+                [model]="nodeModel"
+                (add)="onAdd($event)"
+                (cancel)="closeModal()"
+              ></app-dynamic-form>
             </div>
             <ngx-spinner
               name="nodePropertyLoader"

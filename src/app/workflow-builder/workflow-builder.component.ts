@@ -12,6 +12,7 @@ import { NodeNameType } from 'src/shared/enums/nodeName-type.enum';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
 import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
+import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -59,6 +60,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   nodeCategory: any; // action / decision / null
   childNodesObj: any;
   childNodesToConnect: any;
+  nodeProperties: any[];
+  nodeModel: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
@@ -70,6 +73,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   } // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
 
   ngOnInit(): void {
+    this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
     this.parentNodeArr = this.nodeRules.filter(
       (node) => node.parentNodeName === 'Segment'
@@ -344,6 +348,10 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   displayNodeProperties = async () => {
     return new Promise((resolve, reject) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.selectedNode.childNodeName
+      );
+      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
@@ -351,7 +359,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     });
   };
 
-  onSegmentAdd = (e) => {
+  onAdd = (e) => {
     console.log('e🙌', e);
     this.closeModal();
     this.createComponent(this.nodeDate.event);
