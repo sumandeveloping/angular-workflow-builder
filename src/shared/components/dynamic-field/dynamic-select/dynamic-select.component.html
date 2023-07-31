@@ -1,0 +1,13 @@
+<form [formGroup]="formName" *ngIf="!field.hidden">
+  <label>{{ field.label }}:</label>
+
+  <select
+    #dynamicSelect
+    [formControlName]="field.fieldName"
+    (change)="changedValue(dynamicSelect.value)"
+  >
+    <option *ngFor="let option of field.options" [value]="option.value">
+      {{ option.label }}
+    </option>
+  </select>
+</form>
