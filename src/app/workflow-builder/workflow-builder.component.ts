@@ -7,8 +7,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { ModalComponent } from 'src/shared/components/modal/modal.component';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
+import { NodeNameType } from 'src/shared/enums/nodeName-type.enum';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
+import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
+import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -26,10 +29,12 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   container: ViewContainerRef;
   @ViewChild('modalDialog') modalDialog: ModalComponent;
   components: ComponentRef<SingleBlockComponent>[] = [];
+  componentID: string;
   componentsFromRoot: ComponentRef<SingleBlockComponent>[] = [];
   dynamicComponentsObj: dynamicComponentHash = {};
   xCoOrdinates: number[] = [];
   YCoOrdinates: number[] = [];
+  NodeNameType: typeof NodeNameType;
   coOrdinatesOfChildComponents: childComponentConfig[] = [];
   linesArr: any[] = [];
   displayModal: boolean = false;
@@ -45,6 +50,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   /* -------------------------------------------------------------------------- */
   /*                                    DATA RELATED STUFF                                    */
   /* -------------------------------------------------------------------------- */
+  connections: NodeConnections[] = [];
+  activities: any[] = [];
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -52,13 +59,17 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   nodeCategory: any; // action / decision / null
   childNodesObj: any;
   childNodesToConnect: any;
+  nodeProperties: any[];
+  nodeModel: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
   selectedNode: any = {}; //for modal
   disableModalSave: boolean = true;
 
-  constructor(private spinner: NgxSpinnerService) {} // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
+  constructor(private spinner: NgxSpinnerService) {
+    this.NodeNameType = NodeNameType;
+  } // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
 
   ngOnInit(): void {
     this.initializeNodeInformation();
@@ -69,6 +80,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   }
 
   initializeNodeInformation() {
+    this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
     this.parentNodeArr = this.nodeRules.filter(
       (node) => node.parentNodeName == 'null' && node.parentNodeId == 'null'
@@ -79,7 +91,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.childNodesToConnect = this.nodeInformation.childNodeIds;
   }
 
-  public createComponent(
+  public async createComponent(
     e: any,
     isChildComponentCall: boolean = false,
     parentElementRef?: ElementRef,
@@ -106,6 +118,18 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         'nodeInformation',
         parentComponent.selectedNode
       );
+      //store the component connections for backend
+      const connectionObj = {
+        sourceActivityId: parentComponent.componentId,
+        destinationActivityId: newComponentId,
+        outcome: 'Action 1',
+        sourceActivityNameType:
+          parentComponent.nodeInformation.childNodeNameType,
+        destinationActivityNameType:
+          parentComponent.selectedNode.childNodeNameType,
+      };
+      this.connections.push(connectionObj);
+      console.log('this.connections 🔥', this.connections);
     } else {
       //if created from root component (i.e segment)
       dynamicComponent.setInput('nodeInformation', this.selectedNode);
@@ -137,13 +161,14 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     }
     //Get position from dynamic component
     this.sendSubscriptions = dynamicComponent.instance.sendPosition.subscribe(
-      (data: {
+      async (data: {
         x: number;
         y: number;
         componentId?: string;
         isChild?: boolean;
       }) => {
         console.log('component Position 💥', data, 'isChild', data.isChild);
+        await this.populateActivity(data.componentId, data.x, data.y);
         this.xCoOrdinates.push(data.x);
         this.YCoOrdinates.push(data.y);
         if (data.isChild)
@@ -316,11 +341,30 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   displayNodeProperties = async () => {
     return new Promise((resolve, reject) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.selectedNode.childNodeName
+      );
+      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
       }, 1000);
     });
+  };
+
+  onAdd = (e) => {
+    console.log('e🙌', e);
+    this.closeModal();
+    this.createComponent(this.nodeDate.event);
+  };
+
+  populateActivity = async (componentID: string, x: number, y: number) => {
+    let obj = {};
+    obj['id'] = componentID;
+    obj['x'] = x;
+    obj['y'] = y;
+    this.activities.push(obj);
+    console.log('activity🤖', this.activities);
   };
 
   ngOnDestroy(): void {

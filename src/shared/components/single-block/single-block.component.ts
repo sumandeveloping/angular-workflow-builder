@@ -12,9 +12,10 @@ import {
 import { WorkflowBuilderComponent } from 'src/app/workflow-builder/workflow-builder.component';
 import { DynamicComponent } from 'src/shared/interfaces/dynamic-component.interface';
 import { LineOptions } from 'src/shared/interfaces/line-options.interface';
-import { ModalComponent } from '../modal/modal.component';
+import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ModalComponent } from '../modal/modal.component';
 
 declare var LeaderLine: any;
 
@@ -64,6 +65,8 @@ export class SingleBlockComponent
   decisionNodesToConnect: any;
   nodeType: string; // truthy / falsy / null
   nodeCategory: any; // action / decision / null
+  nodeProperties: any[];
+  nodeModel: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
@@ -78,6 +81,7 @@ export class SingleBlockComponent
   ngOnInit(): void {
     console.log('On INIT ⬇️', this.parentComponent.dynamicComponentsObj);
     console.log('nodeInformation', this.nodeInformation);
+    this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
     const nodesArr = this.nodeRules.filter(
       (node) => node.parentNodeName == this.nodeInformation.childNodeName
@@ -420,6 +424,10 @@ export class SingleBlockComponent
 
   displayNodeProperties = async () => {
     return new Promise((resolve, reject) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.selectedNode.childNodeName
+      );
+      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
@@ -433,5 +441,11 @@ export class SingleBlockComponent
     setTimeout(() => {
       this.modalDialog.showModal();
     }, 0);
+  };
+
+  onAdd = (e) => {
+    console.log('e🙌', e);
+    this.closeModal();
+    this.addComponent();
   };
 }
