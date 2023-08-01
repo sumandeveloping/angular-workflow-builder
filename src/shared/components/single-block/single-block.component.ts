@@ -82,7 +82,7 @@ export class SingleBlockComponent
     const nodesArr = this.nodeRules.filter(
       (node) => node.parentNodeName == this.nodeInformation.childNodeName
     );
-    console.log('nodesArr', this.nodeRules, nodesArr);
+    console.log('nodesArr', nodesArr);
     this.nodeDetails = nodesArr?.[0];
     console.log('nodeDetails', this.nodeDetails);
     this.nodeType = this.nodeDetails.parentNodeType;
@@ -99,23 +99,7 @@ export class SingleBlockComponent
     //Set Dynamic Position of the components
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
-    if (!this.isCreatedFromChild) {
-      this.line = new LeaderLine(
-        this.parentComponent.builderStartPoint.nativeElement,
-        this.decisionBlock.nativeElement,
-        this.lineOptions
-      );
-      this.sendLines.emit(this.line);
-    } else {
-      // if dynamic components are created from another dynamic component
-      this.line = new LeaderLine(
-        this.parentElementRef.nativeElement,
-        this.decisionBlock.nativeElement,
-        this.lineOptions
-      );
-
-      this.sendLines.emit(this.line);
-    }
+    this.renderLinesBetweenComponents();
     // adding css styles
     // this.renderer.addClass(
     //   this.decisionBlock.nativeElement,
@@ -372,6 +356,26 @@ export class SingleBlockComponent
     }
     //send to parent component
     this.sendPosition.emit(this.position);
+  }
+
+  renderLinesBetweenComponents(): void {
+    if (!this.isCreatedFromChild) {
+      this.line = new LeaderLine(
+        this.parentComponent.builderStartPoint.nativeElement,
+        this.decisionBlock.nativeElement,
+        this.lineOptions
+      );
+      this.sendLines.emit(this.line);
+    } else {
+      // if dynamic components are created from another dynamic component
+      this.line = new LeaderLine(
+        this.parentElementRef.nativeElement,
+        this.decisionBlock.nativeElement,
+        this.lineOptions
+      );
+
+      this.sendLines.emit(this.line);
+    }
   }
 
   onDragStart(e: any) {

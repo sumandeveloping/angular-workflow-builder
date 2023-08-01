@@ -10,7 +10,11 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { UpdateWorkflowBuilderComponent } from './update-workflow-builder/update-workflow-builder.component';
 
 @NgModule({
-  declarations: [AppComponent, WorkflowBuilderComponent, UpdateWorkflowBuilderComponent],
+  declarations: [
+    AppComponent,
+    WorkflowBuilderComponent,
+    UpdateWorkflowBuilderComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -19,7 +23,7 @@ import { UpdateWorkflowBuilderComponent } from './update-workflow-builder/update
     SharedModule,
     NgxSpinnerModule,
   ],
-  providers: [],
+  providers: [WorkflowBuilderComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

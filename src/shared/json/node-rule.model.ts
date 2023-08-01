@@ -911,7 +911,6 @@ export const MULTITOUCH_NODE_RULES = [
         // nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
       },
-
       {
         id: 'UUID-changeLeadScore',
         childNodeName: 'Change Lead Score',

@@ -5,11 +5,7 @@ export interface dynamicComponentHash {
     connecters: any[];
     xPos?: number;
     yPos?: number;
-    // sourceActivityId: string | any;
-    // destinationActivityId: string | any;
-    // outcome?: string;
-    // sourceActivityNameType: string | any;
-    // destinationActivityNameType: string | any;
+    nodeInformation: object;
     [propName: string]: string | number | any;
   };
 }

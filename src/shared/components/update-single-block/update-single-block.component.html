@@ -1,65 +1,80 @@
-<section>
-  <!-- customNavClass="nav-test-class" customTabsClass="containerrr" -->
-
-  <div class="w-100 d-flex justify-space-between">
-    <h4>Build Your Campaign</h4>
-    <div class="btn-group">
-      <a href="#" class="btn btn-primary me-3">Save</a>
-      <a href="#" class="btn btn-secondary">Back</a>
-    </div>
+<div
+  id="draggable"
+  ngDraggable
+  (started)="onDragStart($event)"
+  (movingOffset)="onDragOver($event)"
+  class="dynamic-component card"
+  #decisionBlock
+>
+  <div class="card-body">
+    <h5
+      class="dynamic-component-name"
+      (dblclick)="openModalWithNodeProps($event)"
+    >
+      {{ nodeDetails?.parentNodeName || "none" }} -
+      <span
+        class="dynamic-component-nodeCategory"
+        [ngClass]="
+          nodeCategory == 'ACTION'
+            ? 'dynamic-component-nodeCategory dynamic-component-nodeCategory--action'
+            : 'dynamic-component-nodeCategory dynamic-component-nodeCategory--decision'
+        "
+      >
+        <!--  -->
+        {{ nodeCategory }}
+      </span>
+      {{ index }}
+    </h5>
+    <a
+      type="button"
+      class="dynamic-component--addBtn utility-btn"
+      (click)="showModal($event, index, true)"
+    >
+      <i class="fa fa-plus" aria-hidden="true"></i>
+    </a>
+    <!-- Edit -->
+    <a
+      type="button"
+      class="dynamic-component--editBtn utility-btn"
+      (click)="openModalWithNodeProps($event)"
+    >
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </a>
+    <a
+      type="button"
+      class="dynamic-component--removeBtn utility-btn"
+      (click)="deleteComponent()"
+    >
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </a>
   </div>
-  <div class="builder">
-    <div class="builder-rootNode">
-      <div class="builder-rootNode--name">
-        <!-- <h4 (dblclick)="openSegmentModal($event)">
-            <i class="fa fa-list" aria-hidden="true"></i>
-            {{ nodeInformation.parentNodeName }}
-            <span
-              [ngClass]="
-                nodeCategory == 'ACTION'
-                  ? 'nodeCategory nodeCategory-action'
-                  : 'nodeCategory nodeCategory-decision'
-              "
-              >{{ nodeCategory }}</span
-            >
-          </h4> -->
-        <!-- <h4>Start Campaign Flow</h4> -->
-      </div>
-      <a class="connecter" (click)="showModal($event)">
-        <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
-      </a>
-    </div>
-    <!-- ===================== WE need dynamic components here... ========================== -->
-    <div id="dynamicComponentWrapper" #dynamicComponentWrapper>
-      <ng-template #dynamicComponents></ng-template>
-    </div>
-  </div>
-</section>
+</div>
 
 <app-modal
-  *ngIf="'true'"
+  *ngIf="displayModal"
   showFooter="true"
   modalTitle="Title"
-  submitLabel="Add"
-  (save)="createComponent(nodeDate.event); displayModal = !displayModal"
-  (close)="displayModal = !displayModal; showSegmentModal = false"
+  submitLabel="add"
+  (save)="addComponentOnEdit(false, null)"
+  (close)="displayModal = !displayModal; showModalForm = false"
   #modalDialog
 >
   <!-- when we need to display form or data related stuff -->
-  <ng-container *ngIf="showSegmentModal" ngProjectAs=".modalHeaderContent">
-    <h3 class="modal-header-content">Show segment modal form</h3>
+  <ng-container *ngIf="showModalForm" ngProjectAs=".modalHeaderContent">
+    <h3 class="modal-header-content">Show modal form from dynamic-component</h3>
   </ng-container>
 
   <!-- when adding nodes -->
-  <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalHeaderContent">
+  <ng-container *ngIf="!showModalForm" ngProjectAs=".modalHeaderContent">
     <!-- header -->
     <div class="btn-group" role="group" aria-label="Basic mixed styles example">
       <button type="button" class="btn btn-success">Decisions</button>
       <button type="button" class="btn btn-primary">Action</button>
     </div>
+
     <!-- end header -->
   </ng-container>
-  <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalBodyContent">
+  <ng-container *ngIf="!showModalForm" ngProjectAs=".modalBodyContent">
     <!-- modal body content -->
     <div class="decision-action-container">
       <div class="row">

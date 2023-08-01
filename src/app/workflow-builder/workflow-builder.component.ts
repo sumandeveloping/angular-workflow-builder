@@ -1,4 +1,3 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit } from '@angular/core';
 import { ComponentRef } from '@angular/core';
 import { OnInit } from '@angular/core';
@@ -62,28 +61,22 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   constructor(private spinner: NgxSpinnerService) {} // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
 
   ngOnInit(): void {
-    this.nodeRules = MULTITOUCH_NODE_RULES;
-    this.parentNodeArr = this.nodeRules.filter(
-      (node) => node.parentNodeName === 'Segment'
-    );
-    // this.nodeInformation = this.parentNodeArr[0];
-    // console.log('Node Info', this.nodeInformation);
-    // this.nodeType = this.nodeInformation.parentNodeType;
-    // this.nodeCategory = this.nodeInformation.parentNodeCategory;
-    // this.childNodesToConnect = this.nodeInformation.childNodeIds;
-    //modification
-    this.parentNodeArr = this.nodeRules.filter(
-      (node) => node.parentNodeName == 'null' && node.parentNodeId == 'null'
-    );
-    this.nodeInformation = this.parentNodeArr[0];
-    console.log('Node Info', this.nodeInformation);
-    this.nodeType = this.nodeInformation.parentNodeType;
-    this.nodeCategory = this.nodeInformation.parentNodeCategory;
-    this.childNodesToConnect = this.nodeInformation.childNodeIds;
+    this.initializeNodeInformation();
   }
 
   ngAfterViewInit(): void {
     this.showModal({});
+  }
+
+  initializeNodeInformation() {
+    this.nodeRules = MULTITOUCH_NODE_RULES;
+    this.parentNodeArr = this.nodeRules.filter(
+      (node) => node.parentNodeName == 'null' && node.parentNodeId == 'null'
+    );
+    this.nodeInformation = this.parentNodeArr[0];
+    this.nodeType = this.nodeInformation.parentNodeType;
+    this.nodeCategory = this.nodeInformation.parentNodeCategory;
+    this.childNodesToConnect = this.nodeInformation.childNodeIds;
   }
 
   public createComponent(
@@ -127,11 +120,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponentId: '',
       childs: [],
       connecters: [],
-      // sourceActivityId: '',
-      // sourceActivityNameType: '',
-      // outcomeType: '',
-      // destinationActivityId: '',
-      // destinationActivityNameType: '',
+      nodeInformation: {},
     };
     if (isChildComponentCall) {
       this.dynamicComponentsObj[parentComponent.componentId].childs.push(
@@ -139,7 +128,11 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       );
       this.dynamicComponentsObj[newComponentId].parentComponentId =
         parentComponent.componentId;
+      this.dynamicComponentsObj[newComponentId].nodeInformation =
+        parentComponent.selectedNode;
     } else {
+      this.dynamicComponentsObj[newComponentId].nodeInformation =
+        this.selectedNode;
       this.componentsFromRoot.push(dynamicComponent);
     }
     //Get position from dynamic component
@@ -331,11 +324,14 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   };
 
   ngOnDestroy(): void {
-    this.removeSubscriptions.unsubscribe();
-    this.sendSubscriptions.unsubscribe();
-    this.linesSubscriptions.unsubscribe();
+    if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();
+    if (this.sendSubscriptions) this.sendSubscriptions.unsubscribe();
+    if (this.linesSubscriptions) this.linesSubscriptions.unsubscribe();
     this.components.forEach((component: ComponentRef<SingleBlockComponent>) => {
       component.destroy();
+    });
+    this.linesArr.forEach((line: any) => {
+      line.remove();
     });
   }
 }
