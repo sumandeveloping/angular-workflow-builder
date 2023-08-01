@@ -50,7 +50,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   /* -------------------------------------------------------------------------- */
   /*                                    DATA RELATED STUFF                                    */
   /* -------------------------------------------------------------------------- */
-  connections: NodeConnections[] = [];
+  connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
   activities: any[] = [];
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
