@@ -7,10 +7,15 @@ import { WorkflowBuilderComponent } from './workflow-builder/workflow-builder.co
 import { SharedModule } from 'src/shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { UpdateWorkflowBuilderComponent } from './update-workflow-builder/update-workflow-builder.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, WorkflowBuilderComponent],
+  declarations: [
+    AppComponent,
+    WorkflowBuilderComponent,
+    UpdateWorkflowBuilderComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -20,7 +25,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     NgxSpinnerModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [WorkflowBuilderComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

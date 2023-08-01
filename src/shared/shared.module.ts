@@ -6,6 +6,7 @@ import { AngularDraggableModule } from 'angular2-draggable';
 import { ModalComponent } from './components/modal/modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { UpdateSingleBlockComponent } from './components/update-single-block/update-single-block.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 import { DynamicErrorComponent } from './components/dynamic-form/dynamic-error/dynamic-error.component';
@@ -19,6 +20,7 @@ import { DynamicCheckboxsComponent } from './components/dynamic-field/dynamic-ch
   declarations: [
     SingleBlockComponent,
     ModalComponent,
+    UpdateSingleBlockComponent,
     DynamicFormComponent,
     DynamicErrorComponent,
     DynamicFieldComponent,
@@ -35,6 +37,11 @@ import { DynamicCheckboxsComponent } from './components/dynamic-field/dynamic-ch
     NgxSpinnerModule,
     ReactiveFormsModule,
   ],
-  exports: [SingleBlockComponent, ModalComponent, DynamicFormComponent],
+  exports: [
+    SingleBlockComponent,
+    UpdateSingleBlockComponent,
+    ModalComponent,
+    DynamicFormComponent,
+  ],
 })
 export class SharedModule {}

@@ -50,3 +50,5 @@
 ## LINK for Modified Node-Rule `https://stackblitz.com/edit/js-uczkr2?file=index.js`
 
 ## LINK for testing with backend data `https://stackblitz.com/edit/js-qrxqkq?file=index.js`
+
+## LINK For EDIT `https://stackblitz.com/edit/js-kvhvus?file=index.js`

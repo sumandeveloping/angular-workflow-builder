@@ -1,0 +1,118 @@
+<section>
+  <!-- customNavClass="nav-test-class" customTabsClass="containerrr" -->
+
+  <div class="w-100 d-flex justify-space-between">
+    <h4>Build Your Campaign</h4>
+    <div class="btn-group">
+      <a href="#" class="btn btn-primary me-3">Save</a>
+      <a href="#" class="btn btn-secondary">Back</a>
+    </div>
+  </div>
+  <div class="builder">
+    <div class="builder-rootNode">
+      <div class="builder-rootNode--name">
+        <!-- <h4 (dblclick)="openSegmentModal($event)">
+            <i class="fa fa-list" aria-hidden="true"></i>
+            {{ nodeInformation.parentNodeName }}
+            <span
+              [ngClass]="
+                nodeCategory == 'ACTION'
+                  ? 'nodeCategory nodeCategory-action'
+                  : 'nodeCategory nodeCategory-decision'
+              "
+              >{{ nodeCategory }}</span
+            >
+          </h4> -->
+        <!-- <h4>Start Campaign Flow</h4> -->
+      </div>
+      <a class="connecter" (click)="showModal($event)">
+        <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
+      </a>
+    </div>
+    <!-- ===================== WE need dynamic components here... ========================== -->
+    <div id="dynamicComponentWrapper" #dynamicComponentWrapper>
+      <ng-template #dynamicComponents></ng-template>
+    </div>
+  </div>
+</section>
+
+<app-modal
+  *ngIf="'true'"
+  showFooter="true"
+  modalTitle="Title"
+  submitLabel="Add"
+  (save)="createComponent(nodeDate.event); displayModal = !displayModal"
+  (close)="displayModal = !displayModal; showSegmentModal = false"
+  #modalDialog
+>
+  <!-- when we need to display form or data related stuff -->
+  <ng-container *ngIf="showSegmentModal" ngProjectAs=".modalHeaderContent">
+    <h3 class="modal-header-content">Show segment modal form</h3>
+  </ng-container>
+
+  <!-- when adding nodes -->
+  <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalHeaderContent">
+    <!-- header -->
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+      <button type="button" class="btn btn-success">Decisions</button>
+      <button type="button" class="btn btn-primary">Action</button>
+    </div>
+    <!-- end header -->
+  </ng-container>
+  <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalBodyContent">
+    <!-- modal body content -->
+    <div class="decision-action-container">
+      <div class="row">
+        <div class="col-md-4 col-lg-4">
+          <div class="list-group decision-action-list">
+            <a
+              *ngFor="let childNode of childNodesToConnect; let i = index"
+              [ngClass]="{
+                'list-group-item': true,
+                'list-group-item-action': true,
+                'list-group-item-light': true,
+                'node-item-link': true,
+                active: childNode.childNodeName === selectedNode?.childNodeName
+              }"
+              aria-current="true"
+              (click)="onSelectChildNodeDisplayProperties($event, childNode)"
+            >
+              {{ childNode.childNodeName }}
+              <span
+                class="badge rounded-pill {{
+                  childNode.childNodeCategory | lowercase
+                }}"
+                >{{ childNode.childNodeCategory }}</span
+              >
+            </a>
+          </div>
+        </div>
+        <div class="col-md-8 col-lg-8">
+          <div class="node-property-loader" style="position: relative">
+            <div
+              class="nodeProperty-display-container"
+              *ngIf="!displayNode && !loading"
+            >
+              <p class="lead">Please select a activity</p>
+            </div>
+            <div
+              class="nodeProperty-display-container"
+              *ngIf="displayNode && !loading"
+            >
+              show properties of {{ selectedNode?.childNodeName }}
+            </div>
+            <ngx-spinner
+              name="nodePropertyLoader"
+              bdColor="rgba(255, 255, 255, 0.7)"
+              size="default"
+              color="orange"
+              type="ball-clip-rotate-pulse"
+              [fullScreen]="false"
+            ></ngx-spinner>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end modal body content -->
+  </ng-container>
+</app-modal>
