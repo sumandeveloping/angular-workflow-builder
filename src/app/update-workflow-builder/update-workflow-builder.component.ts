@@ -14,6 +14,7 @@ import { SingleBlockComponent } from 'src/shared/components/single-block/single-
 import { UpdateSingleBlockComponent } from 'src/shared/components/update-single-block/update-single-block.component';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
+import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -124,6 +125,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   /* -------------------------------------------------------------------------- */
   /*                                    DATA RELATED STUFF                                    */
   /* -------------------------------------------------------------------------- */
+  connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -199,6 +201,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     let newComponentId: string;
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     if (isEditRendering) {
+      newComponentId = editComponentId;
       dynamicComponent.setInput('componentId', editComponentId);
       dynamicComponent.setInput('isEditRendering', isEditRendering);
     } else {
@@ -217,6 +220,18 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         'nodeInformation',
         parentComponent.selectedNode
       );
+      //store the component connections for backend
+      const connectionObj = {
+        sourceActivityId: parentComponent.componentId,
+        destinationActivityId: newComponentId,
+        outcome: 'Action 1',
+        sourceActivityNameType:
+          parentComponent.nodeInformation.childNodeNameType,
+        destinationActivityNameType:
+          parentComponent.selectedNode.childNodeNameType,
+      };
+      this.connections.push(connectionObj);
+      console.log('this.connections 🔥', this.connections);
     } else {
       //if created from root component (i.e segment)
       dynamicComponent.setInput('nodeInformation', this.selectedNode);
@@ -242,6 +257,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       );
       this.dynamicComponentsObj[newComponentId].parentComponentId =
         parentComponent.componentId;
+      this.dynamicComponentsObj[newComponentId].nodeInformation =
+        parentComponent.selectedNode;
     } else {
       this.componentsFromRoot.push(dynamicComponent);
     }
