@@ -48,7 +48,12 @@ export class SingleBlockComponent
     startSocket: 'bottom',
     endSocket: 'top',
   };
-  position: { x: number; y: number; componentId?: string; isChild?: boolean };
+  position: {
+    x: number;
+    y: number;
+    componentId?: string;
+    isChild?: boolean;
+  };
   displayModal: boolean = false;
   showModalForm: boolean = false;
   nodeDate = {
@@ -59,6 +64,7 @@ export class SingleBlockComponent
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
+  activityState: { state: any };
   nodeDetails: any;
   childNodesToConnect: any;
   actionNodesToConnect: any;
@@ -444,7 +450,8 @@ export class SingleBlockComponent
   };
 
   onAdd = (e) => {
-    console.log('e🙌', e);
+    this.activityState = { state: e };
+    console.log('e🙌', e, this.activityState);
     this.closeModal();
     this.addComponent();
   };

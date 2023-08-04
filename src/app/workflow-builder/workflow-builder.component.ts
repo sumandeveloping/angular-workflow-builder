@@ -51,7 +51,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   /*                                    DATA RELATED STUFF                                    */
   /* -------------------------------------------------------------------------- */
   connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
-  activities: any[] = [];
+  activities = new Map<string, any>(); // need to send this to BACKEND while SAVING
+  activityState: { state: any };
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -99,6 +100,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     parentComponent?: SingleBlockComponent
   ) {
     // this.container.clear();
+    console.log('YOLOOOOO', parentComponent?.activityState);
+
     const dynamicComponent: ComponentRef<SingleBlockComponent> =
       this.container.createComponent<SingleBlockComponent>(
         SingleBlockComponent
@@ -154,10 +157,19 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         parentComponent.componentId;
       this.dynamicComponentsObj[newComponentId].nodeInformation =
         parentComponent.selectedNode;
+      // store activity to send to the BACKEND
+      this.activities.set(newComponentId, { ...parentComponent.activityState });
     } else {
       this.dynamicComponentsObj[newComponentId].nodeInformation =
         this.selectedNode;
       this.componentsFromRoot.push(dynamicComponent);
+      // store activity to send to the BACKEND
+      this.activities.set(newComponentId, {
+        ...this.activityState,
+        blocking: false,
+        executed: false,
+        faulted: false,
+      });
     }
     //Get position from dynamic component
     this.sendSubscriptions = dynamicComponent.instance.sendPosition.subscribe(
@@ -167,24 +179,31 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         componentId?: string;
         isChild?: boolean;
       }) => {
-        console.log('component Position 💥', data, 'isChild', data.isChild);
-        await this.populateActivity(data.componentId, data.x, data.y);
-        this.xCoOrdinates.push(data.x);
-        this.YCoOrdinates.push(data.y);
+        let { x, y, componentId, isChild } = data;
+        console.log(
+          'component Position 💥🔥',
+          data,
+          'isChild',
+          isChild,
+          this.activityState
+        );
+        this.populateActivity(componentId, x, y);
+        this.xCoOrdinates.push(x);
+        this.YCoOrdinates.push(y);
         if (data.isChild)
           this.coOrdinatesOfChildComponents.push({
-            x: data.x,
-            y: data.y,
-            childComponentID: data.componentId,
-            isChild: data.isChild,
+            x,
+            y,
+            childComponentID: componentId,
+            isChild: isChild,
           });
         console.log(
           'this.coOrdinatesOfChildComponents',
           this.coOrdinatesOfChildComponents
         );
         //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
-        this.dynamicComponentsObj[data.componentId].xPos = data.x;
-        this.dynamicComponentsObj[data.componentId].yPos = data.y;
+        this.dynamicComponentsObj[data.componentId].xPos = x;
+        this.dynamicComponentsObj[data.componentId].yPos = y;
       }
     );
 
@@ -354,17 +373,18 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   onAdd = (e) => {
     console.log('e🙌', e);
+    this.activityState = { state: e };
     this.closeModal();
     this.createComponent(this.nodeDate.event);
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {
-    let obj = {};
-    obj['id'] = componentID;
-    obj['x'] = x;
-    obj['y'] = y;
-    this.activities.push(obj);
-    console.log('activity🤖', this.activities);
+    console.log('ACTIVITY SETUP', this.activities.get(componentID));
+    this.activities.set(componentID, {
+      ...this.activities.get(componentID),
+      ...{ id: componentID, x, y },
+    });
+    console.log('activity🤖', this.activities.values());
   };
 
   ngOnDestroy(): void {

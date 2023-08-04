@@ -14,6 +14,7 @@ import { UpdateWorkflowBuilderComponent } from 'src/app/update-workflow-builder/
 import { ModalComponent } from '../modal/modal.component';
 import { LineOptions } from 'src/shared/interfaces/line-options.interface';
 import { DynamicComponent } from 'src/shared/interfaces/dynamic-component.interface';
+import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 
 declare var LeaderLine: any;
@@ -59,10 +60,13 @@ export class UpdateSingleBlockComponent
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
+  activityState: { state: any };
   nodeDetails: any;
   childNodesToConnect: any;
   nodeType: string; // truthy / falsy / null
   nodeCategory: any; // action / decision / null
+  nodeProperties: any[];
+  nodeModel: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
@@ -128,6 +132,7 @@ export class UpdateSingleBlockComponent
   }
 
   initializeNodeInformation() {
+    this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
     const nodesArr = this.nodeRules.filter(
       (node) => node.parentNodeName == this.nodeInformation.childNodeName
@@ -508,6 +513,10 @@ export class UpdateSingleBlockComponent
 
   displayNodeProperties = async () => {
     return new Promise((resolve, reject) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.selectedNode.childNodeName
+      );
+      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
@@ -521,5 +530,12 @@ export class UpdateSingleBlockComponent
     setTimeout(() => {
       this.modalDialog.showModal();
     }, 0);
+  };
+
+  onAdd = (e) => {
+    this.activityState = { state: e };
+    console.log('e🙌', e, this.activityState);
+    this.closeModal();
+    this.addComponentOnEdit(false);
   };
 }
