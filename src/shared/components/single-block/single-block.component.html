@@ -53,8 +53,7 @@
   showFooter="false"
   modalTitle="Title"
   submitLabel="add"
-  (save)="addComponent(); displayModal = false"
-  (close)="displayModal = false; showModalForm = false"
+  (close)="displayModal = !displayModal; showModalForm = false"
   #modalDialog
 >
   <!-- when we need to display dynamic form for user to edit the node details/information -->

@@ -8,13 +8,14 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { ModalComponent } from 'src/shared/components/modal/modal.component';
-import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
 import { UpdateSingleBlockComponent } from 'src/shared/components/update-single-block/update-single-block.component';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
 import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
+import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -126,6 +127,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   /*                                    DATA RELATED STUFF                                    */
   /* -------------------------------------------------------------------------- */
   connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
+  activities = new Map<string, any>(); // need to send this to BACKEND while SAVING
+  activityState: { state: any };
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -133,13 +136,18 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   nodeCategory: any; // action / decision / null
   childNodesObj: any;
   childNodesToConnect: any;
+  nodeProperties: any[];
+  nodeModel: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
   selectedNode: any = {}; //for modal
   disableModalSave: boolean = true;
 
-  constructor(public activatedRoute: ActivatedRoute) {}
+  constructor(
+    private spinner: NgxSpinnerService,
+    public activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.builderID = this.activatedRoute.snapshot.queryParamMap.get('id');
@@ -151,6 +159,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     }
     console.log('componentsToRender 👽', this.componentsToRender);
     // node rules
+    this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
     this.parentNodeArr = this.nodeRules.filter(
       (node) => node.parentNodeName == 'null' && node.parentNodeId == 'null'
@@ -259,8 +268,17 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         parentComponent.componentId;
       this.dynamicComponentsObj[newComponentId].nodeInformation =
         parentComponent.selectedNode;
+      // store activity to send to the BACKEND
+      this.activities.set(newComponentId, { ...parentComponent.activityState });
     } else {
       this.componentsFromRoot.push(dynamicComponent);
+      // store activity to send to the BACKEND
+      this.activities.set(newComponentId, {
+        ...this.activityState,
+        blocking: false,
+        executed: false,
+        faulted: false,
+      });
     }
     //Get position from dynamic component
     this.sendSubscriptions = dynamicComponent.instance.sendPosition.subscribe(
@@ -270,15 +288,23 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         componentId?: string;
         isChild?: boolean;
       }) => {
-        console.log('component Position 💥', data, 'isChild', data.isChild);
-        this.xCoOrdinates.push(data.x);
-        this.YCoOrdinates.push(data.y);
+        let { x, y, componentId, isChild } = data;
+        console.log(
+          'component Position 💥🔥',
+          data,
+          'isChild',
+          isChild,
+          this.activityState
+        );
+        this.populateActivity(componentId, x, y);
+        this.xCoOrdinates.push(x);
+        this.YCoOrdinates.push(y);
         if (data.isChild)
           this.coOrdinatesOfChildComponents.push({
-            x: data.x,
-            y: data.y,
-            childComponentID: data.componentId,
-            isChild: data.isChild,
+            x,
+            y,
+            childComponentID: componentId,
+            isChild: isChild,
           });
         console.log('xCoOrdinates💥', this.xCoOrdinates);
         console.log('YCoOrdinates💥', this.YCoOrdinates);
@@ -288,8 +314,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         );
         //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
         if (!isEditRendering) {
-          this.dynamicComponentsObj[data.componentId].xPos = data.x;
-          this.dynamicComponentsObj[data.componentId].yPos = data.y;
+          this.dynamicComponentsObj[data.componentId].xPos = x;
+          this.dynamicComponentsObj[data.componentId].yPos = y;
         }
       }
     );
@@ -354,11 +380,54 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           );
         //atlast destroy child component
         dynamicComponent.destroy();
-        // await this.removeInvalidLines();
-        // this.removeInvalidChildComponents();
+        await this.removeInvalidLines();
+        this.removeInvalidChildComponents();
       }
     );
   }
+
+  removeInvalidChildComponents = () => {
+    setTimeout(() => {
+      this.components.forEach(async (componet: any, index: any) => {
+        if (
+          componet.instance.parentElementRef &&
+          componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
+          componet.instance.parentElementRef.nativeElement.offsetParent === null
+        ) {
+          componet.destroy();
+          this.components.splice(index, 1);
+          await this.removeInvalidLines();
+          return this.removeInvalidChildComponents();
+        }
+      });
+    }, 0);
+  };
+
+  removeInvalidLines = () => {
+    return new Promise((resolve) => {
+      this.linesArr.forEach((line: any, index: any) => {
+        if (line) {
+          (line.start.offsetHeight === 0 &&
+            line.start.offsetLeft === 0 &&
+            line.start.offsetTop === 0 &&
+            line.start.offsetWidth === 0 &&
+            line.start.offsetParent === null) ||
+          (line.end.offsetHeight === 0 &&
+            line.end.offsetLeft === 0 &&
+            line.end.offsetTop === 0 &&
+            line.end.offsetWidth === 0 &&
+            line.end.offsetParent === null)
+            ? (line.remove(), this.linesArr.splice(index, 1))
+            : null;
+          resolve(true);
+        }
+        resolve(true);
+      });
+    });
+  };
 
   showModal = (e: any) => {
     this.nodeDate = {
@@ -385,4 +454,54 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       line.remove();
     });
   }
+
+  closeModal = () => {
+    if (this.modalDialog) {
+      this.modalDialog.closeModal();
+      this.displayModal = false;
+    }
+  };
+
+  onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
+    e.preventDefault();
+    console.log('childNode display', childNode);
+    this.selectedNode = childNode;
+    //get the properties of the child node & display...
+    this.displayNode = false;
+    this.loading = true;
+    this.spinner.show('nodePropertyLoader');
+    await this.displayNodeProperties();
+    this.displayNode = true;
+    this.loading = false;
+    this.disableModalSave = false;
+  };
+
+  displayNodeProperties = async () => {
+    return new Promise((resolve, reject) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.selectedNode.childNodeName
+      );
+      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
+      setTimeout(() => {
+        this.spinner.hide('nodePropertyLoader');
+        resolve(true);
+      }, 1000);
+    });
+  };
+
+  onAdd = (e) => {
+    console.log('e🙌', e);
+    this.activityState = { state: e };
+    this.closeModal();
+    this.createComponent();
+  };
+
+  populateActivity = async (componentID: string, x: number, y: number) => {
+    console.log('ACTIVITY SETUP', this.activities.get(componentID));
+    this.activities.set(componentID, {
+      ...this.activities.get(componentID),
+      ...{ id: componentID, x, y },
+    });
+    console.log('activity🤖', this.activities.values());
+  };
 }
