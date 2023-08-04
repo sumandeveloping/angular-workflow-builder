@@ -1,0 +1,54 @@
+.wfb-dynamicForm-component-inputContainer {
+  position: relative;
+  padding: 1.8rem 0 0 0;
+  // margin-bottom: 10px;
+
+  .wfb-dynamicForm-component--inputLabel {
+    position: absolute;
+    font-size: 13px;
+    padding: 0.375rem 0.75rem;
+    top: 31px;
+    left: 0;
+    pointer-events: none;
+    transition: 0.15s;
+    -webkit-transition: 0.15s;
+    -moz-transition: 0.15s;
+    -ms-transition: 0.15s;
+    -o-transition: 0.15s;
+
+    &-required {
+      color: #e51010;
+      font-weight: 500;
+    }
+  }
+  .wfb-dynamicForm-component--input {
+    // border: 2px solid transparent;
+    border: none;
+    border-bottom: 2px solid #ededed;
+    // padding: 0.375rem 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0;
+    background-color: #f8fafc;
+    transition: border-color 0.2s ease-in;
+    -webkit-transition: border-color 0.2s ease-in;
+    -moz-transition: border-color 0.2s ease-in;
+    -ms-transition: border-color 0.2s ease-in;
+    -o-transition: border-color 0.2s ease-in;
+    &::placeholder {
+      color: transparent;
+    }
+    &:focus {
+      // border: 1px solid transparent;
+      background-color: #fff;
+      box-shadow: none;
+      border-bottom: 2px solid #343434;
+    }
+    &:focus ~ .wfb-dynamicForm-component--inputLabel,
+    &:not(:placeholder-shown) ~ .wfb-dynamicForm-component--inputLabel {
+      top: 0px;
+      font-size: 12px;
+      color: #d26708;
+    }
+    //   &:valid ~.lol;
+  }
+}

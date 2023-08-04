@@ -37,15 +37,15 @@
 </section>
 
 <app-modal
-  *ngIf="'true'"
+  *ngIf="displayModal"
   showFooter="false"
   modalTitle="Title"
   submitLabel="Add"
-  (save)="createComponent(nodeDate.event); displayModal = !displayModal"
-  (close)="displayModal = !displayModal; showSegmentModal = false"
+  (save)="createComponent(nodeDate.event); displayModal = false"
+  (close)="displayModal = false; showSegmentModal = false"
   #modalDialog
 >
-  <!-- when we need to display form or data related stuff -->
+  <!-- when we need to display dynamic form for user to edit the node details/information -->
   <ng-container *ngIf="showSegmentModal" ngProjectAs=".modalHeaderContent">
     <h3 class="modal-header-content">Show segment modal form</h3>
   </ng-container>
@@ -53,10 +53,11 @@
   <!-- when adding nodes -->
   <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalHeaderContent">
     <!-- header -->
-    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+    <!-- <div class="btn-group" role="group" aria-label="Basic mixed styles example">
       <button type="button" class="btn btn-success">Decisions</button>
       <button type="button" class="btn btn-primary">Action</button>
-    </div>
+    </div> -->
+
     <!-- end header -->
   </ng-container>
   <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalBodyContent">
@@ -99,17 +100,9 @@
               class="nodeProperty-display-container"
               *ngIf="displayNode && !loading"
             >
-              show properties of {{ selectedNode?.childNodeName }}
-              <!-- <app-segment
-                *ngIf="selectedNode.childNodeNameType == NodeNameType.SEGMENT"
-                (addSegment)="onSegmentAdd($event)"
-                (cancelSegment)="closeModal()"
-              ></app-segment>
-              <app-contact-form
-                *ngIf="
-                  selectedNode.childNodeNameType == NodeNameType.CONTACT_FORM
-                "
-              ></app-contact-form> -->
+              <h6 class="selectedNode-heading">
+                {{ selectedNode?.childNodeName }}
+              </h6>
               <app-dynamic-form
                 [model]="nodeModel"
                 (add)="onAdd($event)"

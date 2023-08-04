@@ -1,4 +1,39 @@
-<form [formGroup]="formName" *ngIf="!field.hidden">
-  <label>{{ field.label }} : </label>
-  <input [type]="field.type" [formControlName]="field.fieldName" />
+<form
+  class="wfb-dynamicForm-component"
+  [formGroup]="formName"
+  *ngIf="!field.hidden"
+>
+  <div class="row">
+    <!-- <div class="col-auto col-md-3">
+      <label
+        for="{{ field.fieldName }}_dynamicForm-input"
+        class="wfb-dynamicForm-component--label"
+        >{{ field.label }}
+      </label>
+    </div> -->
+    <div class="col-auto col-md-12">
+      <div class="wfb-dynamicForm-component-inputContainer">
+        <input
+          placeholder="&nbsp;"
+          id="{{ field.fieldName }}_dynamicForm-input"
+          [type]="field.type"
+          [formControlName]="field.fieldName"
+          class="form-control wfb-dynamicForm-component--input"
+        />
+        <label
+          for="{{ field.fieldName }}_dynamicForm-input"
+          class="wfb-dynamicForm-component--inputLabel"
+        >
+          {{ field.label }}
+          <span
+            class="wfb-dynamicForm-component--inputLabel-required"
+            *ngIf="field?.rules?.required"
+          >
+            *
+          </span>
+          <!-- <ng-template *ngIf="field.rules.required"><span>hii ***</span></ng-template> -->
+        </label>
+      </div>
+    </div>
+  </div>
 </form>

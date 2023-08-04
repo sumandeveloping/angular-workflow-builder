@@ -1,4 +1,4 @@
-import { AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ComponentRef } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { ViewContainerRef } from '@angular/core';
@@ -43,6 +43,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     parentIndex: null,
     isChildrComponentCall: null,
   };
+
   removeSubscriptions: Subscription;
   sendSubscriptions: Subscription;
   linesSubscriptions: Subscription;
@@ -68,16 +69,23 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   selectedNode: any = {}; //for modal
   disableModalSave: boolean = true;
 
-  constructor(private spinner: NgxSpinnerService) {
+  constructor(
+    private spinner: NgxSpinnerService,
+    private cd: ChangeDetectorRef
+  ) {
     this.NodeNameType = NodeNameType;
-  } // private cdr: ChangeDetectorRef // private viewContainer: ViewContainerRef,
+  } // private cd: ChangeDetectorRef // private viewContainer: ViewContainerRef,
 
   ngOnInit(): void {
     this.initializeNodeInformation();
   }
 
   ngAfterViewInit(): void {
+    // setTimeout(() => {
+    //   this.showModal({});
+    // });
     this.showModal({});
+    this.cd.detectChanges();
   }
 
   initializeNodeInformation() {
@@ -323,7 +331,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentIndex: null,
       isChildrComponentCall: false,
     };
-    this.displayModal = !this.displayModal;
+    this.displayModal = true;
     setTimeout(() => {
       this.modalDialog.showModal();
     }, 0);
@@ -340,7 +348,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   closeModal = () => {
     if (this.modalDialog) {
       this.modalDialog.closeModal();
-      this.displayModal = false;
+      // this.displayModal = false;
     }
   };
 

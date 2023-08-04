@@ -1,11 +1,24 @@
-<form [formGroup]="formName" *ngIf="!field.hidden">
-  <label>
-    {{ field.label }}
-    <input
-      type="checkbox"
-      [name]="field.fieldName"
-      [formControlName]="field.fieldName"
-      [value]="field.value"
-    />
-  </label>
+<form
+  class="wfb-dynamicForm-component"
+  [formGroup]="formName"
+  *ngIf="!field.hidden"
+>
+  <div class="row">
+    <div class="col-auto col-md-12 form-check">
+      <input
+        id="{{ field.fieldName }}_dynamicForm-checkbox"
+        type="checkbox"
+        [name]="field.fieldName"
+        [formControlName]="field.fieldName"
+        [value]="field.value"
+        class="form-check-input wfb-dynamicForm-component--checkbox"
+      />
+      <label
+        for="{{ field.fieldName }}_dynamicForm-checkbox"
+        class="form-check-label wfb-dynamicForm-component--label"
+      >
+        {{ field.label }}
+      </label>
+    </div>
+  </div>
 </form>

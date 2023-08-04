@@ -1,6 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~font-awesome/css/font-awesome.css";
 
+// modal header filters
+.wfb-filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  &-options {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    justify-content: center;
+    background: linear-gradient(180deg, #9b9b9b, #696666);
+    padding: 0.2rem 0.8rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 1rem;
+    transition: background 0.2s ease-in;
+    -webkit-transition: background 0.2s ease-in;
+    -moz-transition: background 0.2s ease-in;
+    -ms-transition: background 0.2s ease-in;
+    -o-transition: background 0.2s ease-in;
+    box-shadow: rgba(122, 121, 121, 0.53) 0 1px 8px;
+
+    &:hover {
+      background: linear-gradient(180deg, #696666, #9b9b9b);
+      box-shadow: rgba(122, 121, 121, 0.53) 0 3px 8px;
+    }
+
+    &-active {
+      background: linear-gradient(180deg, #787878, #282727) !important;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+    label {
+      font-size: 13px;
+      color: #f7f7f7;
+      cursor: pointer;
+
+      i {
+        font-size: 11px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
 .node-item-link {
   cursor: pointer !important;
   display: flex;
@@ -20,12 +69,58 @@
 }
 .node-property-loader {
   min-height: 10rem;
-  height: 15rem;
+  height: 20rem;
 }
 .nodeProperty-display-container {
   position: relative;
   height: 100%;
   .lead {
     font-size: 1.4rem;
+  }
+  .selectedNode-heading {
+    font-size: 12px;
+    font-weight: 400;
+    display: inline-block;
+    padding: 5px 10px 5px 10px;
+    background: #e4e4e4;
+    box-shadow: 0 3px 8px rgba(115, 121, 234, 0.2);
+    color: black;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+
+    &--action {
+      color: #033a8b;
+      background: rgba(133, 137, 253, 0.3);
+      box-shadow: 0 3px 8px rgba(115, 121, 234, 0.2);
+    }
+    &--decision {
+      color: #045e04;
+      background: #ceffce;
+      box-shadow: 0 3px 8px rgba(139, 232, 126, 0.2);
+    }
+  }
+}
+/* -------------------------------------------------------------------------- */
+/*                This style setup for dynamic form                           */
+/* -------------------------------------------------------------------------- */
+.wfb-dynamicForm-component {
+  margin-bottom: 10px;
+  // margin: 0.8rem 0;
+  // padding: 1.8rem 0 0rem 0;
+  .row {
+    width: 100%;
+  }
+
+  &--input,
+  &--radio,
+  &--checkbox,
+  &--select {
+    font-size: 11px;
+  }
+  &--label {
+    font-size: 12px;
   }
 }

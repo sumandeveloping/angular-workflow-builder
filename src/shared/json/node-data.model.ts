@@ -11,6 +11,7 @@ export const nodeProperties = [
         type: 'select',
         hidden: false,
         linkedFields: true,
+        value: '',
         rules: {
           required: true,
         },

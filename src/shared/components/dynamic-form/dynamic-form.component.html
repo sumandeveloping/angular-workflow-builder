@@ -1,21 +1,33 @@
-<form [formGroup]="dynamicFormGroup" (ngSubmit)="onAdd()">
-  <div *ngFor="let field of fields">
-    <app-dynamic-field [field]="field"></app-dynamic-field>
-    <app-dynamic-error [fieldName]="field.fieldName"></app-dynamic-error>
+<form
+  class="wfb-dynamicForm-parent"
+  [formGroup]="dynamicFormGroup"
+  (ngSubmit)="onAdd()"
+>
+  <div class="wfb-dynamicForm-wrapper">
+    <ng-container *ngFor="let field of fields">
+      <app-dynamic-field [field]="field"></app-dynamic-field>
+      <app-dynamic-error
+        [label]="field.label"
+        [fieldName]="field.fieldName"
+      ></app-dynamic-error>
+    </ng-container>
   </div>
-  <div class="form-group add-segment">
+
+  <div class="wfb-form-options">
     <button
       type="submit"
-      class="btn btn-primary"
+      class="btn btn-primary wfb-form-options--save"
       [disabled]="!dynamicFormGroup.valid"
     >
-      Add
+      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+      Update
     </button>
     <button
       type="submit"
-      class="btn btn-secondary cancel-segment"
+      class="btn btn-secondary wfb-form-options--cancel"
       (click)="onCancel()"
     >
+      <i class="fa fa-times" aria-hidden="true"></i>
       Cancel
     </button>
   </div>
