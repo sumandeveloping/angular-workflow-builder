@@ -271,6 +271,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       // store activity to send to the BACKEND
       this.activities.set(newComponentId, { ...parentComponent.activityState });
     } else {
+      // this block only for when from parent component is called (i.e, segment/contact form)
       this.componentsFromRoot.push(dynamicComponent);
       // store activity to send to the BACKEND
       this.activities.set(newComponentId, {
