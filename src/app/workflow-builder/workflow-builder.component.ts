@@ -71,7 +71,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    private cd: ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
     this.NodeNameType = NodeNameType;
   } // private cd: ChangeDetectorRef // private viewContainer: ViewContainerRef,
@@ -85,7 +85,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     //   this.showModal({});
     // });
     this.showModal({});
-    this.cd.detectChanges();
+    this.cdr.detectChanges();
   }
 
   initializeNodeInformation() {

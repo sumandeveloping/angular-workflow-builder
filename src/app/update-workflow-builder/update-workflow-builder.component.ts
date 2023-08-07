@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ComponentRef,
   ElementRef,
@@ -146,7 +147,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -174,6 +176,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.renderDynamicComponents();
+    this.cdr.detectChanges();
   }
 
   renderDynamicComponents = async (): Promise<void> => {

@@ -479,7 +479,24 @@ export class SingleBlockComponent
       ).state;
       console.log('X', savedFormData);
       for (const key in this.nodeModelForExistingNodeEdit) {
-        this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
+        // this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
+        //making dropdown visible as per the saved value
+        if (
+          this.nodeModelForExistingNodeEdit[key]?.linkValue ===
+          savedFormData[this.nodeModelForExistingNodeEdit[key]?.link]
+        ) {
+          console.log(
+            'keyy',
+            key,
+            this.nodeModelForExistingNodeEdit[key]?.linkValue ===
+              savedFormData[this.nodeModelForExistingNodeEdit[key]?.link]
+          );
+          this.nodeModelForExistingNodeEdit[key].hidden = false;
+          this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
+        } else {
+          this.nodeModelForExistingNodeEdit[key].hidden = true;
+          this.nodeModelForExistingNodeEdit[key].value = '';
+        }
       }
       console.log('yoooo', this.nodeModelForExistingNodeEdit);
       resolve(true);
