@@ -12,29 +12,31 @@
       >
     </div> -->
     <div class="col-auto col-md-12">
-      <!-- <select
-        #dynamicSelect
-        id="{{ field.fieldName }}_dynamicForm-select"
-        class="form-select wfb-dynamicForm-component--select"
-        [formControlName]="field.fieldName"
-        (change)="changedValue(dynamicSelect.value)"
-      > -->
-      <!-- NEED TO ADD LABEL FOR SELECT -->
-      <!-- <option selected disabled>{{ field.fieldName }}</option> -->
-      <!-- <option *ngFor="let option of field.options" [value]="option.value">
-          {{ option.label }}
-        </option>
-      </select> -->
-      <ng-select
-        [items]="field.options"
-        bindLabel="label"
-        bindValue="value"
-        [placeholder]="field.label"
-        [formControlName]="field.fieldName"
-        [clearable]="false"
-        (change)="changedValue($event.value)"
-      >
-      </ng-select>
+      <div class="wfb-dynamicForm-component-selectContainer">
+        <ng-select
+          id="{{ field.fieldName }}_dynamicForm-select"
+          class="wfb-dynamicForm-component--select"
+          [items]="field.options"
+          bindLabel="label"
+          bindValue="value"
+          [placeholder]="&nbsp;"
+          [formControlName]="field.fieldName"
+          [clearable]="false"
+          (change)="changedValue($event.value)"
+        >
+        </ng-select>
+        <label
+          for="{{ field.fieldName }}_dynamicForm-select"
+          class="wfb-dynamicForm-component--selectLabel"
+          >{{ field.label }}
+          <span
+            class="wfb-dynamicForm-component--selectLabel-required"
+            *ngIf="field?.rules?.required"
+          >
+            *
+          </span>
+        </label>
+      </div>
     </div>
   </div>
 </form>
