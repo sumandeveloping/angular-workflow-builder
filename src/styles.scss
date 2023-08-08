@@ -133,11 +133,30 @@
 
   &--input,
   &--radio,
-  &--checkbox,
-  &--select {
+  &--checkbox {
     font-size: 11px;
   }
   &--label {
     font-size: 12px;
+  }
+  &--select {
+    .ng-select-container {
+      border: none;
+      border-bottom: 2px solid #ededed;
+      font-size: 11px;
+    }
+    &.ng-select.ng-select-opened .ng-select-container {
+      border-bottom: 2px solid #343434;
+    }
+    &.ng-select .ng-dropdown-panel {
+      font-size: 11px;
+    }
+  }
+
+  &--select.ng-select.ng-valid + &--selectLabel {
+    top: 0px !important;
+    z-index: 9999 !important;
+    font-size: 12px !important;
+    color: #d26708 !important;
   }
 }
