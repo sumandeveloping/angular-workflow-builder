@@ -107,7 +107,7 @@
     <div class="decision-action-container">
       <div class="row">
         <div class="col-md-4 col-lg-4">
-          <div class="list-group decision-action-list">
+          <div class="list-group wfb-decision-action-list">
             <a
               *ngFor="
                 let childNode of childNodesToConnect
@@ -133,15 +133,20 @@
               >
             </a>
             <p *ngIf="!childNodesToConnect.length">No thing to show</p>
-            <p
-              class="lead"
+            <div
+              class="wfb-noRecordsFound"
               *ngIf="
                 (childNodesToConnect | filterNodeCategory : filterText)
                   ?.length <= 0
               "
             >
-              No record found!
-            </p>
+              <img
+                class="wfb-noRecordsFound--img"
+                src="/assets/no-data.png"
+                alt="No Records Found Image"
+                title="No Records"
+              />
+            </div>
           </div>
         </div>
         <div class="col-md-8 col-lg-8">

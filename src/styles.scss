@@ -50,6 +50,22 @@
   }
 }
 
+.wfb-decision-action-list {
+  height: 100%;
+  position: relative;
+}
+.wfb-noRecordsFound {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &--img {
+    width: 40%;
+    height: auto;
+  }
+}
 .node-item-link {
   cursor: pointer !important;
   display: flex;
