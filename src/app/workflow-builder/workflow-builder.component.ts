@@ -36,7 +36,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   YCoOrdinates: number[] = [];
   NodeNameType: typeof NodeNameType;
   coOrdinatesOfChildComponents: childComponentConfig[] = [];
-  linesArr: any[] = [];
+  linesMap = new Map<string, any>();
   displayModal: boolean = false;
   nodeDate = {
     event: null,
@@ -74,16 +74,13 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {
     this.NodeNameType = NodeNameType;
-  } // private cd: ChangeDetectorRef // private viewContainer: ViewContainerRef,
+  }
 
   ngOnInit(): void {
     this.initializeNodeInformation();
   }
 
   ngAfterViewInit(): void {
-    // setTimeout(() => {
-    //   this.showModal({});
-    // });
     this.showModal({});
     this.cdr.detectChanges();
   }
@@ -103,6 +100,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   public async createComponent(
     e: any,
     isChildComponentCall: boolean = false,
+    componentLabel: string,
     parentElementRef?: ElementRef,
     parentIndex?: number,
     parentComponent?: SingleBlockComponent
@@ -118,6 +116,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     const newComponentId = uuidv4();
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('componentId', newComponentId);
+    dynamicComponent.setInput('lineLabel', componentLabel);
 
     // if(isChildComponentCall){}
     // if (parentIndex !== null || parentIndex !== undefined)
@@ -217,13 +216,18 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
     //Get connected lines
     this.linesSubscriptions = dynamicComponent.instance.sendLines.subscribe(
-      (lines) => {
-        this.linesArr.push(lines);
-        console.log('Lines added', this.linesArr);
+      (linesObj: { componentId: string; line: any; label: string }) => {
+        const { componentId, line, label } = linesObj;
+        label
+          ? linesObj.line.setOptions({
+              endPlug: 'hand',
+              middleLabel: label,
+            })
+          : line.setOptions({ endPlug: 'disc' });
+        this.linesMap.set(componentId, line);
       }
     );
 
-    // this.cdr.detectChanges();
     this.removeSubscriptions = dynamicComponent.instance.removeItem.subscribe(
       async (componentId: string) => {
         console.log('componentId should be removed', componentId);
@@ -304,7 +308,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   removeInvalidLines = () => {
     return new Promise((resolve) => {
-      this.linesArr.forEach((line: any, index: any) => {
+      this.linesMap.forEach((line, key, map) => {
         if (line) {
           (line.start.offsetHeight === 0 &&
             line.start.offsetLeft === 0 &&
@@ -316,7 +320,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
             line.end.offsetTop === 0 &&
             line.end.offsetWidth === 0 &&
             line.end.offsetParent === null)
-            ? (line.remove(), this.linesArr.splice(index, 1))
+            ? (line.remove(), this.linesMap.delete(key))
             : null;
           resolve(true);
         }
@@ -383,7 +387,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     console.log('e🙌', e);
     this.activityState = { state: e };
     this.closeModal();
-    this.createComponent(this.nodeDate.event);
+    this.createComponent(this.nodeDate.event, false, 'Label');
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {
@@ -402,8 +406,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.components.forEach((component: ComponentRef<SingleBlockComponent>) => {
       component.destroy();
     });
-    this.linesArr.forEach((line: any) => {
+    this.linesMap.forEach((line, key, map) => {
       line.remove();
+      map.delete(key);
     });
   }
 }

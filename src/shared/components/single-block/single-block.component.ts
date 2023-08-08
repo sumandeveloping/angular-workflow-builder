@@ -33,13 +33,18 @@ export class SingleBlockComponent
   @Input() index: number;
   @Input() componentId: string;
   @Input() isCreatedFromChild: boolean = false;
+  @Input() lineLabel: string;
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
   @Input() parentDynamicComponent: SingleBlockComponent;
   @Output() removeItem: EventEmitter<any> = new EventEmitter<any>();
   @Output() sendPosition: EventEmitter<any> = new EventEmitter<any>();
-  @Output() sendLines: EventEmitter<any> = new EventEmitter<any>();
+  @Output() sendLines: EventEmitter<{
+    componentId: string;
+    line: any;
+    label: string;
+  }> = new EventEmitter<{ componentId: string; line: any; label: string }>();
   line: any;
   lineOptions: LineOptions = {
     color: 'grey',
@@ -143,6 +148,7 @@ export class SingleBlockComponent
     this.parentComponent.createComponent(
       this.nodeDate.event,
       this.nodeDate.isChildrComponentCall,
+      '',
       this.decisionBlock,
       this.nodeDate.parentIndex,
       this
@@ -150,9 +156,8 @@ export class SingleBlockComponent
   }
 
   deleteComponent(): void {
-    this.parentComponent.linesArr = this.parentComponent.linesArr.filter(
-      (item) => item._id != this.line._id
-    );
+    this.parentComponent.linesMap.delete(this.componentId);
+    console.log('line removed', this.parentComponent.linesMap);
     this.removeItem.emit(this.componentId);
     this.line.remove();
   }
@@ -391,7 +396,13 @@ export class SingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-      this.sendLines.emit(this.line);
+
+      // this.sendLines.emit(this.line);
+      this.sendLines.emit({
+        componentId: this.componentId,
+        line: this.line,
+        label: this.lineLabel,
+      });
     } else {
       // if dynamic components are created from another dynamic component
       this.line = new LeaderLine(
@@ -400,7 +411,12 @@ export class SingleBlockComponent
         this.lineOptions
       );
 
-      this.sendLines.emit(this.line);
+      // this.sendLines.emit(this.line);
+      this.sendLines.emit({
+        componentId: this.componentId,
+        line: this.line,
+        label: this.lineLabel,
+      });
     }
   }
 
@@ -409,7 +425,7 @@ export class SingleBlockComponent
   }
 
   onDragOver(e: any) {
-    this.parentComponent.linesArr.forEach((line) => {
+    this.parentComponent.linesMap.forEach((line, key, map) => {
       line.position();
     });
   }
@@ -479,7 +495,6 @@ export class SingleBlockComponent
       ).state;
       console.log('X', savedFormData);
       for (const key in this.nodeModelForExistingNodeEdit) {
-        // this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
         //making dropdown visible as per the saved value
         if (
           this.nodeModelForExistingNodeEdit[key]?.linkValue ===
