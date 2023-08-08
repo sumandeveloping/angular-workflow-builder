@@ -11,7 +11,7 @@ export const nodeProperties = [
         type: 'select',
         hidden: false,
         linkedFields: true,
-        value: '',
+        value: null,
         rules: {
           required: true,
         },
@@ -31,7 +31,7 @@ export const nodeProperties = [
         type: 'select',
         link: 'sources',
         linkValue: 'SL',
-        value: '',
+        value: null,
         hidden: true,
         requiredWhenDisplayed: true,
         options: [
@@ -50,7 +50,7 @@ export const nodeProperties = [
         type: 'select',
         link: 'sources',
         linkValue: 'CL',
-        value: '',
+        value: null,
         hidden: true,
         requiredWhenDisplayed: true,
         options: [
@@ -75,7 +75,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -85,7 +85,7 @@ export const nodeProperties = [
         id: 'executeThisEvent',
         label: 'Execute this event',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: "All date/time are based on the user's system timezone.",
         hidden: false,
         linkedFields: true,
@@ -110,7 +110,7 @@ export const nodeProperties = [
       intervalValue: {
         label: 'Interval Value',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Should be a number.',
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
@@ -120,7 +120,7 @@ export const nodeProperties = [
       intervalUnit: {
         label: 'Interval Unit',
         type: 'select',
-        value: '',
+        value: null,
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
         hidden: true,
@@ -150,7 +150,7 @@ export const nodeProperties = [
       },
       date: {
         type: 'date',
-        value: '',
+        value: null,
         label: 'Date',
         link: 'executeThisEvent',
         linkValue: 'at a specific date/time',
@@ -160,14 +160,14 @@ export const nodeProperties = [
       subject: {
         label: 'Subject',
         type: 'text',
-        value: '',
+        value: null,
         placeholder: 'Subject of the email.',
         hidden: false,
       },
       senderName: {
         label: 'Sender Name',
         type: 'text',
-        value: '',
+        value: null,
         placeholder:
           "Sender's Name of the email that shows up on the recepient side.",
         hidden: false,
@@ -178,7 +178,7 @@ export const nodeProperties = [
       emailToSend: {
         label: 'Email to send',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: 'Choose the email to be sent.',
         hidden: false,
         rules: {
@@ -206,7 +206,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         placeholder: 'Name of the email is an internal name.',
         hidden: false,
         rules: {
@@ -217,7 +217,7 @@ export const nodeProperties = [
         id: 'executeThisEvent',
         label: 'Execute this event',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: "All date/time are based on the user's system timezone.",
         hidden: false,
         linkedFields: true,
@@ -238,7 +238,7 @@ export const nodeProperties = [
       intervalValue: {
         label: 'Interval Value',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Should be a number.',
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
@@ -248,7 +248,7 @@ export const nodeProperties = [
       intervalUnit: {
         label: 'Interval Unit',
         type: 'select',
-        value: '',
+        value: null,
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
         hidden: true,
@@ -278,7 +278,7 @@ export const nodeProperties = [
       },
       date: {
         type: 'date',
-        value: '',
+        value: null,
         label: 'Date',
         link: 'executeThisEvent',
         linkValue: 'at a specific date/time',
@@ -288,14 +288,14 @@ export const nodeProperties = [
       subject: {
         label: 'Subject',
         type: 'text',
-        value: '',
+        value: null,
         placeholder: 'Subject of the email.',
         hidden: false,
       },
       senderName: {
         label: 'Sender Name',
         type: 'text',
-        value: '',
+        value: null,
         placeholder:
           "Sender's Name of the email that shows up on the recepient side.",
         hidden: false,
@@ -306,7 +306,7 @@ export const nodeProperties = [
       emailToSend: {
         label: 'Email to send',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: 'Choose the email to be sent.',
         hidden: false,
         rules: {
@@ -335,7 +335,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         placeholder: 'This is an internal name.',
         hidden: false,
         rules: {
@@ -346,7 +346,7 @@ export const nodeProperties = [
         id: 'executeThisEvent',
         label: 'Execute this event',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: "All date/time are based on the user's system timezone.",
         hidden: false,
         linkedFields: true,
@@ -371,7 +371,7 @@ export const nodeProperties = [
       intervalValue: {
         label: 'Interval Value',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Should be a number.',
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
@@ -381,7 +381,7 @@ export const nodeProperties = [
       intervalUnit: {
         label: 'Interval Unit',
         type: 'select',
-        value: '',
+        value: null,
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
         hidden: true,
@@ -411,7 +411,7 @@ export const nodeProperties = [
       },
       date: {
         type: 'date',
-        value: '',
+        value: null,
         label: 'Date',
         link: 'executeThisEvent',
         linkValue: 'at a specific date/time',
@@ -421,7 +421,7 @@ export const nodeProperties = [
       salutation: {
         label: 'Salutation',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -452,7 +452,7 @@ export const nodeProperties = [
       firstName: {
         label: 'First Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -461,7 +461,7 @@ export const nodeProperties = [
       lastName: {
         label: 'Last Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -470,7 +470,7 @@ export const nodeProperties = [
       primaryPhone: {
         label: 'Primary Phone',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -482,7 +482,7 @@ export const nodeProperties = [
       mobile: {
         label: 'Mobile',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -494,7 +494,7 @@ export const nodeProperties = [
       email: {
         label: 'Email',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -504,7 +504,7 @@ export const nodeProperties = [
       assignedTo: {
         label: 'Assigned To',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -540,7 +540,7 @@ export const nodeProperties = [
       leadSource: {
         label: 'Lead Source',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -588,7 +588,7 @@ export const nodeProperties = [
       leadRating: {
         label: 'Lead Rating',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -608,7 +608,7 @@ export const nodeProperties = [
       secondaryPhone: {
         label: 'Secondary Phone',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -620,7 +620,7 @@ export const nodeProperties = [
       jobTitle: {
         label: 'Job Title',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -629,7 +629,7 @@ export const nodeProperties = [
       followUpDate: {
         label: 'Follow up date',
         type: 'date',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -638,7 +638,7 @@ export const nodeProperties = [
       companyName: {
         label: 'Company Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -647,13 +647,13 @@ export const nodeProperties = [
       website: {
         label: 'Website',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       noOfEmployee: {
         label: 'Number of Employee',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -685,13 +685,13 @@ export const nodeProperties = [
       annualRevenue: {
         label: 'Annual Revenue',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       state: {
         label: 'State/Province',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -723,13 +723,13 @@ export const nodeProperties = [
       city: {
         label: 'City',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       industry: {
         label: 'Industry Type',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -761,13 +761,13 @@ export const nodeProperties = [
       zipcode: {
         label: 'Zip/Postal Code',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       country: {
         label: 'Country',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -799,7 +799,7 @@ export const nodeProperties = [
       companyPrimaryPhone: {
         label: 'Company Primary Phone',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -811,13 +811,13 @@ export const nodeProperties = [
       addressLine1: {
         label: 'Address Line 1',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       addressLine2: {
         label: 'Address Line 2',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
     },
@@ -831,7 +831,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         placeholder: 'This is an internal name.',
         hidden: false,
         rules: {
@@ -842,7 +842,7 @@ export const nodeProperties = [
         id: 'executeThisEvent',
         label: 'Execute this event',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: "All date/time are based on the user's system timezone.",
         hidden: false,
         linkedFields: true,
@@ -863,7 +863,7 @@ export const nodeProperties = [
       intervalValue: {
         label: 'Interval Value',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Should be a number.',
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
@@ -873,7 +873,7 @@ export const nodeProperties = [
       intervalUnit: {
         label: 'Interval Unit',
         type: 'select',
-        value: '',
+        value: null,
         link: 'executeThisEvent',
         linkValue: 'at a relative time period',
         hidden: true,
@@ -903,7 +903,7 @@ export const nodeProperties = [
       },
       date: {
         type: 'date',
-        value: '',
+        value: null,
         label: 'Date',
         link: 'executeThisEvent',
         linkValue: 'at a specific date/time',
@@ -913,7 +913,7 @@ export const nodeProperties = [
       salutation: {
         label: 'Salutation',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -944,7 +944,7 @@ export const nodeProperties = [
       firstName: {
         label: 'First Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -953,7 +953,7 @@ export const nodeProperties = [
       lastName: {
         label: 'Last Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -962,7 +962,7 @@ export const nodeProperties = [
       primaryPhone: {
         label: 'Primary Phone',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -974,7 +974,7 @@ export const nodeProperties = [
       mobile: {
         label: 'Mobile',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -986,7 +986,7 @@ export const nodeProperties = [
       email: {
         label: 'Email',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -996,7 +996,7 @@ export const nodeProperties = [
       assignedTo: {
         label: 'Assigned To',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1032,7 +1032,7 @@ export const nodeProperties = [
       leadSource: {
         label: 'Lead Source',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1080,7 +1080,7 @@ export const nodeProperties = [
       leadRating: {
         label: 'Lead Rating',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1100,7 +1100,7 @@ export const nodeProperties = [
       secondaryPhone: {
         label: 'Secondary Phone',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -1112,7 +1112,7 @@ export const nodeProperties = [
       jobTitle: {
         label: 'Job Title',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1121,7 +1121,7 @@ export const nodeProperties = [
       followUpDate: {
         label: 'Follow up date',
         type: 'date',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1130,7 +1130,7 @@ export const nodeProperties = [
       companyName: {
         label: 'Company Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1139,13 +1139,13 @@ export const nodeProperties = [
       website: {
         label: 'Website',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       noOfEmployee: {
         label: 'Number of Employee',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1177,13 +1177,13 @@ export const nodeProperties = [
       annualRevenue: {
         label: 'Annual Revenue',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       state: {
         label: 'State/Province',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1215,13 +1215,13 @@ export const nodeProperties = [
       city: {
         label: 'City',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       industry: {
         label: 'Industry Type',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1253,13 +1253,13 @@ export const nodeProperties = [
       zipcode: {
         label: 'Zip/Postal Code',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       country: {
         label: 'Country',
         type: 'select',
-        value: '',
+        value: null,
         hidden: false,
         options: [
           {
@@ -1291,7 +1291,7 @@ export const nodeProperties = [
       companyPrimaryPhone: {
         label: 'Company Primary Phone',
         type: 'number',
-        value: '',
+        value: null,
         placeholder: 'Format should be like 91-9876543210',
         hidden: false,
         rules: {
@@ -1303,13 +1303,13 @@ export const nodeProperties = [
       addressLine1: {
         label: 'Address Line 1',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
       addressLine2: {
         label: 'Address Line 2',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
       },
     },
@@ -1324,7 +1324,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1341,7 +1341,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1350,7 +1350,7 @@ export const nodeProperties = [
       limitToAsset: {
         label: 'Limit To Asset',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: 'Select the asset this trigger applies to.',
         hidden: false,
         options: [
@@ -1375,7 +1375,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1384,7 +1384,7 @@ export const nodeProperties = [
       limitToPage: {
         label: 'Limit To Page',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: 'Select the pages this trigger applies to.',
         hidden: false,
         options: [
@@ -1409,7 +1409,7 @@ export const nodeProperties = [
       name: {
         label: 'Name',
         type: 'text',
-        value: '',
+        value: null,
         hidden: false,
         rules: {
           required: true,
@@ -1418,7 +1418,7 @@ export const nodeProperties = [
       limitToForm: {
         label: 'Limit to Form',
         type: 'select',
-        value: '',
+        value: null,
         placeholder: 'Select the pages this trigger applies to.',
         hidden: false,
         options: [
