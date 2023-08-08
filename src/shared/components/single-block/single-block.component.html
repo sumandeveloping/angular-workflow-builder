@@ -56,19 +56,50 @@
   (close)="displayModal = !displayModal; showModalForm = false"
   #modalDialog
 >
-  <!-- when we need to display form or data related stuff -->
+  <!-- when we need to display dynamic form for user to edit the node details/information -->
   <ng-container *ngIf="showModalForm" ngProjectAs=".modalHeaderContent">
-    <h3 class="modal-header-content">Show modal form from dynamic-component</h3>
+    <h5 class="modal-header-content">
+      {{ nodeInformation?.childNodeName }}
+    </h5>
+  </ng-container>
+  <ng-container *ngIf="showModalForm" ngProjectAs=".modalBodyContent">
+    <div class="change-node-details">
+      <app-dynamic-form
+        [model]="nodeModelForExistingNodeEdit"
+        (add)="onEditNodeDetails($event)"
+        (cancel)="closeModal()"
+      ></app-dynamic-form>
+    </div>
   </ng-container>
 
   <!-- when adding nodes -->
   <ng-container *ngIf="!showModalForm" ngProjectAs=".modalHeaderContent">
     <!-- header -->
-    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-      <button type="button" class="btn btn-success">Decisions</button>
-      <button type="button" class="btn btn-primary">Action</button>
+    <div class="wfb-filters">
+      <div
+        *ngFor="let category of filterNodeCategories; let i = index"
+        class="wfb-filters-options wfb-filters-options-active"
+        [ngClass]="{
+          'wfb-filters-options': true,
+          'wfb-filters-options-active': category.value == filterText
+        }"
+        (click)="onFilterChange(category.value)"
+      >
+        <!-- <input type="radio" name="option" id="filter-all" [hidden]="'true'" /> -->
+        <label for="filter-all">
+          <i class="fa fa-random" aria-hidden="true"></i
+          >{{ category.name }}</label
+        >
+      </div>
+      <!-- <div class="wfb-filters-options" (click)="onFilterChange('ACTION')">
+        <input type="radio" name="option" id="filter-action" />
+        <label for="filter-action">Action</label>
+      </div>
+      <div class="wfb-filters-options" (click)="onFilterChange('DECISION')">
+        <input type="radio" name="option" id="filter-decision" />
+        <label for="filter-decision">Decision</label>
+      </div> -->
     </div>
-
     <!-- end header -->
   </ng-container>
   <ng-container *ngIf="!showModalForm" ngProjectAs=".modalBodyContent">
@@ -76,9 +107,13 @@
     <div class="decision-action-container">
       <div class="row">
         <div class="col-md-4 col-lg-4">
-          <div class="list-group decision-action-list">
+          <div class="list-group wfb-decision-action-list">
             <a
-              *ngFor="let childNode of childNodesToConnect; let i = index"
+              *ngFor="
+                let childNode of childNodesToConnect
+                  | filterNodeCategory : filterText;
+                let i = index
+              "
               [ngClass]="{
                 'list-group-item': true,
                 'list-group-item-action': true,
@@ -97,6 +132,21 @@
                 >{{ childNode.childNodeCategory }}</span
               >
             </a>
+            <p *ngIf="!childNodesToConnect.length">No thing to show</p>
+            <div
+              class="wfb-noRecordsFound"
+              *ngIf="
+                (childNodesToConnect | filterNodeCategory : filterText)
+                  ?.length <= 0
+              "
+            >
+              <img
+                class="wfb-noRecordsFound--img"
+                src="/assets/no-data.png"
+                alt="No Records Found Image"
+                title="No Records"
+              />
+            </div>
           </div>
         </div>
         <div class="col-md-8 col-lg-8">
@@ -111,7 +161,13 @@
               class="nodeProperty-display-container"
               *ngIf="displayNode && !loading"
             >
-              show properties of {{ selectedNode?.childNodeName }}
+              <h6
+                class="selectedNode-heading selectedNode-heading--{{
+                  selectedNode.childNodeCategory | lowercase
+                }}"
+              >
+                {{ selectedNode?.childNodeName }}
+              </h6>
               <app-dynamic-form
                 [model]="nodeModel"
                 (add)="onAdd($event)"

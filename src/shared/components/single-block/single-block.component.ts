@@ -61,6 +61,21 @@ export class SingleBlockComponent
     parentIndex: null,
     isChildrComponentCall: null,
   };
+  filterNodeCategories: any[] = [
+    {
+      name: 'All',
+      value: 'ALL',
+    },
+    {
+      name: 'Action',
+      value: 'ACTION',
+    },
+    {
+      name: 'Decision',
+      value: 'DECISION',
+    },
+  ];
+  filterText: string = 'ALL';
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
@@ -73,6 +88,7 @@ export class SingleBlockComponent
   nodeCategory: any; // action / decision / null
   nodeProperties: any[];
   nodeModel: any;
+  nodeModelForExistingNodeEdit: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
@@ -441,12 +457,42 @@ export class SingleBlockComponent
     });
   };
 
-  openModalWithNodeProps = (e: any) => {
+  openModalWithNodeProps = async (e: any) => {
+    await this.displayNodeInformationsForEdit();
     this.showModalForm = true;
-    this.displayModal = !this.displayModal;
+    this.displayModal = true;
     setTimeout(() => {
       this.modalDialog.showModal();
     }, 0);
+  };
+
+  displayNodeInformationsForEdit = async () => {
+    return new Promise((resolve) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.nodeInformation.childNodeName
+      );
+      tempModel
+        ? (this.nodeModelForExistingNodeEdit = tempModel.model)
+        : (this.nodeModelForExistingNodeEdit = {});
+      const savedFormData = this.parentComponent.activities.get(
+        this.componentId
+      ).state;
+      for (const key in this.nodeModelForExistingNodeEdit) {
+        // this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
+        //making dropdown visible as per the saved value
+        if (
+          this.nodeModelForExistingNodeEdit[key]?.linkValue ===
+          savedFormData[this.nodeModelForExistingNodeEdit[key]?.link]
+        ) {
+          this.nodeModelForExistingNodeEdit[key].hidden = false;
+          this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
+        } else {
+          this.nodeModelForExistingNodeEdit[key].hidden = true;
+          this.nodeModelForExistingNodeEdit[key].value = '';
+        }
+      }
+      resolve(true);
+    });
   };
 
   onAdd = (e) => {
@@ -454,5 +500,30 @@ export class SingleBlockComponent
     console.log('e🙌', e, this.activityState);
     this.closeModal();
     this.addComponent();
+  };
+
+  onEditNodeDetails = (data) => {
+    console.log('data on edit', data);
+    const preVNodeDetails = this.parentComponent.activities.get(
+      this.componentId
+    );
+    console.log('prevNodeDetails', preVNodeDetails);
+    this.parentComponent.activities.set(this.componentId, {
+      ...preVNodeDetails,
+      state: { ...data },
+    });
+    console.log(
+      'Updated node details',
+      this.parentComponent.activities.get(this.componentId)
+    );
+    // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
+    this.closeModal();
+  };
+
+  onFilterChange = (filterTerm: string) => {
+    console.log('filterText', filterTerm);
+    this.filterText = filterTerm;
+    this.displayNode = false;
+    this.selectedNode = {};
   };
 }

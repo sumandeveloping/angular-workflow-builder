@@ -15,6 +15,7 @@ import { DynamicSelectComponent } from './components/dynamic-field/dynamic-selec
 import { DynamicRadioComponent } from './components/dynamic-field/dynamic-radio/dynamic-radio.component';
 import { DynamicInputComponent } from './components/dynamic-field/dynamic-input/dynamic-input.component';
 import { DynamicCheckboxsComponent } from './components/dynamic-field/dynamic-checkboxs/dynamic-checkboxs.component';
+import { FilterNodeCategoryPipe } from './pipes/filter-node-category.pipe';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { DynamicCheckboxsComponent } from './components/dynamic-field/dynamic-ch
     DynamicRadioComponent,
     DynamicInputComponent,
     DynamicCheckboxsComponent,
+    FilterNodeCategoryPipe,
   ],
   imports: [
     CommonModule,
@@ -42,6 +44,7 @@ import { DynamicCheckboxsComponent } from './components/dynamic-field/dynamic-ch
     UpdateSingleBlockComponent,
     ModalComponent,
     DynamicFormComponent,
+    FilterNodeCategoryPipe,
   ],
 })
 export class SharedModule {}

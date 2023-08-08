@@ -1,13 +1,30 @@
-<form [formGroup]="formName" *ngIf="!field.hidden">
-  <label>{{ field.label }}:</label>
-
-  <select
-    #dynamicSelect
-    [formControlName]="field.fieldName"
-    (change)="changedValue(dynamicSelect.value)"
-  >
-    <option *ngFor="let option of field.options" [value]="option.value">
-      {{ option.label }}
-    </option>
-  </select>
+<form
+  [formGroup]="formName"
+  class="wfb-dynamicForm-component"
+  *ngIf="!field.hidden"
+>
+  <div class="row">
+    <!-- <div class="col-auto col-md-3">
+      <label
+        for="{{ field.fieldName }}_dynamicForm-select"
+        class="wfb-dynamicForm-component--label"
+        >{{ field.label }}</label
+      >
+    </div> -->
+    <div class="col-auto col-md-12">
+      <select
+        #dynamicSelect
+        id="{{ field.fieldName }}_dynamicForm-select"
+        class="form-select wfb-dynamicForm-component--select"
+        [formControlName]="field.fieldName"
+        (change)="changedValue(dynamicSelect.value)"
+      >
+        <!-- NEED TO ADD LABEL FOR SELECT -->
+        <!-- <option selected disabled>{{ field.fieldName }}</option> -->
+        <option *ngFor="let option of field.options" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
 </form>

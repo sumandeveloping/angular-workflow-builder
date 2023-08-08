@@ -91,3 +91,14 @@
     background-color: #eaeaea; //   #17153c
   }
 }
+
+.wfb-modal-header {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  i {
+    font-size: 0.9rem;
+  }
+}

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ComponentRef,
   ElementRef,
@@ -146,7 +147,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -174,6 +176,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.renderDynamicComponents();
+    this.cdr.detectChanges();
   }
 
   renderDynamicComponents = async (): Promise<void> => {
@@ -271,6 +274,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       // store activity to send to the BACKEND
       this.activities.set(newComponentId, { ...parentComponent.activityState });
     } else {
+      // this block only for when from parent component is called (i.e, segment/contact form)
       this.componentsFromRoot.push(dynamicComponent);
       // store activity to send to the BACKEND
       this.activities.set(newComponentId, {

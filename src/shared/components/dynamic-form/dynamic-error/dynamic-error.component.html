@@ -3,9 +3,13 @@
     formName.controls[fieldName].invalid &&
     (formName.controls[fieldName].dirty || formName.controls[fieldName].touched)
   "
-  class="alert"
+  class="alert alert-danger px-2 py-1 dynamicForm-error"
 >
-  <div *ngIf="formName.controls[fieldName].errors.required">
-    * {{ fieldName }}
-  </div>
+  <ng-container *ngIf="formName.controls[fieldName].errors.required">
+    <!-- <div class="row"> -->
+    <!-- <div class="col-auto col-md-12"> -->
+    <p class="dynamicForm-error--text m-0">{{ label }} is required</p>
+    <!-- </div> -->
+    <!-- </div> -->
+  </ng-container>
 </div>

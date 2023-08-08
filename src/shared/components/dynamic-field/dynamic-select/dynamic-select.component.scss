@@ -1,0 +1,12 @@
+.wfb-dynamicForm-component--select {
+  //   background-color: #f28c1e;
+  padding: 0.5rem 0.75rem;
+  font-size: 12px;
+  option {
+    background-color: #f3f3f3;
+    padding: 1rem;
+  }
+  &:focus {
+    box-shadow: none;
+  }
+}

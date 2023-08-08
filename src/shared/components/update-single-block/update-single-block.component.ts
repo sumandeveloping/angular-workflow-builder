@@ -57,6 +57,21 @@ export class UpdateSingleBlockComponent
     parentIndex: null,
     isChildrComponentCall: null,
   };
+  filterNodeCategories: any[] = [
+    {
+      name: 'All',
+      value: 'ALL',
+    },
+    {
+      name: 'Action',
+      value: 'ACTION',
+    },
+    {
+      name: 'Decision',
+      value: 'DECISION',
+    },
+  ];
+  filterText: string = 'ALL';
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
@@ -537,5 +552,12 @@ export class UpdateSingleBlockComponent
     console.log('e🙌', e, this.activityState);
     this.closeModal();
     this.addComponentOnEdit(false);
+  };
+
+  onFilterChange = (filterTerm: string) => {
+    console.log('filterText', filterTerm);
+    this.filterText = filterTerm;
+    this.displayNode = false;
+    this.selectedNode = {};
   };
 }
