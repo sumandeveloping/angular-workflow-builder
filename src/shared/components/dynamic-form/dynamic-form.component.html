@@ -3,7 +3,7 @@
   [formGroup]="dynamicFormGroup"
   (ngSubmit)="onAdd()"
 >
-  <div class="wfb-dynamicForm-wrapper">
+  <div class="pb-5 wfb-dynamicForm-wrapper">
     <ng-container *ngFor="let field of fields">
       <app-dynamic-field [field]="field"></app-dynamic-field>
       <app-dynamic-error
