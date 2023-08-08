@@ -493,19 +493,12 @@ export class SingleBlockComponent
       const savedFormData = this.parentComponent.activities.get(
         this.componentId
       ).state;
-      console.log('X', savedFormData);
       for (const key in this.nodeModelForExistingNodeEdit) {
         //making dropdown visible as per the saved value
         if (
           this.nodeModelForExistingNodeEdit[key]?.linkValue ===
           savedFormData[this.nodeModelForExistingNodeEdit[key]?.link]
         ) {
-          console.log(
-            'keyy',
-            key,
-            this.nodeModelForExistingNodeEdit[key]?.linkValue ===
-              savedFormData[this.nodeModelForExistingNodeEdit[key]?.link]
-          );
           this.nodeModelForExistingNodeEdit[key].hidden = false;
           this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
         } else {
@@ -513,7 +506,6 @@ export class SingleBlockComponent
           this.nodeModelForExistingNodeEdit[key].value = '';
         }
       }
-      console.log('yoooo', this.nodeModelForExistingNodeEdit);
       resolve(true);
     });
   };

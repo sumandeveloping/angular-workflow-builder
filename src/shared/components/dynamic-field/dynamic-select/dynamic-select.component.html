@@ -12,19 +12,29 @@
       >
     </div> -->
     <div class="col-auto col-md-12">
-      <select
+      <!-- <select
         #dynamicSelect
         id="{{ field.fieldName }}_dynamicForm-select"
         class="form-select wfb-dynamicForm-component--select"
         [formControlName]="field.fieldName"
         (change)="changedValue(dynamicSelect.value)"
-      >
-        <!-- NEED TO ADD LABEL FOR SELECT -->
-        <!-- <option selected disabled>{{ field.fieldName }}</option> -->
-        <option *ngFor="let option of field.options" [value]="option.value">
+      > -->
+      <!-- NEED TO ADD LABEL FOR SELECT -->
+      <!-- <option selected disabled>{{ field.fieldName }}</option> -->
+      <!-- <option *ngFor="let option of field.options" [value]="option.value">
           {{ option.label }}
         </option>
-      </select>
+      </select> -->
+      <ng-select
+        [items]="field.options"
+        bindLabel="label"
+        bindValue="value"
+        [placeholder]="field.label"
+        [formControlName]="field.fieldName"
+        [clearable]="false"
+        (change)="changedValue($event.value)"
+      >
+      </ng-select>
     </div>
   </div>
 </form>
