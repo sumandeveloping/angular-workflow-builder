@@ -118,8 +118,14 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     dynamicComponent.setInput('componentId', newComponentId);
     dynamicComponent.setInput('lineLabel', componentLabel);
 
-    // if(isChildComponentCall){}
-    // if (parentIndex !== null || parentIndex !== undefined)
+    //ADD logic for hashing components ID ** Important **
+    this.dynamicComponentsObj[newComponentId] = {
+      parentComponentId: '',
+      childs: [],
+      connecters: [],
+      nodeInformation: {},
+      activity: {},
+    };
     if (isChildComponentCall) {
       dynamicComponent.setInput('parentIndex', parentIndex);
       dynamicComponent.setInput('parentElementRef', parentElementRef);
@@ -128,7 +134,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         'nodeInformation',
         parentComponent.selectedNode
       );
-      //store the component connections for backend
+      //store the component connections for backend -- need to send this while saving * Important
       const connectionObj = {
         sourceActivityId: parentComponent.componentId,
         destinationActivityId: newComponentId,
@@ -140,23 +146,10 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       };
       this.connections.push(connectionObj);
       console.log('this.connections 🔥', this.connections);
-    } else {
-      //if created from root component (i.e segment)
-      dynamicComponent.setInput('nodeInformation', this.selectedNode);
-    }
-    this.components.push(dynamicComponent);
-    dynamicComponent.setInput(
-      'index',
-      this.components.indexOf(dynamicComponent)
-    );
-    //ADD logic for hashing components ID ** Important **
-    this.dynamicComponentsObj[newComponentId] = {
-      parentComponentId: '',
-      childs: [],
-      connecters: [],
-      nodeInformation: {},
-    };
-    if (isChildComponentCall) {
+      /* -------------------------------------------------------------------------- */
+      /*                                     xx                                     */
+      /* -------------------------------------------------------------------------- */
+      // storing information in dynamicComponentsObj Hash
       this.dynamicComponentsObj[parentComponent.componentId].childs.push(
         newComponentId
       );
@@ -166,7 +159,13 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         parentComponent.selectedNode;
       // store activity to send to the BACKEND
       this.activities.set(newComponentId, { ...parentComponent.activityState });
+      this.dynamicComponentsObj[newComponentId].activity = {
+        ...parentComponent.activityState,
+      };
     } else {
+      //if created from root component (i.e segment)
+      dynamicComponent.setInput('nodeInformation', this.selectedNode);
+      // storing information in dynamicComponentsObj Hash
       this.dynamicComponentsObj[newComponentId].nodeInformation =
         this.selectedNode;
       this.componentsFromRoot.push(dynamicComponent);
@@ -177,7 +176,18 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         executed: false,
         faulted: false,
       });
+      this.dynamicComponentsObj[newComponentId].activity = {
+        ...this.activityState,
+        blocking: false,
+        executed: false,
+        faulted: false,
+      };
     }
+    this.components.push(dynamicComponent);
+    dynamicComponent.setInput(
+      'index',
+      this.components.indexOf(dynamicComponent)
+    );
     //Get position from dynamic component
     this.sendSubscriptions = dynamicComponent.instance.sendPosition.subscribe(
       async (data: {
@@ -278,6 +288,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
           this.coOrdinatesOfChildComponents.filter(
             (data) => data.childComponentID !== componentId
           );
+        //remove components activity
+        this.activities.delete(componentId);
         //atlast destroy child component
         dynamicComponent.destroy();
         await this.removeInvalidLines();
@@ -396,7 +408,14 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       ...this.activities.get(componentID),
       ...{ id: componentID, x, y },
     });
-    console.log('activity🤖', this.activities.values());
+    this.dynamicComponentsObj[componentID].activity = {
+      ...this.activities.get(componentID),
+    };
+    console.log(
+      'activity🤖',
+      this.activities.values(),
+      this.dynamicComponentsObj
+    );
   };
 
   ngOnDestroy(): void {

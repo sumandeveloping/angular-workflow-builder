@@ -50,7 +50,13 @@ export class UpdateSingleBlockComponent
     startSocket: 'bottom',
     endSocket: 'top',
   };
-  position: { x: number; y: number; componentId?: string; isChild?: boolean };
+  position: {
+    x: number;
+    y: number;
+    componentId?: string;
+    isChild?: boolean;
+    isEditRendering?: boolean;
+  };
   displayModal: boolean = false;
   showModalForm: boolean = false;
   nodeDate = {
@@ -83,6 +89,7 @@ export class UpdateSingleBlockComponent
   nodeCategory: any; // action / decision / null
   nodeProperties: any[];
   nodeModel: any;
+  nodeModelForExistingNodeEdit: any;
   nodeRules: any[];
   displayNode: boolean = false; //for modal
   loading: boolean = false; //for modal
@@ -313,6 +320,7 @@ export class UpdateSingleBlockComponent
           y: topPosition,
           componentId: this.componentId,
           isChild: false,
+          isEditRendering: this.isEditRendering,
         };
       }
     }
@@ -453,6 +461,7 @@ export class UpdateSingleBlockComponent
           y: topPosition,
           componentId: this.componentId,
           isChild: true,
+          isEditRendering: this.isEditRendering,
         };
       }
     }
@@ -551,12 +560,47 @@ export class UpdateSingleBlockComponent
     });
   };
 
-  openModalWithNodeProps = (e: any) => {
+  openModalWithNodeProps = async (e: any) => {
+    await this.displayNodeInformationsForEdit();
     this.showModalForm = true;
-    this.displayModal = !this.displayModal;
+    this.displayModal = true;
     setTimeout(() => {
       this.modalDialog.showModal();
     }, 0);
+  };
+
+  displayNodeInformationsForEdit = async () => {
+    return new Promise((resolve) => {
+      const tempModel = this.nodeProperties.find(
+        (x) => x.displayName === this.nodeInformation.childNodeName
+      );
+      tempModel
+        ? (this.nodeModelForExistingNodeEdit = tempModel.model)
+        : (this.nodeModelForExistingNodeEdit = {});
+      console.log('Edit node model', this.nodeModelForExistingNodeEdit);
+      console.log(
+        'Edit node data',
+        this.parentComponent.activities.get(this.componentId)
+      );
+
+      const savedFormData = this.parentComponent.activities.get(
+        this.componentId
+      ).state;
+      for (const key in this.nodeModelForExistingNodeEdit) {
+        //making dropdown visible as per the saved value
+        if (
+          this.nodeModelForExistingNodeEdit[key]?.linkValue ===
+          savedFormData[this.nodeModelForExistingNodeEdit[key]?.link]
+        ) {
+          this.nodeModelForExistingNodeEdit[key].hidden = false;
+          this.nodeModelForExistingNodeEdit[key].value = savedFormData[key];
+        } else {
+          this.nodeModelForExistingNodeEdit[key].hidden = true;
+          this.nodeModelForExistingNodeEdit[key].value = '';
+        }
+      }
+      resolve(true);
+    });
   };
 
   onAdd = (e) => {
@@ -564,6 +608,28 @@ export class UpdateSingleBlockComponent
     console.log('e🙌', e, this.activityState);
     this.closeModal();
     this.addComponentOnEdit(false);
+  };
+
+  onEditNodeDetailsSave = (data) => {
+    console.log('data on edit', data);
+    const preVNodeDetails = this.parentComponent.activities.get(
+      this.componentId
+    );
+    console.log('prevNodeDetails', preVNodeDetails);
+    this.parentComponent.activities.set(this.componentId, {
+      ...preVNodeDetails,
+      state: { ...data },
+    });
+    this.parentComponent.dynamicComponentsObj[this.componentId].activity = {
+      ...this.parentComponent.activities.get(this.componentId),
+    };
+    console.log(
+      'Updated node details',
+      this.parentComponent.activities.get(this.componentId),
+      this.parentComponent.dynamicComponentsObj
+    );
+    // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
+    this.closeModal();
   };
 
   onFilterChange = (filterTerm: string) => {

@@ -517,7 +517,7 @@ export class SingleBlockComponent
     this.addComponent();
   };
 
-  onEditNodeDetails = (data) => {
+  onEditNodeDetailsSave = (data) => {
     console.log('data on edit', data);
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
@@ -527,9 +527,13 @@ export class SingleBlockComponent
       ...preVNodeDetails,
       state: { ...data },
     });
+    this.parentComponent.dynamicComponentsObj[this.componentId].activity = {
+      ...this.parentComponent.activities.get(this.componentId),
+    };
     console.log(
       'Updated node details',
-      this.parentComponent.activities.get(this.componentId)
+      this.parentComponent.activities.get(this.componentId),
+      this.parentComponent.dynamicComponentsObj[this.componentId]
     );
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     this.closeModal();

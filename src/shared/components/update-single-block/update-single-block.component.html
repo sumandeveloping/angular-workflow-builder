@@ -60,7 +60,19 @@
 >
   <!-- when we need to display form or data related stuff -->
   <ng-container *ngIf="showModalForm" ngProjectAs=".modalHeaderContent">
-    <h3 class="modal-header-content">Show modal form from dynamic-component</h3>
+    <h5 class="modal-header-content">
+      {{ nodeInformation?.childNodeName }}
+    </h5>
+  </ng-container>
+  <ng-container *ngIf="showModalForm" ngProjectAs=".modalBodyContent">
+    <div class="change-node-details">
+      <!-- {{ nodeModelForExistingNodeEdit }} -->
+      <app-dynamic-form
+        [model]="nodeModelForExistingNodeEdit"
+        (add)="onEditNodeDetailsSave($event)"
+        (cancel)="closeModal()"
+      ></app-dynamic-form>
+    </div>
   </ng-container>
 
   <!-- when adding nodes -->

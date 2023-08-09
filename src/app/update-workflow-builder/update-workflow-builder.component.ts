@@ -63,6 +63,16 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeNameType: 'segment',
         parentNodeCategory: 'ACTION',
       },
+      activity: {
+        state: {
+          sources: 'CL',
+          segmentList: null,
+          campaignList: 'CL1',
+        },
+        blocking: false,
+        executed: false,
+        faulted: false,
+      },
       xPos: 634.5,
       yPos: 100,
     },
@@ -79,6 +89,18 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeNameType: 'sendEmail',
         childNodeCategory: 'ACTION',
       },
+      activity: {
+        state: {
+          name: 'Demo Email',
+          executeThisEvent: 'immediately',
+          intervalValue: null,
+          intervalUnit: null,
+          date: null,
+          subject: 'Demo Subject',
+          senderName: 'Suman',
+          emailToSend: 'email 1',
+        },
+      },
       xPos: 509.5,
       yPos: 188,
     },
@@ -91,6 +113,11 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeName: 'Open Email',
         childNodeNameType: 'openEmail',
         childNodeCategory: 'DECISION',
+      },
+      activity: {
+        state: {
+          name: 'Opening an Email',
+        },
       },
       xPos: 509.5,
       yPos: 276,
@@ -105,6 +132,12 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeNameType: 'downloadAsset',
         childNodeCategory: 'DECISION',
       },
+      activity: {
+        state: {
+          name: 'Downloading Asset',
+          limitToAsset: '90e777da-42e7-423c-81a1-3e0b2a61f3c9',
+        },
+      },
       xPos: 259.5,
       yPos: 276,
     },
@@ -118,6 +151,18 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeNameType: 'sendEmail',
         nodeType: 'Truthy',
         childNodeCategory: 'ACTION',
+      },
+      activity: {
+        state: {
+          name: 'Test Email',
+          executeThisEvent: 'immediately',
+          intervalValue: null,
+          intervalUnit: null,
+          date: null,
+          subject: 'Test Subject',
+          senderName: 'Suman Tapader',
+          emailToSend: 'email 2',
+        },
       },
       xPos: 509.5,
       yPos: 364,
@@ -215,18 +260,17 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     let newComponentId: string;
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('lineLabel', componentLabel);
-    if (isEditRendering) {
-      newComponentId = editComponentId;
-      dynamicComponent.setInput('componentId', editComponentId);
-      dynamicComponent.setInput('isEditRendering', isEditRendering);
-    } else {
-      newComponentId = uuidv4();
-      dynamicComponent.setInput('componentId', newComponentId);
-      dynamicComponent.setInput('isEditRendering', isEditRendering);
-    }
 
-    // if(isChildComponentCall){}
-    // if (parentIndex !== null || parentIndex !== undefined)
+    // if (isEditRendering) {
+    // newComponentId = editComponentId;
+    // dynamicComponent.setInput('componentId', editComponentId);
+    // dynamicComponent.setInput('isEditRendering', isEditRendering);
+    // } else {
+    // newComponentId = uuidv4();
+    // dynamicComponent.setInput('componentId', newComponentId);
+    // dynamicComponent.setInput('isEditRendering', isEditRendering);
+    // }
+
     if (isChildComponentCall) {
       dynamicComponent.setInput('parentIndex', parentIndex);
       dynamicComponent.setInput('parentElementRef', parentElementRef);
@@ -251,42 +295,106 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       //if created from root component (i.e segment)
       dynamicComponent.setInput('nodeInformation', this.selectedNode);
     }
-    this.components.push(dynamicComponent);
-    dynamicComponent.setInput(
-      'index',
-      this.components.indexOf(dynamicComponent)
-    );
+    // this.components.push(dynamicComponent);
+    // dynamicComponent.setInput(
+    //   'index',
+    //   this.components.indexOf(dynamicComponent)
+    // );
     //ADD logic for hashing components ID ** Important **
-    if (!isEditRendering) {
+    // if (!isEditRendering) {
+    // this.dynamicComponentsObj[newComponentId] = {
+    //   parentComponentId: '',
+    //   childs: [],
+    //   connecters: [],
+    //   nodeInformation: {},
+    //   activity: {},
+    // };
+    // }
+
+    // if (isChildComponentCall && !isEditRendering) {
+    // this.dynamicComponentsObj[parentComponent.componentId].childs.push(
+    //   newComponentId
+    // );
+    // this.dynamicComponentsObj[newComponentId].parentComponentId =
+    //   parentComponent.componentId;
+    // this.dynamicComponentsObj[newComponentId].nodeInformation =
+    //   parentComponent.selectedNode;
+    // // store activity to send to the BACKEND
+    // this.activities.set(newComponentId, { ...parentComponent.activityState });
+    // }else {
+    // this block only for when from parent component is called (i.e, segment/contact form)
+    // this.componentsFromRoot.push(dynamicComponent);
+    // store activity to send to the BACKEND
+    // this.activities.set(newComponentId, {
+    //   ...this.activityState,
+    //   blocking: false,
+    //   executed: false,
+    //   faulted: false,
+    // });
+    // }
+    /* -------------------------------------------------------------------------- */
+    /*    Two block is =>  `isEditRendering` & `!isEditRendering`            
+      Inside these two block there will be another two blocks
+      Another Two block is => `isChildComponentCall`   & `!isChildComponentCall`                                           */
+    /* -------------------------------------------------------------------------- */
+    if (isEditRendering) {
+      //It means dynamic components are created based on the previously stored data (i.e, dynamicComponentsObj Hash)
+      newComponentId = editComponentId;
+      dynamicComponent.setInput('componentId', editComponentId);
+      dynamicComponent.setInput('isEditRendering', isEditRendering);
+
+      if (isChildComponentCall) {
+        this.activities.set(editComponentId, {
+          ...this.dynamicComponentsObj[editComponentId].activity,
+        });
+      } else if (!isChildComponentCall) {
+        this.componentsFromRoot.push(dynamicComponent);
+        this.activities.set(editComponentId, {
+          ...this.dynamicComponentsObj[editComponentId].activity,
+        });
+      }
+    } else if (!isEditRendering) {
+      //it means when new dynamic components are created *Manually* clicking on the Modal
+      newComponentId = uuidv4();
+      dynamicComponent.setInput('componentId', newComponentId);
+      dynamicComponent.setInput('isEditRendering', isEditRendering);
       this.dynamicComponentsObj[newComponentId] = {
         parentComponentId: '',
         childs: [],
         connecters: [],
         nodeInformation: {},
+        activity: {},
       };
-    }
 
-    if (isChildComponentCall && !isEditRendering) {
-      this.dynamicComponentsObj[parentComponent.componentId].childs.push(
-        newComponentId
-      );
-      this.dynamicComponentsObj[newComponentId].parentComponentId =
-        parentComponent.componentId;
-      this.dynamicComponentsObj[newComponentId].nodeInformation =
-        parentComponent.selectedNode;
-      // store activity to send to the BACKEND
-      this.activities.set(newComponentId, { ...parentComponent.activityState });
-    } else {
-      // this block only for when from parent component is called (i.e, segment/contact form)
-      this.componentsFromRoot.push(dynamicComponent);
-      // store activity to send to the BACKEND
-      this.activities.set(newComponentId, {
-        ...this.activityState,
-        blocking: false,
-        executed: false,
-        faulted: false,
-      });
+      if (isChildComponentCall) {
+        this.dynamicComponentsObj[parentComponent.componentId].childs.push(
+          newComponentId
+        );
+        this.dynamicComponentsObj[newComponentId].parentComponentId =
+          parentComponent.componentId;
+        this.dynamicComponentsObj[newComponentId].nodeInformation =
+          parentComponent.selectedNode;
+        // store activity to send to the BACKEND
+        this.activities.set(newComponentId, {
+          ...parentComponent.activityState,
+        });
+      } else if (!isChildComponentCall) {
+        this.componentsFromRoot.push(dynamicComponent);
+        this.activities.set(newComponentId, {
+          ...this.activityState,
+          blocking: false,
+          executed: false,
+          faulted: false,
+        });
+      }
     }
+    //saving index and raw components
+    this.components.push(dynamicComponent);
+    dynamicComponent.setInput(
+      'index',
+      this.components.indexOf(dynamicComponent)
+    );
+
     //Get position from dynamic component
     this.sendSubscriptions = dynamicComponent.instance.sendPosition.subscribe(
       (data: {
@@ -294,8 +402,9 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         y: number;
         componentId?: string;
         isChild?: boolean;
+        isEditRendering?: boolean;
       }) => {
-        let { x, y, componentId, isChild } = data;
+        let { x, y, componentId, isChild, isEditRendering } = data;
         console.log(
           'component Position 💥🔥',
           data,
@@ -303,7 +412,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           isChild,
           this.activityState
         );
-        this.populateActivity(componentId, x, y);
+        this.populateActivity(componentId, x, y, isEditRendering);
         this.xCoOrdinates.push(x);
         this.YCoOrdinates.push(y);
         if (data.isChild)
@@ -393,6 +502,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           this.coOrdinatesOfChildComponents.filter(
             (data) => data.childComponentID !== componentId
           );
+        //remove components activity
+        this.activities.delete(componentId);
         //atlast destroy child component
         dynamicComponent.destroy();
         await this.removeInvalidLines();
@@ -512,12 +623,27 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     // this.createComponent();
   };
 
-  populateActivity = async (componentID: string, x: number, y: number) => {
+  populateActivity = async (
+    componentID: string,
+    x: number,
+    y: number,
+    isEditRendering: boolean
+  ) => {
     console.log('ACTIVITY SETUP', this.activities.get(componentID));
     this.activities.set(componentID, {
       ...this.activities.get(componentID),
       ...{ id: componentID, x, y },
     });
-    console.log('activity🤖', this.activities.values());
+    if (!isEditRendering) {
+      this.dynamicComponentsObj[componentID].activity = {
+        ...this.activities.get(componentID),
+      };
+    }
+
+    console.log(
+      'activity🤖',
+      this.activities.values(),
+      this.dynamicComponentsObj
+    );
   };
 }
