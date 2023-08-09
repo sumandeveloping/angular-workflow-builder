@@ -151,12 +151,22 @@
     &.ng-select .ng-dropdown-panel {
       font-size: 11px;
     }
+    &.ng-select.ng-select-focused:not(.ng-select-opened)
+      > .ng-select-container {
+      // border-color: #007eff;
+      border-color: inherit;
+      box-shadow: none;
+    }
   }
 
   &--select.ng-select.ng-valid + &--selectLabel {
     top: 0px !important;
-    z-index: 9999 !important;
+    z-index: 1 !important;
     font-size: 12px !important;
     color: #d26708 !important;
+  }
+
+  &--select.ng-select.ng-select-opened + &--selectLabel {
+    z-index: 9999 !important;
   }
 }

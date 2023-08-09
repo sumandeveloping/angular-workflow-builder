@@ -34,6 +34,7 @@ export class UpdateSingleBlockComponent
   @Input() componentId: string;
   @Input() isEditRendering: boolean = false;
   @Input() isCreatedFromChild: boolean = false;
+  @Input() lineLabel: string;
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
@@ -163,6 +164,7 @@ export class UpdateSingleBlockComponent
     if (isEditRendering) {
       this.parentComponent.createComponent(
         true,
+        '',
         isEditRendering,
         editComponentID,
         this.decisionBlock,
@@ -172,6 +174,7 @@ export class UpdateSingleBlockComponent
     } else {
       this.parentComponent.createComponent(
         this.nodeDate.isChildrComponentCall,
+        '',
         false,
         null,
         this.decisionBlock,
@@ -465,7 +468,12 @@ export class UpdateSingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-      this.sendLines.emit(this.line);
+      // this.sendLines.emit(this.line);
+      this.sendLines.emit({
+        componentId: this.componentId,
+        line: this.line,
+        label: this.lineLabel,
+      });
     } else {
       // if dynamic components are created from another dynamic component
       this.line = new LeaderLine(
@@ -474,14 +482,18 @@ export class UpdateSingleBlockComponent
         this.lineOptions
       );
 
-      this.sendLines.emit(this.line);
+      // this.sendLines.emit(this.line);
+      this.sendLines.emit({
+        componentId: this.componentId,
+        line: this.line,
+        label: this.lineLabel,
+      });
     }
   }
 
   deleteComponent(): void {
-    this.parentComponent.linesArr = this.parentComponent.linesArr.filter(
-      (item) => item._id != this.line._id
-    );
+    this.parentComponent.linesMap.delete(this.componentId);
+    console.log('line removed', this.parentComponent.linesMap);
     this.removeItem.emit(this.componentId);
     this.line.remove();
   }
@@ -491,7 +503,7 @@ export class UpdateSingleBlockComponent
   }
 
   onDragOver(e: any) {
-    this.parentComponent.linesArr.forEach((line) => {
+    this.parentComponent.linesMap.forEach((line, key, map) => {
       line.position();
     });
   }
