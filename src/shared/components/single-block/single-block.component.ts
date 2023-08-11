@@ -18,6 +18,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ModalComponent } from '../modal/modal.component';
 
 declare var LeaderLine: any;
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-single-block',
@@ -466,6 +467,7 @@ export class SingleBlockComponent
         (x) => x.displayName === this.selectedNode.childNodeName
       );
       tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
+      console.log(this.nodeModel);
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
@@ -515,6 +517,9 @@ export class SingleBlockComponent
     console.log('e🙌', e, this.activityState);
     this.closeModal();
     this.addComponent();
+    let myToastEl = document.getElementById('liveToast');
+    let toast = new bootstrap.Toast(myToastEl, { delay: 5000 });
+    toast.show();
   };
 
   onEditNodeDetailsSave = (data) => {

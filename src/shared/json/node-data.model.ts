@@ -86,6 +86,9 @@ export const nodeProperties = [
         label: 'Execute this event',
         type: 'select',
         value: null,
+        toolTip: true,
+        toolTipText:
+          'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni, neque.',
         placeholder: "All date/time are based on the user's system timezone.",
         hidden: false,
         linkedFields: true,

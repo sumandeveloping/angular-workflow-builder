@@ -98,9 +98,14 @@
               class="nodeProperty-display-container"
               *ngIf="displayNode && !loading"
             >
-              <h6 class="selectedNode-heading">
-                {{ selectedNode?.childNodeName }}
-              </h6>
+              <div class="selectedNode-info">
+                <h6 class="selectedNode-heading">
+                  {{ selectedNode?.childNodeName }}
+                </h6>
+                <span class="selectedNode-description">{{
+                  selectedNode?.childNodeDescription
+                }}</span>
+              </div>
               <app-dynamic-form
                 [model]="nodeModel"
                 (add)="onAdd($event)"

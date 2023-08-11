@@ -1,11 +1,33 @@
-<section>
+<section style="position: relative" class="wfb-builder-container">
   <!-- customNavClass="nav-test-class" customTabsClass="containerrr" -->
 
-  <div class="w-100 d-flex justify-space-between">
+  <div
+    class="w-100 d-flex justify-space-between wfb-builder-container--options"
+  >
     <h4>Build Your Campaign</h4>
     <div class="btn-group">
       <a href="#" class="btn btn-primary me-3">Save</a>
       <a href="#" class="btn btn-secondary">Back</a>
+    </div>
+    <div class="toast-container position-absolute p-3">
+      <div
+        class="toast align-items-center text-white bg-dark border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        data-bs-autohide="true"
+        id="liveToast"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Node added!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="builder">
@@ -100,9 +122,14 @@
               class="nodeProperty-display-container"
               *ngIf="displayNode && !loading"
             >
-              <h6 class="selectedNode-heading">
-                {{ selectedNode?.childNodeName }}
-              </h6>
+              <div class="selectedNode-info">
+                <h6 class="selectedNode-heading">
+                  {{ selectedNode?.childNodeName }}
+                </h6>
+                <span class="selectedNode-description">{{
+                  selectedNode?.childNodeDescription
+                }}</span>
+              </div>
               <app-dynamic-form
                 [model]="nodeModel"
                 (add)="onAdd($event)"

@@ -15,6 +15,8 @@ import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-workflow-builder',
   templateUrl: './workflow-builder.component.html',
@@ -400,6 +402,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.activityState = { state: e };
     this.closeModal();
     this.createComponent(this.nodeDate.event, false, 'Label');
+    let myToastEl = document.getElementById('liveToast');
+    let toast = new bootstrap.Toast(myToastEl, { delay: 5000 });
+    toast.show();
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {
@@ -417,6 +422,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       this.dynamicComponentsObj
     );
   };
+
+  // // Additional
+  // showToast = (e: Event) => {};
 
   ngOnDestroy(): void {
     if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();
