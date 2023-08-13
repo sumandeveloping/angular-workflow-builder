@@ -90,6 +90,10 @@
           <div class="list-group wfb-decision-action-list">
             <a
               *ngFor="let childNode of childNodesToConnect; let i = index"
+              [ngbPopover]="childNode.childNodeDescription"
+              triggers="mouseenter:mouseleave"
+              popoverClass="custom-popover"
+              placement="left"
               [ngClass]="{
                 'list-group-item': true,
                 'list-group-item-action': true,

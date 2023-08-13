@@ -111,6 +111,10 @@
                   | filterNodeCategory : filterText;
                 let i = index
               "
+              [ngbPopover]="childNode.childNodeDescription"
+              triggers="mouseenter:mouseleave"
+              popoverClass="custom-popover"
+              placement="left"
               [ngClass]="{
                 'list-group-item': true,
                 'list-group-item-action': true,
