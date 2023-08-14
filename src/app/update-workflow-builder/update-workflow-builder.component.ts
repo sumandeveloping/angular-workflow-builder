@@ -231,7 +231,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         this.selectedNode =
           this.dynamicComponentsObj[comp.componentId].nodeInformation;
         console.log('selectedNode', comp.parentComponentId, this.selectedNode);
-        await this.createComponent(false, 'RootLabel', true, comp.componentId);
+        await this.createComponent(false, '', true, comp.componentId);
       } else {
         // this.selectedNode =
         //   this.dynamicComponentsObj[comp.componentId].nodeInformation;
@@ -271,30 +271,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     // dynamicComponent.setInput('isEditRendering', isEditRendering);
     // }
 
-    if (isChildComponentCall) {
-      dynamicComponent.setInput('parentIndex', parentIndex);
-      dynamicComponent.setInput('parentElementRef', parentElementRef);
-      dynamicComponent.setInput('parentDynamicComponent', parentComponent);
-      dynamicComponent.setInput(
-        'nodeInformation',
-        parentComponent.selectedNode
-      );
-      //store the component connections for backend
-      const connectionObj = {
-        sourceActivityId: parentComponent.componentId,
-        destinationActivityId: newComponentId,
-        outcome: 'Action 1',
-        sourceActivityNameType:
-          parentComponent.nodeInformation.childNodeNameType,
-        destinationActivityNameType:
-          parentComponent.selectedNode.childNodeNameType,
-      };
-      this.connections.push(connectionObj);
-      console.log('this.connections 🔥', this.connections);
-    } else {
-      //if created from root component (i.e segment)
-      dynamicComponent.setInput('nodeInformation', this.selectedNode);
-    }
     // this.components.push(dynamicComponent);
     // dynamicComponent.setInput(
     //   'index',
@@ -387,6 +363,30 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           faulted: false,
         });
       }
+    }
+    if (isChildComponentCall) {
+      dynamicComponent.setInput('parentIndex', parentIndex);
+      dynamicComponent.setInput('parentElementRef', parentElementRef);
+      dynamicComponent.setInput('parentDynamicComponent', parentComponent);
+      dynamicComponent.setInput(
+        'nodeInformation',
+        parentComponent.selectedNode
+      );
+      //store the component connections for backend
+      const connectionObj = {
+        sourceActivityId: parentComponent.componentId,
+        destinationActivityId: newComponentId,
+        outcome: 'Action 1',
+        sourceActivityNameType:
+          parentComponent.nodeInformation.childNodeNameType,
+        destinationActivityNameType:
+          parentComponent.selectedNode.childNodeNameType,
+      };
+      this.connections.push(connectionObj);
+      console.log('this.connections 🔥', this.connections);
+    } else {
+      //if created from root component (i.e segment)
+      dynamicComponent.setInput('nodeInformation', this.selectedNode);
     }
     //saving index and raw components
     this.components.push(dynamicComponent);
@@ -508,6 +508,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         dynamicComponent.destroy();
         await this.removeInvalidLines();
         this.removeInvalidChildComponents();
+        this.removeInvalidsourceActivity(componentId);
       }
     );
   }
@@ -553,6 +554,14 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         resolve(true);
       });
     });
+  };
+
+  removeInvalidsourceActivity = (componentId: string) => {
+    this.connections = this.connections.filter(
+      (item) =>
+        item.sourceActivityId != componentId &&
+        item.destinationActivityId != componentId
+    );
   };
 
   showModal = (e: any) => {
