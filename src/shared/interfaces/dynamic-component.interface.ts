@@ -14,6 +14,6 @@ export interface DynamicComponent {
   dynamicPositionOfParentComponents(): void;
   dynamicPositionOfChildComponents(parentElementRef: ElementRef): void;
   onDragStart(event: any | MouseEvent | Event): void;
-  onDragOver(event: any | MouseEvent | Event): void;
+  // onDragOver(event: any | MouseEvent | Event): void;
   onDragEnd?(event: any | MouseEvent | Event): void;
 }

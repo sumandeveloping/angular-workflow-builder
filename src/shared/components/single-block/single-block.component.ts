@@ -426,9 +426,75 @@ export class SingleBlockComponent
   }
 
   onDragOver(e: any) {
+    // console.log(e);
     this.parentComponent.linesMap.forEach((line, key, map) => {
       line.position();
     });
+  }
+
+  onDragMoveEnd(
+    e: { x: number; y: number },
+    data: { isCreatedFromChild: boolean; componentId: string }
+  ) {
+    console.log('client x y', e, data);
+    const { x: clientX, y: clientY } = e;
+    const { isCreatedFromChild: isChild, componentId } = data;
+    const { prevX, prevY } = {
+      prevX: this.parentComponent.dynamicComponentsObj[componentId].xPos,
+      prevY: this.parentComponent.dynamicComponentsObj[componentId].yPos,
+    };
+    console.log('prev x y', prevX, prevY);
+    let currentX: number;
+    let currentY: number;
+    currentX = clientX + prevX;
+    currentY = clientY + prevY;
+    console.log('Current x y', currentX, currentY);
+    //step1. update dynamic components obj and its activity property (activity.x & activity.y too)
+    const prevData = this.parentComponent.dynamicComponentsObj[componentId];
+    this.parentComponent.dynamicComponentsObj[componentId].xPos = currentX;
+    this.parentComponent.dynamicComponentsObj[componentId].yPos = currentY;
+    const newActivity = {
+      ...this.parentComponent.activities.get(componentId),
+      x: currentX,
+      y: currentY,
+    };
+    this.parentComponent.dynamicComponentsObj[componentId].activity =
+      newActivity;
+    // this.parentComponent.dynamicComponentsObj[componentId].activity.y =
+    //   currentY;
+    console.log(
+      'STORING THE X & Y AFTER DRAG MOVE END😊',
+      this.parentComponent.dynamicComponentsObj[componentId]
+    );
+    //step2. save x & y in the activities object
+    console.log('this need to be updated', this.parentComponent.activities);
+    this.parentComponent.activities.set(componentId, newActivity);
+    console.log('updated activities', this.parentComponent.activities);
+
+    //step3. remove from xCoOrdinates & yCoOrdinates & coOrdinatesOfChildComponents
+    console.log(
+      'prev xCoordinates & yCoordinates',
+      this.parentComponent.xCoOrdinates,
+      this.parentComponent.YCoOrdinates
+    );
+    this.parentComponent.xCoOrdinates =
+      this.parentComponent.xCoOrdinates.filter(
+        (xPos: number) => xPos !== prevX
+      );
+    //save new xPos
+    this.parentComponent.xCoOrdinates.push(currentX);
+
+    this.parentComponent.YCoOrdinates =
+      this.parentComponent.YCoOrdinates.filter(
+        (yPos: number) => yPos !== prevY
+      );
+    this.parentComponent.YCoOrdinates.push(currentY);
+    console.log(
+      'UPDATED xCoordinates & yCoordinates',
+      this.parentComponent.xCoOrdinates,
+      this.parentComponent.YCoOrdinates
+    );
+    //step4. check if child component then remove from coOrdinatesOfChildComponents
   }
 
   showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
@@ -471,7 +537,7 @@ export class SingleBlockComponent
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
-      }, 2000);
+      }, 1000);
     });
   };
 

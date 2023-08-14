@@ -209,6 +209,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         this.populateActivity(componentId, x, y);
         this.xCoOrdinates.push(x);
         this.YCoOrdinates.push(y);
+        console.log('X & Y POSITION', x, y);
         if (data.isChild)
           this.coOrdinatesOfChildComponents.push({
             x,
