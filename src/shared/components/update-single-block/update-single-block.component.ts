@@ -517,6 +517,58 @@ export class UpdateSingleBlockComponent
     });
   }
 
+  onDragMoveEnd(
+    e: { x: number; y: number },
+    data: { isCreatedFromChild: boolean; componentId: string }
+  ) {
+    const { x: clientX, y: clientY } = e;
+    const { isCreatedFromChild: isChild, componentId } = data;
+    const { prevX, prevY } = {
+      prevX: this.parentComponent.dynamicComponentsObj[componentId].xPos,
+      prevY: this.parentComponent.dynamicComponentsObj[componentId].yPos,
+    };
+    let currentX: number;
+    let currentY: number;
+    currentX = clientX + prevX;
+    currentY = clientY + prevY;
+    //step1. update dynamic components obj and its activity property (activity.x & activity.y too)
+    this.parentComponent.dynamicComponentsObj[componentId].xPos = currentX;
+    this.parentComponent.dynamicComponentsObj[componentId].yPos = currentY;
+    const newActivity = {
+      ...this.parentComponent.activities.get(componentId),
+      x: currentX,
+      y: currentY,
+    };
+    this.parentComponent.dynamicComponentsObj[componentId].activity =
+      newActivity;
+    //step2. save x & y in the activities object
+    this.parentComponent.activities.set(componentId, newActivity);
+    //step3. remove from xCoOrdinates & yCoOrdinates
+    //remove old xPos
+    this.parentComponent.xCoOrdinates =
+      this.parentComponent.xCoOrdinates.filter(
+        (xPos: number) => xPos !== prevX
+      );
+    //save new xPos
+    this.parentComponent.xCoOrdinates.push(currentX);
+    //remove old yPos
+    this.parentComponent.YCoOrdinates =
+      this.parentComponent.YCoOrdinates.filter(
+        (yPos: number) => yPos !== prevY
+      );
+    //save new yPos
+    this.parentComponent.YCoOrdinates.push(currentY);
+
+    //step4. check if child component then remove from coOrdinatesOfChildComponents
+    if (isChild)
+      this.parentComponent.coOrdinatesOfChildComponents =
+        this.parentComponent.coOrdinatesOfChildComponents.map((data) => {
+          return data.childComponentID === componentId
+            ? { ...data, x: currentX, y: currentY }
+            : data;
+        });
+  }
+
   showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
     this.nodeDate = {
       event: e,

@@ -3,6 +3,7 @@
   ngDraggable
   (started)="onDragStart($event)"
   (movingOffset)="onDragOver($event)"
+  (endOffset)="onDragMoveEnd($event, {isCreatedFromChild, componentId})"
   class="dynamic-component card"
   #decisionBlock
 >

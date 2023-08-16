@@ -16,4 +16,8 @@ export interface DynamicComponent {
   onDragStart(event: any | MouseEvent | Event): void;
   // onDragOver(event: any | MouseEvent | Event): void;
   onDragEnd?(event: any | MouseEvent | Event): void;
+  onDragMoveEnd(
+    event: { x: number; y: number },
+    data: { isCreatedFromChild: boolean; componentId: string }
+  ): void;
 }
