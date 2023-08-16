@@ -3,6 +3,7 @@
   ngDraggable
   (started)="onDragStart($event)"
   (movingOffset)="onDragOver($event)"
+  (endOffset)="onDragMoveEnd($event, {isCreatedFromChild, componentId})"
   class="dynamic-component card"
   #decisionBlock
 >
@@ -111,6 +112,10 @@
                   | filterNodeCategory : filterText;
                 let i = index
               "
+              [ngbPopover]="childNode.childNodeDescription"
+              triggers="mouseenter:mouseleave"
+              popoverClass="custom-popover"
+              placement="left"
               [ngClass]="{
                 'list-group-item': true,
                 'list-group-item-action': true,
@@ -158,13 +163,18 @@
               class="nodeProperty-display-container"
               *ngIf="displayNode && !loading"
             >
-              <h6
-                class="selectedNode-heading selectedNode-heading--{{
-                  selectedNode.childNodeCategory | lowercase
-                }}"
-              >
-                {{ selectedNode?.childNodeName }}
-              </h6>
+              <div class="selectedNode-info">
+                <h6
+                  class="selectedNode-heading selectedNode-heading--{{
+                    selectedNode.childNodeCategory | lowercase
+                  }}"
+                >
+                  {{ selectedNode?.childNodeName }}
+                </h6>
+                <span class="selectedNode-description">{{
+                  selectedNode?.childNodeDescription
+                }}</span>
+              </div>
               <app-dynamic-form
                 [model]="nodeModel"
                 (add)="onAdd($event)"

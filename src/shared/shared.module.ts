@@ -17,6 +17,7 @@ import { DynamicInputComponent } from './components/dynamic-field/dynamic-input/
 import { DynamicCheckboxsComponent } from './components/dynamic-field/dynamic-checkboxs/dynamic-checkboxs.component';
 import { FilterNodeCategoryPipe } from './pipes/filter-node-category.pipe';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ReactiveFormsModule,
     NgSelectModule,
     FormsModule,
+    NgbModule,
   ],
   exports: [
     SingleBlockComponent,

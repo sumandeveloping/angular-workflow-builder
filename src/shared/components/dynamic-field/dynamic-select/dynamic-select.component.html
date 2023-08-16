@@ -29,6 +29,13 @@
           for="{{ field.fieldName }}_dynamicForm-select"
           class="wfb-dynamicForm-component--selectLabel"
           >{{ field.label }}
+          <i
+            class="fa fa-question-circle"
+            aria-hidden="true"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-title="This top tooltip is themed via CSS variables."
+          ></i>
           <span
             class="wfb-dynamicForm-component--selectLabel-required"
             *ngIf="field?.rules?.required"

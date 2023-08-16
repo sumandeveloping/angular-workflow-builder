@@ -15,6 +15,8 @@ import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-workflow-builder',
   templateUrl: './workflow-builder.component.html',
@@ -207,6 +209,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         this.populateActivity(componentId, x, y);
         this.xCoOrdinates.push(x);
         this.YCoOrdinates.push(y);
+        console.log('X & Y POSITION', x, y);
         if (data.isChild)
           this.coOrdinatesOfChildComponents.push({
             x,
@@ -426,6 +429,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       this.dynamicComponentsObj
     );
   };
+
+  // // Additional
+  // showToast = (e: Event) => {};
 
   ngOnDestroy(): void {
     if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();

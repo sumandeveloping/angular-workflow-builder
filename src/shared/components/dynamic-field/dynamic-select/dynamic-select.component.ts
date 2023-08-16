@@ -3,6 +3,7 @@ import { FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { filter, takeWhile } from 'rxjs';
 import { MessageService } from 'src/app/services/message.service';
 
+declare var bootstrap: any;
 @Component({
   selector: 'app-dynamic-select',
   templateUrl: './dynamic-select.component.html',
@@ -22,6 +23,11 @@ export class DynamicSelectComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.listenForLinkData();
+    const tooltipTriggerEl = document.querySelector(
+      '[data-bs-toggle="tooltip"]'
+    );
+    const tooltip = new bootstrap.Tooltip(tooltipTriggerEl);
+    // tooltip.show();
   }
 
   ngOnDestroy() {
