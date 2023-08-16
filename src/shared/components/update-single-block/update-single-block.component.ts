@@ -108,7 +108,7 @@ export class UpdateSingleBlockComponent
     this.initializeNodeInformation();
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     //Set Dynamic Position of the components
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
@@ -141,11 +141,14 @@ export class UpdateSingleBlockComponent
           childComponentID,
           this.selectedNode
         );
-        this.addComponentOnEdit(true, childComponentID);
+        this.addComponentOnEdit(true, '', childComponentID);
       }
     }
-
     // }
+    const label: any = await this.getLineLabel(
+      this.parentComponent.activities.get(this.componentId).state
+    );
+    this.addOrUpdateLabel(label);
     console.log(
       'VIEW INITIALIZATION😊',
       this.parentComponent.componentsToRender,
@@ -166,12 +169,16 @@ export class UpdateSingleBlockComponent
     this.childNodesToConnect = this.nodeDetails.childNodeIds;
   }
 
-  addComponentOnEdit(isEditRendering: boolean, editComponentID?: string): void {
+  async addComponentOnEdit(
+    isEditRendering: boolean,
+    label: string,
+    editComponentID?: string
+  ): Promise<void> {
     // this.displayModal = !this.displayModal;
     if (isEditRendering) {
       this.parentComponent.createComponent(
         true,
-        '',
+        label,
         isEditRendering,
         editComponentID,
         this.decisionBlock,
@@ -655,14 +662,38 @@ export class UpdateSingleBlockComponent
     });
   };
 
-  onAdd = (e) => {
+  onAdd = async (e) => {
     this.activityState = { state: e };
     console.log('e🙌', e, this.activityState);
     this.closeModal();
-    this.addComponentOnEdit(false);
+    const label: any = await this.getLineLabel(e);
+    this.addComponentOnEdit(false, label);
   };
 
-  onEditNodeDetailsSave = (data) => {
+  getLineLabel = (nodeData: any) => {
+    return new Promise((resolve) => {
+      switch (nodeData.executeThisEvent) {
+        case 'immediately':
+          resolve('Immediately');
+          break;
+        case 'at a relative time period':
+          resolve(
+            `Send after ${nodeData.intervalValue} ${nodeData.intervalUnit}`
+          );
+          break;
+        case 'at a specific date/time':
+          resolve(`Send on ${nodeData.date}`);
+          break;
+        default:
+          resolve('');
+          break;
+      }
+
+      resolve('');
+    });
+  };
+
+  onEditNodeDetailsSave = async (data) => {
     console.log('data on edit', data);
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
@@ -681,7 +712,17 @@ export class UpdateSingleBlockComponent
       this.parentComponent.dynamicComponentsObj
     );
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
+    const label: any = await this.getLineLabel(data);
+    label && label != '' ? this.addOrUpdateLabel(label) : null;
     this.closeModal();
+  };
+
+  addOrUpdateLabel = (label: string) => {
+    this.sendLines.emit({
+      componentId: this.componentId,
+      line: this.line,
+      label: label,
+    });
   };
 
   onFilterChange = (filterTerm: string) => {

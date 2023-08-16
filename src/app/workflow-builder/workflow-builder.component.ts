@@ -102,7 +102,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   public async createComponent(
     e: any,
     isChildComponentCall: boolean = false,
-    componentLabel: string,
+    componentLabel?: string,
     parentElementRef?: ElementRef,
     parentIndex?: number,
     parentComponent?: SingleBlockComponent
@@ -297,6 +297,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         dynamicComponent.destroy();
         await this.removeInvalidLines();
         this.removeInvalidChildComponents();
+        this.removeInvalidsourceActivity(componentId);
       }
     );
   }
@@ -342,6 +343,14 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         resolve(true);
       });
     });
+  };
+
+  removeInvalidsourceActivity = (componentId: string) => {
+    this.connections = this.connections.filter(
+      (item) =>
+        item.sourceActivityId != componentId &&
+        item.destinationActivityId != componentId
+    );
   };
 
   showModal = (e: any) => {
@@ -402,10 +411,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     console.log('e🙌', e);
     this.activityState = { state: e };
     this.closeModal();
-    this.createComponent(this.nodeDate.event, false, 'Label');
-    let myToastEl = document.getElementById('liveToast');
-    let toast = new bootstrap.Toast(myToastEl, { delay: 5000 });
-    toast.show();
+    this.createComponent(this.nodeDate.event, false);
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {

@@ -144,12 +144,12 @@ export class SingleBlockComponent
     );
   }
 
-  addComponent(): void {
+  addComponent(label: string): void {
     this.displayModal = !this.displayModal;
     this.parentComponent.createComponent(
       this.nodeDate.event,
       this.nodeDate.isChildrComponentCall,
-      '',
+      label,
       this.decisionBlock,
       this.nodeDate.parentIndex,
       this
@@ -399,11 +399,7 @@ export class SingleBlockComponent
       );
 
       // this.sendLines.emit(this.line);
-      this.sendLines.emit({
-        componentId: this.componentId,
-        line: this.line,
-        label: this.lineLabel,
-      });
+      this.addOrUpdateLabel(this.lineLabel);
     } else {
       // if dynamic components are created from another dynamic component
       this.line = new LeaderLine(
@@ -413,11 +409,7 @@ export class SingleBlockComponent
       );
 
       // this.sendLines.emit(this.line);
-      this.sendLines.emit({
-        componentId: this.componentId,
-        line: this.line,
-        label: this.lineLabel,
-      });
+      this.addOrUpdateLabel(this.lineLabel);
     }
   }
 
@@ -564,17 +556,38 @@ export class SingleBlockComponent
     });
   };
 
-  onAdd = (e) => {
+  onAdd = async (e) => {
     this.activityState = { state: e };
     console.log('e🙌', e, this.activityState);
     this.closeModal();
-    this.addComponent();
-    let myToastEl = document.getElementById('liveToast');
-    let toast = new bootstrap.Toast(myToastEl, { delay: 5000 });
-    toast.show();
+    const label: any = await this.getLineLabel(e);
+    this.addComponent(label);
   };
 
-  onEditNodeDetailsSave = (data) => {
+  getLineLabel = (nodeData: any) => {
+    return new Promise((resolve) => {
+      switch (nodeData.executeThisEvent) {
+        case 'immediately':
+          resolve('Immediately');
+          break;
+        case 'at a relative time period':
+          resolve(
+            `Send after ${nodeData.intervalValue} ${nodeData.intervalUnit}`
+          );
+          break;
+        case 'at a specific date/time':
+          resolve(`Send on ${nodeData.date}`);
+          break;
+        default:
+          resolve('');
+          break;
+      }
+
+      resolve('');
+    });
+  };
+
+  onEditNodeDetailsSave = async (data) => {
     console.log('data on edit', data);
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
@@ -592,8 +605,18 @@ export class SingleBlockComponent
       this.parentComponent.activities.get(this.componentId),
       this.parentComponent.dynamicComponentsObj[this.componentId]
     );
+    const label: any = await this.getLineLabel(data);
+    label && label != '' ? this.addOrUpdateLabel(label) : null;
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     this.closeModal();
+  };
+
+  addOrUpdateLabel = (label: string) => {
+    this.sendLines.emit({
+      componentId: this.componentId,
+      line: this.line,
+      label: label,
+    });
   };
 
   onFilterChange = (filterTerm: string) => {
