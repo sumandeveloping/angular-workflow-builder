@@ -1,9 +1,12 @@
 .wfb-dynamicForm-parent {
-  height: 90%;
+  // height: 70%;
+  height: calc(
+    20rem - 4.5rem
+  ); //** this depends on the height of ('.node-property-loader'  - '.selectedNode-info')
   position: relative;
 }
 .wfb-dynamicForm-wrapper {
-  height: 80%;
+  height: 82%;
   overflow-y: auto;
 }
 

@@ -4,7 +4,7 @@ export interface dynamicComponentHash {
     childs: string[];
     connecters: any[];
     nodeInformation: object;
-    activity: object;
+    activity: any;
     xPos?: number;
     yPos?: number;
     [propName: string]: any;

@@ -1,8 +1,29 @@
+.wfb-builder-container {
+  position: relative;
+  height: 100vh;
+  background-color: green;
+  &--options {
+    width: 100%;
+    display: flex;
+    height: 60px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.8rem;
+
+    .toast-container {
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0%);
+    }
+  }
+}
+
 .builder {
   position: relative;
   width: auto;
   // overflow: auto;
-  height: 90vh;
+  // height: 90vh;
+  height: calc(100vh - 60px);
 
   &-rootNode {
     position: absolute;
@@ -88,7 +109,8 @@
     height: 100%;
     // top: 150px;
     left: 0;
-    background: linear-gradient(120deg, #0d1353, #322bcc);
+    background-color: #f7f7f7;
+    // background: linear-gradient(120deg, #0d1353, #322bcc);
     // background-color: #eaeaea; //   #17153c
   }
 }
