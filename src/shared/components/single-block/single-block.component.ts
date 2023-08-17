@@ -458,6 +458,29 @@ export class SingleBlockComponent
         (x) => x.displayName === this.selectedNode.childNodeName
       );
       tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
+      this.nodeDetails.parentNodeCategory === 'DECISION' &&
+      Object.keys(this.nodeModel).length > 0
+        ? (this.nodeModel['decisionOutcome'] = {
+            label: 'Take this action if previous decision outcome is',
+            type: 'select',
+            value: null,
+            placeholder: '',
+            hidden: false,
+            rules: {
+              required: true,
+            },
+            options: [
+              {
+                label: 'positive',
+                value: 'positive',
+              },
+              {
+                label: 'negative',
+                value: 'negative',
+              },
+            ],
+          })
+        : null;
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);

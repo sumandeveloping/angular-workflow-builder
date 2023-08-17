@@ -560,6 +560,10 @@ export class UpdateSingleBlockComponent
         (x) => x.displayName === this.selectedNode.childNodeName
       );
       tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
+      this.nodeDetails.parentNodeCategory === 'DECISION' &&
+      Object.keys(this.nodeModel).length > 0
+        ? this.addDecisionOutcome(this.nodeModel)
+        : null;
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
@@ -593,6 +597,11 @@ export class UpdateSingleBlockComponent
       const savedFormData = this.parentComponent.activities.get(
         this.componentId
       ).state;
+      Object.hasOwn(savedFormData, 'decisionOutcome') &&
+      Object.keys(this.nodeModelForExistingNodeEdit).length > 0 &&
+      !Object.hasOwn(this.nodeModelForExistingNodeEdit, 'decisionOutcome')
+        ? this.addDecisionOutcome(this.nodeModelForExistingNodeEdit)
+        : null;
       for (const key in this.nodeModelForExistingNodeEdit) {
         //making dropdown visible as per the saved value
         if (
@@ -608,6 +617,29 @@ export class UpdateSingleBlockComponent
       }
       resolve(true);
     });
+  };
+
+  addDecisionOutcome = (obj: object) => {
+    obj['decisionOutcome'] = {
+      label: 'Take this action if previous decision outcome is',
+      type: 'select',
+      value: null,
+      placeholder: '',
+      hidden: false,
+      rules: {
+        required: true,
+      },
+      options: [
+        {
+          label: 'positive',
+          value: 'positive',
+        },
+        {
+          label: 'negative',
+          value: 'negative',
+        },
+      ],
+    };
   };
 
   onAdd = async (e) => {
