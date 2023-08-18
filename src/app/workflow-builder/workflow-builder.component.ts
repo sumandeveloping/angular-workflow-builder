@@ -9,6 +9,7 @@ import { ModalComponent } from 'src/shared/components/modal/modal.component';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
 import { NodeNameType } from 'src/shared/enums/nodeName-type.enum';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
+import { DynamicComponentConfig } from 'src/shared/interfaces/configOptions.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
 import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
 import { nodeProperties } from 'src/shared/json/node-data.model';
@@ -41,7 +42,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   linesMap = new Map<string, any>();
   displayModal: boolean = false;
   nodeDate = {
-    event: null,
     parentIndex: null,
     isChildComponentCall: null,
   };
@@ -99,14 +99,14 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.childNodesToConnect = this.nodeInformation.childNodeIds;
   }
 
-  public async createComponent(
-    e: any,
-    isChildComponentCall: boolean = false,
-    componentLabel?: string,
-    parentElementRef?: ElementRef,
-    parentIndex?: number,
-    parentComponent?: SingleBlockComponent
-  ) {
+  public async createComponent(configOptions: DynamicComponentConfig) {
+    const {
+      isChildComponentCall,
+      componentLabel,
+      parentComponent,
+      parentElementRef,
+      parentIndex,
+    } = configOptions;
     // this.container.clear();
     console.log('YOLOOOOO', parentComponent?.activityState);
 
@@ -195,17 +195,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         isChild?: boolean;
       }) => {
         let { x, y, componentId, isChild } = data;
-        console.log(
-          'component Position 💥🔥',
-          data,
-          'isChild',
-          isChild,
-          this.activityState
-        );
         this.populateActivity(componentId, x, y);
         this.xCoOrdinates.push(x);
         this.YCoOrdinates.push(y);
-        console.log('X & Y POSITION', x, y);
         if (data.isChild)
           this.coOrdinatesOfChildComponents.push({
             x,
@@ -213,10 +205,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
             childComponentID: componentId,
             isChild: isChild,
           });
-        console.log(
-          'this.coOrdinatesOfChildComponents',
-          this.coOrdinatesOfChildComponents
-        );
         //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
         this.dynamicComponentsObj[data.componentId].xPos = x;
         this.dynamicComponentsObj[data.componentId].yPos = y;
@@ -226,13 +214,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     //Get connected lines
     this.linesSubscriptions = dynamicComponent.instance.sendLines.subscribe(
       (linesObj: { componentId: string; line: any; label: string }) => {
-        const { componentId, line, label } = linesObj;
-        if (label)
-          linesObj.line.setOptions({
-            middleLabel: label,
-          });
-
-        this.linesMap.set(componentId, line);
+        this.lineSubscriptionsHandler(linesObj);
       }
     );
 
@@ -245,6 +227,20 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  lineSubscriptionsHandler = (lineConfig: {
+    componentId: string;
+    line: any;
+    label: string;
+  }) => {
+    const { componentId, line, label } = lineConfig;
+    if (label)
+      line.setOptions({
+        middleLabel: label,
+      });
+
+    this.linesMap.set(componentId, line);
+  };
 
   removeComponentHandler(
     componentId: string,
@@ -363,7 +359,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   showModal = (e: any) => {
     this.nodeDate = {
-      event: e,
       parentIndex: null,
       isChildComponentCall: false,
     };
@@ -418,7 +413,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   onAdd = (e: any) => {
     this.activityState = { state: e };
     this.closeModal();
-    this.createComponent(this.nodeDate.event, false);
+    this.createComponent({ isChildComponentCall: false });
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {

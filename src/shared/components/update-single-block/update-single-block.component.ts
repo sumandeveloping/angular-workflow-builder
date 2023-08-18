@@ -113,12 +113,6 @@ export class UpdateSingleBlockComponent
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
     this.renderLinesBetweenComponents();
-    console.log(
-      'VIEW INITIALIZATION',
-      this.parentComponent.componentsToRender,
-      this.componentId,
-      'hello'
-    );
     this.parentComponent.componentsToRender =
       this.parentComponent.componentsToRender.filter(
         (compObj: any) => compObj.componentId !== this.componentId
@@ -172,29 +166,27 @@ export class UpdateSingleBlockComponent
   async addComponentOnEdit(
     isEditRendering: boolean,
     label: string,
-    editComponentID?: string
+    editComponentId?: string
   ): Promise<void> {
     // this.displayModal = !this.displayModal;
     if (isEditRendering) {
-      this.parentComponent.createComponent(
-        true,
-        label,
+      this.parentComponent.createComponent({
+        isChildComponentCall: true,
+        componentLabel: label,
         isEditRendering,
-        editComponentID,
-        this.decisionBlock,
-        this.nodeDate.parentIndex,
-        this
-      );
+        editComponentId,
+        parentElementRef: this.decisionBlock,
+        parentIndex: this.nodeDate.parentIndex,
+        parentComponent: this,
+      });
     } else {
-      this.parentComponent.createComponent(
-        this.nodeDate.isChildrComponentCall,
-        '',
-        false,
-        null,
-        this.decisionBlock,
-        this.parentIndex,
-        this
-      );
+      this.parentComponent.createComponent({
+        isChildComponentCall: this.nodeDate.isChildrComponentCall,
+        isEditRendering: false,
+        parentElementRef: this.decisionBlock,
+        parentIndex: this.parentIndex,
+        parentComponent: this,
+      });
     }
   }
 
@@ -203,21 +195,6 @@ export class UpdateSingleBlockComponent
     isCreatedFromChild: boolean,
     parentElementRef: ElementRef
   ): void {
-    // console.log(
-    //   'View initialized!!',
-    //   this.decisionBlock.nativeElement.offsetLeft,
-    //   this.decisionBlock.nativeElement.offsetTop,
-    //   this.decisionBlock.nativeElement.offsetWidth,
-    //   this.decisionBlock.nativeElement.offsetHeight
-    // );
-    console.log(
-      'tessss',
-      this.isEditRendering,
-      this.componentId,
-      this.parentComponent.dynamicComponentsObj[this.componentId].xPos,
-      this.parentComponent.dynamicComponentsObj[this.componentId].yPos
-    );
-
     if (!isCreatedFromChild) {
       this.dynamicPositionOfParentComponents();
     } else {
@@ -484,12 +461,6 @@ export class UpdateSingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-      // this.sendLines.emit(this.line);
-      this.sendLines.emit({
-        componentId: this.componentId,
-        line: this.line,
-        label: this.lineLabel,
-      });
     } else {
       // if dynamic components are created from another dynamic component
       this.line = new LeaderLine(
@@ -497,13 +468,6 @@ export class UpdateSingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-
-      // this.sendLines.emit(this.line);
-      this.sendLines.emit({
-        componentId: this.componentId,
-        line: this.line,
-        label: this.lineLabel,
-      });
     }
   }
 

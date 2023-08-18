@@ -15,6 +15,7 @@ import { ModalComponent } from 'src/shared/components/modal/modal.component';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
 import { UpdateSingleBlockComponent } from 'src/shared/components/update-single-block/update-single-block.component';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
+import { DynamicComponentEditConfig } from 'src/shared/interfaces/configOptions.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
 import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
 import { nodeProperties } from 'src/shared/json/node-data.model';
@@ -234,21 +235,26 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       if (!comp.parentComponentId) {
         this.selectedNode =
           this.dynamicComponentsObj[comp.componentId].nodeInformation;
-        await this.createComponent(false, '', true, comp.componentId);
+        // await this.createComponent(false, '', true, comp.componentId);
+        await this.createComponent({
+          isChildComponentCall: false,
+          isEditRendering: true,
+          editComponentId: comp.componentId,
+        });
       }
     }
   };
 
-  public async createComponent(
-    isChildComponentCall: boolean = false,
-    componentLabel?: string,
-    isEditRendering?: boolean,
-    editComponentId?: string,
-    parentElementRef?: ElementRef,
-    parentIndex?: number,
-    parentComponent?: UpdateSingleBlockComponent
-  ) {
-    // this.container.clear();
+  public async createComponent(configOptions: DynamicComponentEditConfig) {
+    const {
+      isChildComponentCall,
+      componentLabel,
+      parentComponent,
+      parentElementRef,
+      parentIndex,
+      isEditRendering,
+      editComponentId,
+    } = configOptions;
     const dynamicComponent: ComponentRef<UpdateSingleBlockComponent> =
       this.container.createComponent<UpdateSingleBlockComponent>(
         UpdateSingleBlockComponent
@@ -356,13 +362,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         isEditRendering?: boolean;
       }) => {
         let { x, y, componentId, isChild, isEditRendering } = data;
-        console.log(
-          'component Position 💥🔥',
-          data,
-          'isChild',
-          isChild,
-          this.activityState
-        );
         this.populateActivity(componentId, x, y, isEditRendering);
         this.xCoOrdinates.push(x);
         this.YCoOrdinates.push(y);
@@ -373,12 +372,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
             childComponentID: componentId,
             isChild: isChild,
           });
-        console.log('xCoOrdinates💥', this.xCoOrdinates);
-        console.log('YCoOrdinates💥', this.YCoOrdinates);
-        console.log(
-          'this.coOrdinatesOfChildComponents',
-          this.coOrdinatesOfChildComponents
-        );
         //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
         if (!isEditRendering) {
           this.dynamicComponentsObj[data.componentId].xPos = x;
@@ -390,18 +383,10 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     //Get connected lines
     this.linesSubscriptions = dynamicComponent.instance.sendLines.subscribe(
       (linesObj: { componentId: string; line: any; label: string }) => {
-        // this.linesArr.push(lines);
-        const { componentId, line, label } = linesObj;
-        if (label)
-          linesObj.line.setOptions({
-            middleLabel: label,
-          });
-
-        this.linesMap.set(componentId, line);
+        this.lineSubscriptionsHandler(linesObj);
       }
     );
 
-    // this.cdr.detectChanges();
     this.removeSubscriptions = dynamicComponent.instance.removeItem.subscribe(
       async (componentId: string) => {
         this.removeComponentHandler(componentId, dynamicComponent);
@@ -411,6 +396,20 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  lineSubscriptionsHandler = (lineConfig: {
+    componentId: string;
+    line: any;
+    label: string;
+  }) => {
+    const { componentId, line, label } = lineConfig;
+    if (label)
+      line.setOptions({
+        middleLabel: label,
+      });
+
+    this.linesMap.set(componentId, line);
+  };
 
   removeComponentHandler(
     componentId: string,
@@ -579,7 +578,10 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   onAdd = (e: any) => {
     this.activityState = { state: e };
     this.closeModal();
-    this.createComponent();
+    this.createComponent({
+      isChildComponentCall: false,
+      isEditRendering: false,
+    });
   };
 
   populateActivity = async (

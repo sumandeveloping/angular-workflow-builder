@@ -16,6 +16,7 @@ import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ModalComponent } from '../modal/modal.component';
+import { DynamicComponentConfig } from 'src/shared/interfaces/configOptions.interface';
 
 declare var LeaderLine: any;
 declare var bootstrap: any;
@@ -63,7 +64,6 @@ export class SingleBlockComponent
   displayModal: boolean = false;
   showModalForm: boolean = false;
   nodeDate = {
-    event: null,
     parentIndex: null,
     isChildrComponentCall: null,
   };
@@ -146,14 +146,14 @@ export class SingleBlockComponent
 
   addComponent(label: string): void {
     this.displayModal = !this.displayModal;
-    this.parentComponent.createComponent(
-      this.nodeDate.event,
-      this.nodeDate.isChildrComponentCall,
-      label,
-      this.decisionBlock,
-      this.nodeDate.parentIndex,
-      this
-    );
+    const componentConfigurations: DynamicComponentConfig = {
+      isChildComponentCall: this.nodeDate.isChildrComponentCall,
+      componentLabel: label,
+      parentElementRef: this.decisionBlock,
+      parentIndex: this.nodeDate.parentIndex,
+      parentComponent: this,
+    };
+    this.parentComponent.createComponent(componentConfigurations);
   }
 
   deleteComponent(): void {
@@ -477,7 +477,6 @@ export class SingleBlockComponent
 
   showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
     this.nodeDate = {
-      event: e,
       parentIndex: parentIndex,
       isChildrComponentCall: isChildrComponentCall,
     };
