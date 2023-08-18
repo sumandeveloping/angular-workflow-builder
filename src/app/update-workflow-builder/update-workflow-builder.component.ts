@@ -37,11 +37,9 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   @ViewChild('modalDialog') modalDialog: ModalComponent;
   components: ComponentRef<UpdateSingleBlockComponent>[] = [];
   componentsFromRoot: ComponentRef<UpdateSingleBlockComponent>[] = [];
-  // dynamicComponentsObj: dynamicComponentHash = {};
   xCoOrdinates: number[] = [];
   YCoOrdinates: number[] = [];
   coOrdinatesOfChildComponents: childComponentConfig[] = [];
-  // linesArr: any[] = [];
   linesMap = new Map<string, any>();
   displayModal: boolean = false;
   nodeDate = {
@@ -235,7 +233,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       if (!comp.parentComponentId) {
         this.selectedNode =
           this.dynamicComponentsObj[comp.componentId].nodeInformation;
-        // await this.createComponent(false, '', true, comp.componentId);
         await this.createComponent({
           isChildComponentCall: false,
           isEditRendering: true,

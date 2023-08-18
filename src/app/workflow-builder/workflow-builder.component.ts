@@ -45,7 +45,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     parentIndex: null,
     isChildComponentCall: null,
   };
-
   removeSubscriptions: Subscription;
   sendSubscriptions: Subscription;
   linesSubscriptions: Subscription;
