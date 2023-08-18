@@ -163,6 +163,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           subject: 'Test Subject',
           senderName: 'Suman Tapader',
           emailToSend: 'email 2',
+          decisionOutcome: 'positive',
         },
       },
       xPos: 509.5,
