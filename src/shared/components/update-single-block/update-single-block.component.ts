@@ -138,7 +138,7 @@ export class UpdateSingleBlockComponent
         this.addComponentOnEdit(true, '', childComponentID);
       }
     }
-    // }
+
     const label: any = await this.getLineLabel(
       this.parentComponent.activities.get(this.componentId).state
     );
@@ -168,7 +168,6 @@ export class UpdateSingleBlockComponent
     label: string,
     editComponentId?: string
   ): Promise<void> {
-    // this.displayModal = !this.displayModal;
     if (isEditRendering) {
       this.parentComponent.createComponent({
         isChildComponentCall: true,
@@ -473,14 +472,11 @@ export class UpdateSingleBlockComponent
 
   deleteComponent(): void {
     this.parentComponent.linesMap.delete(this.componentId);
-    console.log('line removed', this.parentComponent.linesMap);
     this.removeItem.emit(this.componentId);
     this.line.remove();
   }
 
-  onDragStart(e: any) {
-    // console.log('drag Started', e);
-  }
+  onDragStart(e: any) {}
 
   onDragOver(e: any) {
     this.parentComponent.linesMap.forEach((line, key, map) => {
@@ -558,7 +554,6 @@ export class UpdateSingleBlockComponent
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
-    console.log('childNode display', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
@@ -583,7 +578,7 @@ export class UpdateSingleBlockComponent
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
-      }, 2000);
+      }, 400);
     });
   };
 
@@ -604,12 +599,6 @@ export class UpdateSingleBlockComponent
       tempModel
         ? (this.nodeModelForExistingNodeEdit = tempModel.model)
         : (this.nodeModelForExistingNodeEdit = {});
-      console.log('Edit node model', this.nodeModelForExistingNodeEdit);
-      console.log(
-        'Edit node data',
-        this.parentComponent.activities.get(this.componentId)
-      );
-
       const savedFormData = this.parentComponent.activities.get(
         this.componentId
       ).state;
@@ -660,7 +649,6 @@ export class UpdateSingleBlockComponent
 
   onAdd = async (e) => {
     this.activityState = { state: e };
-    console.log('e🙌', e, this.activityState);
     this.closeModal();
     const label: any = await this.getLineLabel(e);
     this.addComponentOnEdit(false, label);
@@ -689,12 +677,11 @@ export class UpdateSingleBlockComponent
     });
   };
 
-  onEditNodeDetailsSave = async (data) => {
-    console.log('data on edit', data);
+  onEditNodeDetailsSave = async (data: any) => {
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
     );
-    console.log('prevNodeDetails', preVNodeDetails);
+
     this.parentComponent.activities.set(this.componentId, {
       ...preVNodeDetails,
       state: { ...data },
@@ -702,11 +689,6 @@ export class UpdateSingleBlockComponent
     this.parentComponent.dynamicComponentsObj[this.componentId].activity = {
       ...this.parentComponent.activities.get(this.componentId),
     };
-    console.log(
-      'Updated node details',
-      this.parentComponent.activities.get(this.componentId),
-      this.parentComponent.dynamicComponentsObj
-    );
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     const label: any = await this.getLineLabel(data);
     label && label != '' ? this.addOrUpdateLabel(label) : null;
@@ -722,7 +704,6 @@ export class UpdateSingleBlockComponent
   };
 
   onFilterChange = (filterTerm: string) => {
-    console.log('filterText', filterTerm);
     this.filterText = filterTerm;
     this.displayNode = false;
     this.selectedNode = {};

@@ -16,8 +16,6 @@ import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
 
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-workflow-builder',
   templateUrl: './workflow-builder.component.html',
@@ -107,8 +105,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentIndex,
     } = configOptions;
     // this.container.clear();
-    console.log('YOLOOOOO', parentComponent?.activityState);
-
     const dynamicComponent: ComponentRef<SingleBlockComponent> =
       this.container.createComponent<SingleBlockComponent>(
         SingleBlockComponent
@@ -193,20 +189,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         componentId?: string;
         isChild?: boolean;
       }) => {
-        let { x, y, componentId, isChild } = data;
-        this.populateActivity(componentId, x, y);
-        this.xCoOrdinates.push(x);
-        this.YCoOrdinates.push(y);
-        if (data.isChild)
-          this.coOrdinatesOfChildComponents.push({
-            x,
-            y,
-            childComponentID: componentId,
-            isChild: isChild,
-          });
-        //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
-        this.dynamicComponentsObj[data.componentId].xPos = x;
-        this.dynamicComponentsObj[data.componentId].yPos = y;
+        this.positionSubscriptionsHandler(data);
       }
     );
 
@@ -226,6 +209,29 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  //position subscriptions
+  positionSubscriptionsHandler = (positionConfig: {
+    x: number;
+    y: number;
+    componentId?: string;
+    isChild?: boolean;
+  }) => {
+    let { x, y, componentId, isChild } = positionConfig;
+    this.populateActivity(componentId, x, y);
+    this.xCoOrdinates.push(x);
+    this.YCoOrdinates.push(y);
+    if (isChild)
+      this.coOrdinatesOfChildComponents.push({
+        x,
+        y,
+        childComponentID: componentId,
+        isChild: isChild,
+      });
+    //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
+    this.dynamicComponentsObj[componentId].xPos = x;
+    this.dynamicComponentsObj[componentId].yPos = y;
+  };
 
   lineSubscriptionsHandler = (lineConfig: {
     componentId: string;
@@ -384,7 +390,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
-    console.log('childNode display', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
@@ -405,7 +410,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
-      }, 1000);
+      }, 400);
     });
   };
 
@@ -416,7 +421,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {
-    console.log('ACTIVITY SETUP', this.activities.get(componentID));
     this.activities.set(componentID, {
       ...this.activities.get(componentID),
       ...{ id: componentID, x, y },
@@ -424,11 +428,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.dynamicComponentsObj[componentID].activity = {
       ...this.activities.get(componentID),
     };
-    console.log(
-      'activity🤖',
-      this.activities.values(),
-      this.dynamicComponentsObj
-    );
   };
 
   //SAVE builder

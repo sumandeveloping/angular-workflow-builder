@@ -358,22 +358,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         isChild?: boolean;
         isEditRendering?: boolean;
       }) => {
-        let { x, y, componentId, isChild, isEditRendering } = data;
-        this.populateActivity(componentId, x, y, isEditRendering);
-        this.xCoOrdinates.push(x);
-        this.YCoOrdinates.push(y);
-        if (data.isChild)
-          this.coOrdinatesOfChildComponents.push({
-            x,
-            y,
-            childComponentID: componentId,
-            isChild: isChild,
-          });
-        //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
-        if (!isEditRendering) {
-          this.dynamicComponentsObj[data.componentId].xPos = x;
-          this.dynamicComponentsObj[data.componentId].yPos = y;
-        }
+        this.positionSubscriptionsHandler(data);
       }
     );
 
@@ -394,6 +379,32 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     );
   }
 
+  //position subscriptions
+  positionSubscriptionsHandler = (positionConfig: {
+    x: number;
+    y: number;
+    componentId?: string;
+    isChild?: boolean;
+    isEditRendering?: boolean;
+  }) => {
+    let { x, y, componentId, isChild, isEditRendering } = positionConfig;
+    this.populateActivity(componentId, x, y, isEditRendering);
+    this.xCoOrdinates.push(x);
+    this.YCoOrdinates.push(y);
+    if (isChild)
+      this.coOrdinatesOfChildComponents.push({
+        x,
+        y,
+        childComponentID: componentId,
+        isChild: isChild,
+      });
+    //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
+    if (!isEditRendering) {
+      this.dynamicComponentsObj[componentId].xPos = x;
+      this.dynamicComponentsObj[componentId].yPos = y;
+    }
+  };
+  //Get connected lines
   lineSubscriptionsHandler = (lineConfig: {
     componentId: string;
     line: any;
@@ -568,7 +579,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
-      }, 1000);
+      }, 400);
     });
   };
 
@@ -587,7 +598,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     y: number,
     isEditRendering: boolean
   ) => {
-    console.log('ACTIVITY SETUP', this.activities.get(componentID));
     this.activities.set(componentID, {
       ...this.activities.get(componentID),
       ...{ id: componentID, x, y },
@@ -597,12 +607,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         ...this.activities.get(componentID),
       };
     }
-
-    console.log(
-      'activity🤖',
-      this.activities.values(),
-      this.dynamicComponentsObj
-    );
   };
 
   //SAVE builder
@@ -615,7 +619,6 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     for (const activity of this.activities.values()) {
       activities.push(activity);
     }
-
     multiTouchCampaignConfig.connections = this.connections;
     multiTouchCampaignConfig.activities = activities;
 
