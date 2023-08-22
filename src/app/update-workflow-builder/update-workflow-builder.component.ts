@@ -64,6 +64,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         parentNodeCategory: 'ACTION',
       },
       activity: {
+        type: 'segment',
         state: {
           sources: 'CL',
           segmentList: null,
@@ -90,6 +91,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeCategory: 'ACTION',
       },
       activity: {
+        type: 'sendEmail',
         state: {
           name: 'Demo Email',
           executeThisEvent: 'immediately',
@@ -115,6 +117,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeCategory: 'DECISION',
       },
       activity: {
+        type: 'openEmail',
         state: {
           name: 'Opening an Email',
         },
@@ -133,6 +136,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeCategory: 'DECISION',
       },
       activity: {
+        type: 'downloadAsset',
         state: {
           name: 'Downloading Asset',
           limitToAsset: '90e777da-42e7-423c-81a1-3e0b2a61f3c9',
@@ -153,6 +157,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         childNodeCategory: 'ACTION',
       },
       activity: {
+        type: 'sendEmail',
         state: {
           name: 'Test Email',
           executeThisEvent: 'immediately',
@@ -176,7 +181,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   /* -------------------------------------------------------------------------- */
   connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
   activities = new Map<string, any>(); // need to send this to BACKEND while SAVING
-  activityState: { state: any };
+  activityState: { state: any; type: string };
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -584,7 +589,10 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
   };
 
   onAdd = (e: any) => {
-    this.activityState = { state: e };
+    this.activityState = {
+      state: e,
+      type: this.selectedNode.childNodeNameType,
+    };
     this.closeModal();
     this.createComponent({
       isChildComponentCall: false,

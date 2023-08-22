@@ -52,7 +52,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   /* -------------------------------------------------------------------------- */
   connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
   activities = new Map<string, any>(); // need to send this to BACKEND while SAVING
-  activityState: { state: any };
+  activityState: { state: any; type: string };
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -390,6 +390,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
+    console.log('childNode', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
@@ -415,7 +416,10 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   };
 
   onAdd = (e: any) => {
-    this.activityState = { state: e };
+    this.activityState = {
+      state: e,
+      type: this.selectedNode.childNodeNameType,
+    };
     this.closeModal();
     this.createComponent({ isChildComponentCall: false });
   };

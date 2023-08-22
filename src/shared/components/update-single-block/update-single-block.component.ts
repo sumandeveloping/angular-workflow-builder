@@ -35,6 +35,7 @@ export class UpdateSingleBlockComponent
   @Input() isEditRendering: boolean = false;
   @Input() isCreatedFromChild: boolean = false;
   @Input() lineLabel: string;
+  @Input() decisionOutcome: string = 'positive';
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
@@ -82,7 +83,7 @@ export class UpdateSingleBlockComponent
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
-  activityState: { state: any };
+  activityState: { state: any; type: string };
   nodeDetails: any;
   childNodesToConnect: any;
   nodeType: string; // truthy / falsy / null
@@ -648,7 +649,10 @@ export class UpdateSingleBlockComponent
   };
 
   onAdd = async (e) => {
-    this.activityState = { state: e };
+    this.activityState = {
+      state: e,
+      type: this.selectedNode.childNodeNameType,
+    };
     this.closeModal();
     const label: any = await this.getLineLabel(e);
     this.addComponentOnEdit(false, label);

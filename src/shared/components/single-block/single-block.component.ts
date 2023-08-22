@@ -85,7 +85,7 @@ export class SingleBlockComponent
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
-  activityState: { state: any };
+  activityState: { state: any; type: string };
   nodeDetails: any;
   childNodesToConnect: any;
   actionNodesToConnect: any;
@@ -486,6 +486,7 @@ export class SingleBlockComponent
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
+    console.log('childNode', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
@@ -571,7 +572,10 @@ export class SingleBlockComponent
   };
 
   onAdd = async (e) => {
-    this.activityState = { state: e };
+    this.activityState = {
+      state: e,
+      type: this.selectedNode.childNodeNameType,
+    };
     this.closeModal();
     const label: any = await this.getLineLabel(e);
     this.addComponent(label);
