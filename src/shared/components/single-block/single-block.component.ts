@@ -16,6 +16,7 @@ import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ModalComponent } from '../modal/modal.component';
+import { DynamicComponentConfig } from 'src/shared/interfaces/configOptions.interface';
 
 declare var LeaderLine: any;
 declare var bootstrap: any;
@@ -63,7 +64,6 @@ export class SingleBlockComponent
   displayModal: boolean = false;
   showModalForm: boolean = false;
   nodeDate = {
-    event: null,
     parentIndex: null,
     isChildrComponentCall: null,
   };
@@ -85,7 +85,7 @@ export class SingleBlockComponent
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
-  activityState: { state: any };
+  activityState: { state: any; type: string };
   nodeDetails: any;
   childNodesToConnect: any;
   actionNodesToConnect: any;
@@ -106,6 +106,7 @@ export class SingleBlockComponent
     private renderer: Renderer2,
     private spinner: NgxSpinnerService
   ) {}
+
   ngOnInit(): void {
     console.log('On INIT ⬇️', this.parentComponent.dynamicComponentsObj);
     console.log('nodeInformation', this.nodeInformation);
@@ -146,19 +147,18 @@ export class SingleBlockComponent
 
   addComponent(label: string): void {
     this.displayModal = !this.displayModal;
-    this.parentComponent.createComponent(
-      this.nodeDate.event,
-      this.nodeDate.isChildrComponentCall,
-      label,
-      this.decisionBlock,
-      this.nodeDate.parentIndex,
-      this
-    );
+    const componentConfigurations: DynamicComponentConfig = {
+      isChildComponentCall: this.nodeDate.isChildrComponentCall,
+      componentLabel: label,
+      parentElementRef: this.decisionBlock,
+      parentIndex: this.nodeDate.parentIndex,
+      parentComponent: this,
+    };
+    this.parentComponent.createComponent(componentConfigurations);
   }
 
   deleteComponent(): void {
     this.parentComponent.linesMap.delete(this.componentId);
-    console.log('line removed', this.parentComponent.linesMap);
     this.removeItem.emit(this.componentId);
     this.line.remove();
   }
@@ -397,9 +397,6 @@ export class SingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-
-      // this.sendLines.emit(this.line);
-      this.addOrUpdateLabel(this.lineLabel);
     } else {
       // if dynamic components are created from another dynamic component
       this.line = new LeaderLine(
@@ -407,10 +404,8 @@ export class SingleBlockComponent
         this.decisionBlock.nativeElement,
         this.lineOptions
       );
-
-      // this.sendLines.emit(this.line);
-      this.addOrUpdateLabel(this.lineLabel);
     }
+    this.addOrUpdateLabel(this.lineLabel);
   }
 
   onDragStart(e: any) {
@@ -418,7 +413,6 @@ export class SingleBlockComponent
   }
 
   onDragOver(e: any) {
-    // console.log(e);
     this.parentComponent.linesMap.forEach((line, key, map) => {
       line.position();
     });
@@ -477,7 +471,6 @@ export class SingleBlockComponent
 
   showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
     this.nodeDate = {
-      event: e,
       parentIndex: parentIndex,
       isChildrComponentCall: isChildrComponentCall,
     };
@@ -493,7 +486,7 @@ export class SingleBlockComponent
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
-    console.log('childNode display', childNode);
+    console.log('childNode', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
@@ -537,7 +530,7 @@ export class SingleBlockComponent
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
-      }, 1000);
+      }, 400);
     });
   };
 
@@ -579,8 +572,10 @@ export class SingleBlockComponent
   };
 
   onAdd = async (e) => {
-    this.activityState = { state: e };
-    console.log('e🙌', e, this.activityState);
+    this.activityState = {
+      state: e,
+      type: this.selectedNode.childNodeNameType,
+    };
     this.closeModal();
     const label: any = await this.getLineLabel(e);
     this.addComponent(label);
@@ -604,7 +599,6 @@ export class SingleBlockComponent
           resolve('');
           break;
       }
-
       resolve('');
     });
   };
@@ -614,7 +608,6 @@ export class SingleBlockComponent
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
     );
-    console.log('prevNodeDetails', preVNodeDetails);
     this.parentComponent.activities.set(this.componentId, {
       ...preVNodeDetails,
       state: { ...data },
@@ -622,11 +615,6 @@ export class SingleBlockComponent
     this.parentComponent.dynamicComponentsObj[this.componentId].activity = {
       ...this.parentComponent.activities.get(this.componentId),
     };
-    console.log(
-      'Updated node details',
-      this.parentComponent.activities.get(this.componentId),
-      this.parentComponent.dynamicComponentsObj[this.componentId]
-    );
     const label: any = await this.getLineLabel(data);
     label && label != '' ? this.addOrUpdateLabel(label) : null;
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
@@ -642,7 +630,6 @@ export class SingleBlockComponent
   };
 
   onFilterChange = (filterTerm: string) => {
-    console.log('filterText', filterTerm);
     this.filterText = filterTerm;
     this.displayNode = false;
     this.selectedNode = {};

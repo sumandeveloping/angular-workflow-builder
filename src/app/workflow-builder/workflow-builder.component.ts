@@ -9,13 +9,12 @@ import { ModalComponent } from 'src/shared/components/modal/modal.component';
 import { SingleBlockComponent } from 'src/shared/components/single-block/single-block.component';
 import { NodeNameType } from 'src/shared/enums/nodeName-type.enum';
 import { childComponentConfig } from 'src/shared/interfaces/child-component-config.interface';
+import { DynamicComponentConfig } from 'src/shared/interfaces/configOptions.interface';
 import { dynamicComponentHash } from 'src/shared/interfaces/dynamic-component-hash.interface';
 import { NodeConnections } from 'src/shared/interfaces/node-config.interface';
 import { nodeProperties } from 'src/shared/json/node-data.model';
 import { MULTITOUCH_NODE_RULES } from 'src/shared/json/node-rule.model';
 import { v4 as uuidv4 } from 'uuid';
-
-declare var bootstrap: any;
 
 @Component({
   selector: 'app-workflow-builder',
@@ -41,11 +40,9 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   linesMap = new Map<string, any>();
   displayModal: boolean = false;
   nodeDate = {
-    event: null,
     parentIndex: null,
-    isChildrComponentCall: null,
+    isChildComponentCall: null,
   };
-
   removeSubscriptions: Subscription;
   sendSubscriptions: Subscription;
   linesSubscriptions: Subscription;
@@ -55,7 +52,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
   /* -------------------------------------------------------------------------- */
   connections: NodeConnections[] = []; // need to send this to BACKEND while SAVING
   activities = new Map<string, any>(); // need to send this to BACKEND while SAVING
-  activityState: { state: any };
+  activityState: { state: any; type: string };
   showSegmentModal: boolean = false;
   parentNodeArr: any[];
   nodeInformation: any;
@@ -99,17 +96,15 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.childNodesToConnect = this.nodeInformation.childNodeIds;
   }
 
-  public async createComponent(
-    e: any,
-    isChildComponentCall: boolean = false,
-    componentLabel?: string,
-    parentElementRef?: ElementRef,
-    parentIndex?: number,
-    parentComponent?: SingleBlockComponent
-  ) {
+  public async createComponent(configOptions: DynamicComponentConfig) {
+    const {
+      isChildComponentCall,
+      componentLabel,
+      parentComponent,
+      parentElementRef,
+      parentIndex,
+    } = configOptions;
     // this.container.clear();
-    console.log('YOLOOOOO', parentComponent?.activityState);
-
     const dynamicComponent: ComponentRef<SingleBlockComponent> =
       this.container.createComponent<SingleBlockComponent>(
         SingleBlockComponent
@@ -186,10 +181,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       };
     }
     this.components.push(dynamicComponent);
-    dynamicComponent.setInput(
-      'index',
-      this.components.indexOf(dynamicComponent)
-    );
     //Get position from dynamic component
     this.sendSubscriptions = dynamicComponent.instance.sendPosition.subscribe(
       async (data: {
@@ -198,103 +189,20 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
         componentId?: string;
         isChild?: boolean;
       }) => {
-        let { x, y, componentId, isChild } = data;
-        console.log(
-          'component Position 💥🔥',
-          data,
-          'isChild',
-          isChild,
-          this.activityState
-        );
-        this.populateActivity(componentId, x, y);
-        this.xCoOrdinates.push(x);
-        this.YCoOrdinates.push(y);
-        console.log('X & Y POSITION', x, y);
-        if (data.isChild)
-          this.coOrdinatesOfChildComponents.push({
-            x,
-            y,
-            childComponentID: componentId,
-            isChild: isChild,
-          });
-        console.log(
-          'this.coOrdinatesOfChildComponents',
-          this.coOrdinatesOfChildComponents
-        );
-        //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
-        this.dynamicComponentsObj[data.componentId].xPos = x;
-        this.dynamicComponentsObj[data.componentId].yPos = y;
+        this.positionSubscriptionsHandler(data);
       }
     );
 
     //Get connected lines
     this.linesSubscriptions = dynamicComponent.instance.sendLines.subscribe(
       (linesObj: { componentId: string; line: any; label: string }) => {
-        const { componentId, line, label } = linesObj;
-        label
-          ? linesObj.line.setOptions({
-              endPlug: 'hand',
-              middleLabel: label,
-            })
-          : line.setOptions({ endPlug: 'disc' });
-        this.linesMap.set(componentId, line);
+        this.lineSubscriptionsHandler(linesObj);
       }
     );
 
     this.removeSubscriptions = dynamicComponent.instance.removeItem.subscribe(
       async (componentId: string) => {
-        console.log('componentId should be removed', componentId);
-        this.components = this.components.filter(
-          (component) => component.instance.componentId !== componentId
-        );
-        this.componentsFromRoot = this.componentsFromRoot.filter(
-          (component) => component.instance.componentId !== componentId
-        );
-        //remove child components & its config from `dynamicComponentsObj`
-        const parentComponentID =
-          this.dynamicComponentsObj[componentId].parentComponentId;
-
-        if (parentComponentID) {
-          const childIds: string[] =
-            this.dynamicComponentsObj[componentId].childs;
-          childIds.forEach((childId: string) => {
-            delete this.dynamicComponentsObj[childId];
-            this.coOrdinatesOfChildComponents =
-              this.coOrdinatesOfChildComponents.filter(
-                (data) => data.childComponentID !== childId
-              );
-          });
-          delete this.dynamicComponentsObj[componentId];
-        } else if (parentComponentID === '' || parentComponentID === null) {
-          // childs components should be removed if parent gets deleted
-          const childIds: string[] =
-            this.dynamicComponentsObj[componentId].childs;
-          childIds.forEach((childId: string) => {
-            delete this.dynamicComponentsObj[childId];
-            this.coOrdinatesOfChildComponents =
-              this.coOrdinatesOfChildComponents.filter(
-                (data) => data.childComponentID !== childId
-              );
-          });
-          delete this.dynamicComponentsObj[componentId];
-        }
-        if (this.dynamicComponentsObj[parentComponentID]) {
-          const childComponentsOfParentComponents =
-            this.dynamicComponentsObj[parentComponentID].childs;
-          this.dynamicComponentsObj[parentComponentID].childs =
-            childComponentsOfParentComponents.filter(
-              (id: string) => id !== componentId
-            );
-        }
-        //remove child component coOrdinates from `coOrdinatesOfChildComponents`
-        this.coOrdinatesOfChildComponents =
-          this.coOrdinatesOfChildComponents.filter(
-            (data) => data.childComponentID !== componentId
-          );
-        //remove components activity
-        this.activities.delete(componentId);
-        //atlast destroy child component
-        dynamicComponent.destroy();
+        this.removeComponentHandler(componentId, dynamicComponent);
         await this.removeInvalidLines();
         this.removeInvalidChildComponents();
         this.removeInvalidsourceActivity(componentId);
@@ -302,23 +210,124 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     );
   }
 
+  //position subscriptions
+  positionSubscriptionsHandler = (positionConfig: {
+    x: number;
+    y: number;
+    componentId?: string;
+    isChild?: boolean;
+  }) => {
+    let { x, y, componentId, isChild } = positionConfig;
+    this.populateActivity(componentId, x, y);
+    this.xCoOrdinates.push(x);
+    this.YCoOrdinates.push(y);
+    if (isChild)
+      this.coOrdinatesOfChildComponents.push({
+        x,
+        y,
+        childComponentID: componentId,
+        isChild: isChild,
+      });
+    //Save X & Y coordinates of dynamic components into `dynamicComponentsObj` hash (both parent and child components)
+    this.dynamicComponentsObj[componentId].xPos = x;
+    this.dynamicComponentsObj[componentId].yPos = y;
+  };
+
+  lineSubscriptionsHandler = (lineConfig: {
+    componentId: string;
+    line: any;
+    label: string;
+  }) => {
+    const { componentId, line, label } = lineConfig;
+    if (label)
+      line.setOptions({
+        middleLabel: label,
+      });
+
+    this.linesMap.set(componentId, line);
+  };
+
+  removeComponentHandler(
+    componentId: string,
+    dynamicComponent: ComponentRef<SingleBlockComponent>
+  ) {
+    console.log('componentId should be removed', componentId);
+    this.components = this.components.filter(
+      (component) => component.instance.componentId !== componentId
+    );
+    this.componentsFromRoot = this.componentsFromRoot.filter(
+      (component) => component.instance.componentId !== componentId
+    );
+    //remove child components & its config from `dynamicComponentsObj`
+    const parentComponentID =
+      this.dynamicComponentsObj[componentId].parentComponentId;
+
+    if (parentComponentID) {
+      const childIds: string[] = this.dynamicComponentsObj[componentId].childs;
+      childIds.forEach((childId: string) => {
+        delete this.dynamicComponentsObj[childId];
+        this.coOrdinatesOfChildComponents =
+          this.coOrdinatesOfChildComponents.filter(
+            (data) => data.childComponentID !== childId
+          );
+      });
+      delete this.dynamicComponentsObj[componentId];
+    } else if (parentComponentID === '' || parentComponentID === null) {
+      // childs components should be removed if parent gets deleted
+      const childIds: string[] = this.dynamicComponentsObj[componentId].childs;
+      childIds.forEach((childId: string) => {
+        delete this.dynamicComponentsObj[childId];
+        this.coOrdinatesOfChildComponents =
+          this.coOrdinatesOfChildComponents.filter(
+            (data) => data.childComponentID !== childId
+          );
+      });
+      delete this.dynamicComponentsObj[componentId];
+    }
+    if (this.dynamicComponentsObj[parentComponentID]) {
+      const childComponentsOfParentComponents =
+        this.dynamicComponentsObj[parentComponentID].childs;
+      this.dynamicComponentsObj[parentComponentID].childs =
+        childComponentsOfParentComponents.filter(
+          (id: string) => id !== componentId
+        );
+    }
+    //remove child component coOrdinates from `coOrdinatesOfChildComponents`
+    this.coOrdinatesOfChildComponents =
+      this.coOrdinatesOfChildComponents.filter(
+        (data) => data.childComponentID !== componentId
+      );
+    //remove components activity
+    this.activities.delete(componentId);
+    //atlast destroy child component
+    dynamicComponent.destroy();
+  }
+
   removeInvalidChildComponents = () => {
     setTimeout(() => {
-      this.components.forEach(async (componet: any, index: any) => {
-        if (
-          componet.instance.parentElementRef &&
-          componet.instance.parentElementRef.nativeElement.offsetHeight === 0 &&
-          componet.instance.parentElementRef.nativeElement.offsetLeft === 0 &&
-          componet.instance.parentElementRef.nativeElement.offsetTop === 0 &&
-          componet.instance.parentElementRef.nativeElement.offsetWidth === 0 &&
-          componet.instance.parentElementRef.nativeElement.offsetParent === null
-        ) {
-          componet.destroy();
-          this.components.splice(index, 1);
-          await this.removeInvalidLines();
-          return this.removeInvalidChildComponents();
+      this.components.forEach(
+        async (component: ComponentRef<SingleBlockComponent>, index: any) => {
+          if (
+            component.instance.parentElementRef &&
+            component.instance.parentElementRef.nativeElement.offsetHeight ===
+              0 &&
+            component.instance.parentElementRef.nativeElement.offsetLeft ===
+              0 &&
+            component.instance.parentElementRef.nativeElement.offsetTop === 0 &&
+            component.instance.parentElementRef.nativeElement.offsetWidth ===
+              0 &&
+            component.instance.parentElementRef.nativeElement.offsetParent ===
+              null
+          ) {
+            component.destroy();
+            this.components.splice(index, 1);
+            //remove from `activities`
+            this.activities.delete(component.instance.componentId);
+            await this.removeInvalidLines();
+            return this.removeInvalidChildComponents();
+          }
         }
-      });
+      );
     }, 0);
   };
 
@@ -355,9 +364,8 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   showModal = (e: any) => {
     this.nodeDate = {
-      event: e,
       parentIndex: null,
-      isChildrComponentCall: false,
+      isChildComponentCall: false,
     };
     this.displayModal = true;
     setTimeout(() => {
@@ -382,7 +390,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
-    console.log('childNode display', childNode);
+    console.log('childNode', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
@@ -403,19 +411,20 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
         resolve(true);
-      }, 1000);
+      }, 400);
     });
   };
 
-  onAdd = (e) => {
-    console.log('e🙌', e);
-    this.activityState = { state: e };
+  onAdd = (e: any) => {
+    this.activityState = {
+      state: e,
+      type: this.selectedNode.childNodeNameType,
+    };
     this.closeModal();
-    this.createComponent(this.nodeDate.event, false);
+    this.createComponent({ isChildComponentCall: false });
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {
-    console.log('ACTIVITY SETUP', this.activities.get(componentID));
     this.activities.set(componentID, {
       ...this.activities.get(componentID),
       ...{ id: componentID, x, y },
@@ -423,15 +432,26 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.dynamicComponentsObj[componentID].activity = {
       ...this.activities.get(componentID),
     };
-    console.log(
-      'activity🤖',
-      this.activities.values(),
-      this.dynamicComponentsObj
-    );
   };
 
-  // // Additional
-  // showToast = (e: Event) => {};
+  //SAVE builder
+  onSaveWorkFlowBuilder = () => {
+    let multiTouchCampaignConfig: { activities: any[]; connections: any[] } = {
+      activities: [],
+      connections: [],
+    };
+    let activities: any[] = [];
+    for (const activity of this.activities.values()) {
+      activities.push(activity);
+    }
+
+    multiTouchCampaignConfig.connections = this.connections;
+    multiTouchCampaignConfig.activities = activities;
+
+    const saveData = { multiTouchCampaignConfig };
+    console.log('Data to be sended to Backend', saveData);
+    //add toaster upon error/success
+  };
 
   ngOnDestroy(): void {
     if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();

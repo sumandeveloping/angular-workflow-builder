@@ -89,19 +89,9 @@
         }"
         (click)="onFilterChange(category.value)"
       >
-        <!-- <input type="radio" name="option" id="filter-all" [hidden]="'true'" /> -->
         <label for="filter-all"> {{ category.name }}</label>
       </div>
-      <!-- <div class="wfb-filters-options" (click)="onFilterChange('ACTION')">
-        <input type="radio" name="option" id="filter-action" />
-        <label for="filter-action">Action</label>
-      </div>
-      <div class="wfb-filters-options" (click)="onFilterChange('DECISION')">
-        <input type="radio" name="option" id="filter-decision" />
-        <label for="filter-decision">Decision</label>
-      </div> -->
     </div>
-
     <!-- end header -->
   </ng-container>
   <ng-container *ngIf="!showModalForm" ngProjectAs=".modalBodyContent">
@@ -110,7 +100,6 @@
       <div class="row">
         <div class="col-md-4 col-lg-4">
           <div class="list-group wfb-decision-action-list">
-            <!-- | filterNodeCategory : filterText -->
             <a
               *ngFor="
                 let childNode of childNodesToConnect

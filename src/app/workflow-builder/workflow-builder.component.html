@@ -1,32 +1,17 @@
-<section style="position: relative" class="wfb-builder-container">
-  <!-- customNavClass="nav-test-class" customTabsClass="containerrr" -->
-
-  <div
-    class="w-100 d-flex justify-space-between wfb-builder-container--options"
-  >
-    <h4>Build Your Campaign</h4>
-    <div class="btn-group">
-      <a href="#" class="btn btn-primary me-3">Save</a>
-      <a href="#" class="btn btn-secondary">Back</a>
+<section class="wfb-builder-container">
+  <div class="wfb-builder-container--options">
+    <div class="wfb-buttons me-4">
+      <button class="btn wfb-buttons--save" (click)="onSaveWorkFlowBuilder()">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i>Save
+      </button>
+      <button class="btn wfb-buttons--cancel">
+        <i class="fa fa-sign-out" aria-hidden="true"></i>Back
+      </button>
     </div>
   </div>
   <div class="builder">
     <div class="builder-rootNode">
-      <div class="builder-rootNode--name">
-        <!-- <h4 (dblclick)="openSegmentModal($event)">
-          <i class="fa fa-list" aria-hidden="true"></i>
-          {{ nodeInformation.parentNodeName }}
-          <span
-            [ngClass]="
-              nodeCategory == 'ACTION'
-                ? 'nodeCategory nodeCategory-action'
-                : 'nodeCategory nodeCategory-decision'
-            "
-            >{{ nodeCategory }}</span
-          >
-        </h4> -->
-        <!-- <h4>Start Campaign Flow</h4> -->
-      </div>
+      <div class="builder-rootNode--name"></div>
       <a class="connecter" (click)="showModal($event)">
         <i class="fa fa-plus-circle" aria-hidden="true" #builderStartPoint></i>
       </a>
@@ -59,7 +44,6 @@
       <i class="fa fa-hourglass" aria-hidden="true"></i>Build your campaign
       journey
     </p>
-
     <!-- end header -->
   </ng-container>
   <ng-container *ngIf="!showSegmentModal" ngProjectAs=".modalBodyContent">
