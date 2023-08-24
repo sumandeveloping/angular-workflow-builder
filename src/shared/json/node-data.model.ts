@@ -1437,4 +1437,43 @@ export const nodeProperties = [
       },
     },
   },
+  // new data model
+  {
+    displayName: 'Update Lead Status',
+    description: 'Update lead status with the defined value from this action',
+    category: 'Decision',
+    icon: 'fa fa-window-maximize',
+    model: {
+      name: {
+        label: 'Name',
+        type: 'text',
+        value: null,
+        hidden: false,
+        rules: {
+          required: true,
+        },
+      },
+      leadStatus: {
+        label: 'Lead Status',
+        type: 'select',
+        value: null,
+        placeholder: 'Change lead status to...',
+        hidden: false,
+        options: [
+          {
+            value: 'uuid-clickedThrough',
+            label: 'Clicked Through',
+          },
+          {
+            value: 'uuid-converted',
+            label: 'Converted',
+          },
+          {
+            value: 'uuid-formSubmitted',
+            label: 'Form Submitted',
+          },
+        ],
+      },
+    },
+  },
 ];

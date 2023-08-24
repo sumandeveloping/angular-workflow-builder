@@ -490,6 +490,12 @@ export class SingleBlockComponent
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
     this.selectedNode = childNode;
+    console.log(
+      'selected node childnode name',
+      this.selectedNode.childNodeName,
+      'parentNodeCategory',
+      this.nodeDetails.parentNodeCategory
+    );
     //get the properties of the child node & display...
     this.displayNode = false;
     this.loading = true;
