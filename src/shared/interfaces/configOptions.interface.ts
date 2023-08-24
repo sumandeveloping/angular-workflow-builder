@@ -11,6 +11,7 @@ interface ConfigOptions {
 
 export interface DynamicComponentConfig extends ConfigOptions {
   parentComponent?: SingleBlockComponent;
+  nodeOutcome: string | unknown;
 }
 
 export interface DynamicComponentEditConfig extends ConfigOptions {

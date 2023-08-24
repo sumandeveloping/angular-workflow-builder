@@ -103,6 +103,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponent,
       parentElementRef,
       parentIndex,
+      nodeOutcome,
     } = configOptions;
     // this.container.clear();
     const dynamicComponent: ComponentRef<SingleBlockComponent> =
@@ -114,6 +115,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('componentId', newComponentId);
     dynamicComponent.setInput('lineLabel', componentLabel);
+    dynamicComponent.setInput('nodeOutcome', nodeOutcome);
 
     //ADD logic for hashing components ID ** Important **
     this.dynamicComponentsObj[newComponentId] = {
@@ -195,7 +197,12 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
 
     //Get connected lines
     this.linesSubscriptions = dynamicComponent.instance.sendLines.subscribe(
-      (linesObj: { componentId: string; line: any; label: string }) => {
+      (linesObj: {
+        componentId: string;
+        line: any;
+        label: string;
+        color: string;
+      }) => {
         this.lineSubscriptionsHandler(linesObj);
       }
     );
@@ -237,12 +244,17 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     componentId: string;
     line: any;
     label: string;
+    color: string;
   }) => {
-    const { componentId, line, label } = lineConfig;
-    if (label)
-      line.setOptions({
-        middleLabel: label,
-      });
+    const { componentId, line, label, color } = lineConfig;
+    label
+      ? line.setOptions({
+          endLabel: label,
+          color,
+        })
+      : line.setOptions({
+          color,
+        });
 
     this.linesMap.set(componentId, line);
   };
@@ -421,7 +433,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       type: this.selectedNode.childNodeNameType,
     };
     this.closeModal();
-    this.createComponent({ isChildComponentCall: false });
+    this.createComponent({ isChildComponentCall: false, nodeOutcome: null });
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {

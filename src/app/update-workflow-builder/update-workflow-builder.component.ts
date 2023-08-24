@@ -418,7 +418,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     const { componentId, line, label } = lineConfig;
     if (label)
       line.setOptions({
-        middleLabel: label,
+        endLabel: label,
       });
 
     this.linesMap.set(componentId, line);

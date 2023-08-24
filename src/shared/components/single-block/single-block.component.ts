@@ -19,8 +19,6 @@ import { ModalComponent } from '../modal/modal.component';
 import { DynamicComponentConfig } from 'src/shared/interfaces/configOptions.interface';
 
 declare var LeaderLine: any;
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-single-block',
   templateUrl: './single-block.component.html',
@@ -36,6 +34,7 @@ export class SingleBlockComponent
   @Input() componentId: string;
   @Input() isCreatedFromChild: boolean = false;
   @Input() lineLabel: string;
+  @Input() nodeOutcome: string | null;
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
@@ -46,6 +45,7 @@ export class SingleBlockComponent
     componentId: string;
     line: any;
     label: string;
+    color?: string;
   }> = new EventEmitter<{ componentId: string; line: any; label: string }>();
   line: any;
   lineOptions: LineOptions = {
@@ -82,6 +82,10 @@ export class SingleBlockComponent
     },
   ];
   filterText: string = 'ALL';
+  nodeConnectorColorsHash = {
+    positive: '#66FF00',
+    negative: '#FF4F00',
+  };
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
@@ -145,7 +149,7 @@ export class SingleBlockComponent
     );
   }
 
-  addComponent(label: string): void {
+  addComponent(label: string, nodeOutcome?: string | null): void {
     this.displayModal = !this.displayModal;
     const componentConfigurations: DynamicComponentConfig = {
       isChildComponentCall: this.nodeDate.isChildrComponentCall,
@@ -153,6 +157,7 @@ export class SingleBlockComponent
       parentElementRef: this.decisionBlock,
       parentIndex: this.nodeDate.parentIndex,
       parentComponent: this,
+      nodeOutcome,
     };
     this.parentComponent.createComponent(componentConfigurations);
   }
@@ -405,7 +410,7 @@ export class SingleBlockComponent
         this.lineOptions
       );
     }
-    this.addOrUpdateLabel(this.lineLabel);
+    this.addOrUpdateLabel(this.lineLabel, this.nodeOutcome);
   }
 
   onDragStart(e: any) {
@@ -576,9 +581,15 @@ export class SingleBlockComponent
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    // decisionOutcome: "positive"
+    const nodeOutcome = this.activityState.state?.decisionOutcome
+      ? this.activityState.state?.decisionOutcome
+      : null;
+    // console.log('Node Outcome', nodeOutcome);
+
     this.closeModal();
     const label: any = await this.getLineLabel(e);
-    this.addComponent(label);
+    this.addComponent(label, nodeOutcome);
   };
 
   getLineLabel = (nodeData: any) => {
@@ -603,8 +614,9 @@ export class SingleBlockComponent
     });
   };
 
-  onEditNodeDetailsSave = async (data) => {
-    console.log('data on edit', data);
+  onEditNodeDetailsSave = async (data: any) => {
+    console.log('data on edit', data, data?.decisionOutcome);
+    let nodeOutcome = data?.decisionOutcome;
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
     );
@@ -616,16 +628,21 @@ export class SingleBlockComponent
       ...this.parentComponent.activities.get(this.componentId),
     };
     const label: any = await this.getLineLabel(data);
-    label && label != '' ? this.addOrUpdateLabel(label) : null;
+    this.addOrUpdateLabel(label, nodeOutcome);
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     this.closeModal();
   };
 
-  addOrUpdateLabel = (label: string) => {
+  addOrUpdateLabel = (label: string, nodeOutcome?: string | null) => {
+    console.log('addOrUpdateLabel triggered', label, nodeOutcome);
+    let color = nodeOutcome
+      ? this.nodeConnectorColorsHash[nodeOutcome]
+      : '#d5d5d5';
     this.sendLines.emit({
       componentId: this.componentId,
       line: this.line,
       label: label,
+      color,
     });
   };
 
