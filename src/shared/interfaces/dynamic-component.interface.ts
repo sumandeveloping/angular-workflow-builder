@@ -4,7 +4,9 @@ export interface DynamicComponent {
   addComponent?(label: string, nodeOutcome?: string | null): void | any;
   addComponentOnEdit?(
     isEditRendering: boolean,
-    editComponentID?: string
+    label: string,
+    nodeOutcome: string | any,
+    editComponentId?: string
   ): void | any;
   deleteComponent(): void | any;
   dynamicPositionOfParentComponents(): void;
