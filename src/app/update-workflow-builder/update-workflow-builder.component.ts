@@ -213,6 +213,21 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  ngOnDestroy(): void {
+    if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();
+    if (this.sendSubscriptions) this.sendSubscriptions.unsubscribe();
+    if (this.linesSubscriptions) this.linesSubscriptions.unsubscribe();
+    this.components.forEach(
+      (component: ComponentRef<UpdateSingleBlockComponent>) => {
+        component.destroy();
+      }
+    );
+    this.linesMap.forEach((line, key, map) => {
+      line.remove();
+      map.delete(key);
+    });
+  }
+
   initializeNodeInformation() {
     for (const key in this.dynamicComponentsObj) {
       this.componentsToRender.push({
@@ -634,19 +649,4 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     console.log('Data to be sended to Backend', saveData);
     //add toaster upon error/success
   };
-
-  ngOnDestroy(): void {
-    if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();
-    if (this.sendSubscriptions) this.sendSubscriptions.unsubscribe();
-    if (this.linesSubscriptions) this.linesSubscriptions.unsubscribe();
-    this.components.forEach(
-      (component: ComponentRef<UpdateSingleBlockComponent>) => {
-        component.destroy();
-      }
-    );
-    this.linesMap.forEach((line, key, map) => {
-      line.remove();
-      map.delete(key);
-    });
-  }
 }

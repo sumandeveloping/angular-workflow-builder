@@ -84,6 +84,19 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  ngOnDestroy(): void {
+    if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();
+    if (this.sendSubscriptions) this.sendSubscriptions.unsubscribe();
+    if (this.linesSubscriptions) this.linesSubscriptions.unsubscribe();
+    this.components.forEach((component: ComponentRef<SingleBlockComponent>) => {
+      component.destroy();
+    });
+    this.linesMap.forEach((line, key, map) => {
+      line.remove();
+      map.delete(key);
+    });
+  }
+
   initializeNodeInformation() {
     this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
@@ -263,7 +276,6 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     componentId: string,
     dynamicComponent: ComponentRef<SingleBlockComponent>
   ) {
-    console.log('componentId should be removed', componentId);
     this.components = this.components.filter(
       (component) => component.instance.componentId !== componentId
     );
@@ -464,17 +476,4 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     console.log('Data to be sended to Backend', saveData);
     //add toaster upon error/success
   };
-
-  ngOnDestroy(): void {
-    if (this.removeSubscriptions) this.removeSubscriptions.unsubscribe();
-    if (this.sendSubscriptions) this.sendSubscriptions.unsubscribe();
-    if (this.linesSubscriptions) this.linesSubscriptions.unsubscribe();
-    this.components.forEach((component: ComponentRef<SingleBlockComponent>) => {
-      component.destroy();
-    });
-    this.linesMap.forEach((line, key, map) => {
-      line.remove();
-      map.delete(key);
-    });
-  }
 }

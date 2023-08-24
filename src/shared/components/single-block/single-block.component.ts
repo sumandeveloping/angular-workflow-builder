@@ -112,16 +112,20 @@ export class SingleBlockComponent
   ) {}
 
   ngOnInit(): void {
-    console.log('On INIT ⬇️', this.parentComponent.dynamicComponentsObj);
-    console.log('nodeInformation', this.nodeInformation);
+    this.initializeNodeInformation();
+  }
+
+  ngAfterViewInit(): void {
+    this.initializeNodeInformationAfterViewInit();
+  }
+
+  initializeNodeInformation = () => {
     this.nodeProperties = nodeProperties;
     this.nodeRules = MULTITOUCH_NODE_RULES;
     const nodesArr = this.nodeRules.filter(
       (node) => node.parentNodeName == this.nodeInformation.childNodeName
     );
-    console.log('nodesArr', nodesArr);
     this.nodeDetails = nodesArr?.[0];
-    console.log('nodeDetails', this.nodeDetails);
     this.nodeType = this.nodeDetails.parentNodeType;
     this.nodeCategory = this.nodeDetails.parentNodeCategory;
     this.childNodesToConnect = this.nodeDetails.childNodeIds;
@@ -131,8 +135,9 @@ export class SingleBlockComponent
     this.decisionNodesToConnect = this.childNodesToConnect.filter(
       (node: any) => node.childNodeCategory === 'DECISION'
     );
-  }
-  ngAfterViewInit(): void {
+  };
+
+  initializeNodeInformationAfterViewInit = () => {
     //Set Dynamic Position of the components
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
@@ -147,7 +152,7 @@ export class SingleBlockComponent
       'class',
       `dynamic-component card box-border box-border-${this.nodeCategory.toLowerCase()}`
     );
-  }
+  };
 
   addComponent(label: string, nodeOutcome?: string | null): void {
     this.displayModal = !this.displayModal;
@@ -173,13 +178,6 @@ export class SingleBlockComponent
     isCreatedFromChild: boolean,
     parentElementRef: ElementRef
   ): void {
-    console.log(
-      'View initialized!!',
-      this.decisionBlock.nativeElement.offsetLeft,
-      this.decisionBlock.nativeElement.offsetTop,
-      this.decisionBlock.nativeElement.offsetWidth,
-      this.decisionBlock.nativeElement.offsetHeight
-    );
     if (!isCreatedFromChild) {
       this.dynamicPositionOfParentComponents();
     } else {
@@ -187,12 +185,147 @@ export class SingleBlockComponent
     }
   }
 
-  dynamicPositionOfParentComponents(): void {
-    console.log(
-      'CALLED FROM PARENT COMPONENT',
-      this.parentComponent.componentsFromRoot.length
+  evaluateLeftPositionForParent = (
+    dynamicComponentWrapperWidth: number,
+    componentWidth: number
+  ) => {
+    return (
+      +(dynamicComponentWrapperWidth / 2).toFixed(2) -
+      componentWidth * this.parentComponent.componentsFromRoot.length +
+      componentWidth / 2
     );
+  };
+
+  evaluateLeftPositionForChild = (
+    dynamicComponentWrapperWidth: number,
+    componentWidth: number,
+    parentComponentArry: any
+  ) => {
+    return (
+      +(dynamicComponentWrapperWidth / 2).toFixed(2) -
+      componentWidth * parentComponentArry.length
+    );
+  };
+
+  positionNodeFromMidToLeftForParent = (leftPosition: number) => {
+    this.renderer.setStyle(
+      this.decisionBlock.nativeElement,
+      'left',
+      `${leftPosition}px`
+    );
+    //* save the coordinates  x & y
+    this.position = {
+      x: leftPosition,
+      y: 100,
+      componentId: this.componentId,
+      isChild: false,
+    };
+  };
+
+  positionNodeFromMidToLeftForChild = (
+    newLeftPosition: number,
+    topPosition: number
+  ) => {
+    this.renderer.setStyle(
+      this.decisionBlock.nativeElement,
+      'left',
+      `${newLeftPosition}px`
+    );
+    this.position = {
+      x: newLeftPosition,
+      y: topPosition,
+      componentId: this.componentId,
+      isChild: true,
+    };
+  };
+
+  positionNodeNearLeftEdgeForParent = () => {
     let topPosition: any;
+    const marginFromTop = 20;
+    topPosition =
+      this.decisionBlock.nativeElement.offsetTop +
+      this.decisionBlock.nativeElement.offsetHeight +
+      marginFromTop;
+    //check top position is available or not
+    if (this.parentComponent.YCoOrdinates.indexOf(topPosition) === -1) {
+      this.renderer.setStyle(
+        this.decisionBlock.nativeElement,
+        'top',
+        `${topPosition}px`
+      );
+    } else {
+      //increase Y position => Take highest top position from Ycordinates array
+      // const prevTopPosition = this.parentComponent.YCoOrdinates.at(-1);
+      const prevTopPosition = Math.max(...this.parentComponent.YCoOrdinates);
+      topPosition =
+        prevTopPosition +
+        marginFromTop +
+        this.decisionBlock.nativeElement.offsetHeight;
+
+      this.renderer.setStyle(
+        this.decisionBlock.nativeElement,
+        'top',
+        `${topPosition}px`
+      );
+    }
+
+    this.renderer.setStyle(
+      this.decisionBlock.nativeElement,
+      'left',
+      `${this.decisionBlock.nativeElement.offsetLeft}px`
+    );
+    //* save the coordinates  x & y
+    this.position = {
+      x: this.decisionBlock.nativeElement.offsetLeft,
+      y: topPosition,
+      componentId: this.componentId,
+      isChild: false,
+    };
+  };
+
+  positionNodeNearLeftEdgeForChild = () => {
+    const marginFromTop = 20;
+    let topPosition =
+      this.decisionBlock.nativeElement.offsetTop +
+      this.decisionBlock.nativeElement.offsetHeight +
+      marginFromTop;
+    //check top position is available or not
+    if (this.parentComponent.YCoOrdinates.indexOf(topPosition) === -1) {
+      this.renderer.setStyle(
+        this.decisionBlock.nativeElement,
+        'top',
+        `${topPosition}px`
+      );
+    } else {
+      //increase Y position => Take highest top position from Ycordinates array
+      // const prevTopPosition = this.parentComponent.YCoOrdinates.at(-1);
+      const prevTopPosition = Math.max(...this.parentComponent.YCoOrdinates);
+      topPosition =
+        prevTopPosition +
+        marginFromTop +
+        this.decisionBlock.nativeElement.offsetHeight; //parentElementRef.nativeElement.offsetTop;
+
+      this.renderer.setStyle(
+        this.decisionBlock.nativeElement,
+        'top',
+        `${topPosition}px`
+      );
+    }
+    this.renderer.setStyle(
+      this.decisionBlock.nativeElement,
+      'left',
+      `${this.decisionBlock.nativeElement.offsetLeft}px`
+    );
+    //* save the coordinates  x & y
+    this.position = {
+      x: this.decisionBlock.nativeElement.offsetLeft,
+      y: topPosition,
+      componentId: this.componentId,
+      isChild: true,
+    };
+  };
+
+  dynamicPositionOfParentComponents(): void {
     const componentWidth = this.decisionBlock.nativeElement.offsetWidth;
     const offsetLeft = this.decisionBlock.nativeElement.offsetLeft;
     const dynamicComponentWrapperWidth =
@@ -200,88 +333,20 @@ export class SingleBlockComponent
     //we need to divide the width of the dynamicComponentWrapper to center the dynamic component
 
     //* 1. evaluate x & y
-    const leftPosition =
-      +(dynamicComponentWrapperWidth / 2).toFixed(2) -
-      componentWidth * this.parentComponent.componentsFromRoot.length +
-      componentWidth / 2;
-    console.log(
-      'left Position',
-      leftPosition,
-      this.parentComponent.componentsFromRoot.length
+    const leftPosition = this.evaluateLeftPositionForParent(
+      dynamicComponentWrapperWidth,
+      componentWidth
     );
     this.renderer.setStyle(this.decisionBlock.nativeElement, 'top', '100px');
     if (leftPosition >= 0) {
-      console.log('IF PART');
-      this.renderer.setStyle(
-        this.decisionBlock.nativeElement,
-        'left',
-        `${leftPosition}px`
-      );
-      //* save the coordinates  x & y
-      this.position = {
-        x: leftPosition,
-        y: 100,
-        componentId: this.componentId,
-        isChild: false,
-      };
+      this.positionNodeFromMidToLeftForParent(leftPosition);
     } else {
-      console.log('ELSE PART');
-      const marginFromTop = 20;
-      topPosition =
-        this.decisionBlock.nativeElement.offsetTop +
-        this.decisionBlock.nativeElement.offsetHeight +
-        marginFromTop;
-      //check top position is available or not
-      if (this.parentComponent.YCoOrdinates.indexOf(topPosition) === -1) {
-        this.renderer.setStyle(
-          this.decisionBlock.nativeElement,
-          'top',
-          `${topPosition}px`
-        );
-      } else {
-        //increase Y position => Take highest top position from Ycordinates array
-        // const prevTopPosition = this.parentComponent.YCoOrdinates.at(-1);
-        const prevTopPosition = Math.max(...this.parentComponent.YCoOrdinates);
-
-        alert(
-          `prev Y position ${prevTopPosition} --- ${topPosition}, ${this.decisionBlock.nativeElement.offsetHeight}`
-        );
-        topPosition =
-          prevTopPosition +
-          marginFromTop +
-          this.decisionBlock.nativeElement.offsetHeight;
-
-        this.renderer.setStyle(
-          this.decisionBlock.nativeElement,
-          'top',
-          `${topPosition}px`
-        );
-      }
-
-      this.renderer.setStyle(
-        this.decisionBlock.nativeElement,
-        'left',
-        `${this.decisionBlock.nativeElement.offsetLeft}px`
-      );
-      console.log('top position', topPosition);
-      //* save the coordinates  x & y
-      this.position = {
-        x: this.decisionBlock.nativeElement.offsetLeft,
-        y: topPosition,
-        componentId: this.componentId,
-        isChild: false,
-      };
+      this.positionNodeNearLeftEdgeForParent();
     }
     this.sendPosition.emit(this.position);
   }
 
   dynamicPositionOfChildComponents(parentElementRef: ElementRef): void {
-    console.log('hiii CHILD component call');
-    console.log(
-      'testt',
-      parentElementRef.nativeElement.offsetTop,
-      parentElementRef.nativeElement.offsetHeight
-    );
     const marginFromTop = 20;
     let topPosition =
       parentElementRef.nativeElement.offsetTop +
@@ -301,15 +366,10 @@ export class SingleBlockComponent
       this.parentComponent.dynamicComponentsObj[
         this.parentDynamicComponent.componentId
       ].childs;
-    console.log('parentComponentArry', parentComponentArry);
-    const leftPosition =
-      +(dynamicComponentWrapperWidth / 2).toFixed(2) -
-      componentWidth * parentComponentArry.length;
-    console.log(
-      'left Position',
-      leftPosition,
-      'component width',
-      componentWidth
+    const leftPosition = this.evaluateLeftPositionForChild(
+      dynamicComponentWrapperWidth,
+      componentWidth,
+      parentComponentArry
     );
     //filter out the same x axis childrens first as it will narrow down the filter.so filter with Y position first that means same row childrens
     let newLeftPosition: any;
@@ -318,78 +378,21 @@ export class SingleBlockComponent
     sameRowChilds = this.parentComponent.coOrdinatesOfChildComponents
       .filter((data: { x: number; y: number }) => data.y == topPosition)
       .map((data) => data.x);
-    console.log('sameRowChilds', sameRowChilds, leftPosition);
     if (sameRowChilds.includes(leftPosition)) {
       // const takeLastUsedLeftPosition = Math.min(...sameRowChilds);//givest smallest value of left position
       // const index = sameRowChilds.indexOf(takeLastUsedLeftPosition) + 1;
       newLeftPosition =
         +(dynamicComponentWrapperWidth / 2).toFixed(2) -
         componentWidth * (sameRowChilds.length + 1);
-      console.log('newLeftPostion✌️', newLeftPosition);
     } else {
       newLeftPosition = leftPosition;
-      console.log('newLeftPostion💥', newLeftPosition);
     }
 
     //IF leftposition goes viewport of x axis
     if (newLeftPosition >= 0) {
-      this.renderer.setStyle(
-        this.decisionBlock.nativeElement,
-        'left',
-        `${newLeftPosition}px`
-      );
-      this.position = {
-        x: newLeftPosition,
-        y: topPosition,
-        componentId: this.componentId,
-        isChild: true,
-      };
+      this.positionNodeFromMidToLeftForChild(newLeftPosition, topPosition);
     } else {
-      alert(`left position ${leftPosition}`);
-      const marginFromTop = 20;
-      topPosition =
-        this.decisionBlock.nativeElement.offsetTop +
-        this.decisionBlock.nativeElement.offsetHeight +
-        marginFromTop;
-      //check top position is available or not
-      if (this.parentComponent.YCoOrdinates.indexOf(topPosition) === -1) {
-        this.renderer.setStyle(
-          this.decisionBlock.nativeElement,
-          'top',
-          `${topPosition}px`
-        );
-        alert(`topPosition ${topPosition}`);
-      } else {
-        //increase Y position => Take highest top position from Ycordinates array
-        // const prevTopPosition = this.parentComponent.YCoOrdinates.at(-1);
-        const prevTopPosition = Math.max(...this.parentComponent.YCoOrdinates);
-        alert(
-          `prev Y position ${prevTopPosition} --- ${topPosition}, ${this.decisionBlock.nativeElement.offsetTop}--- ${parentElementRef.nativeElement.offsetTop}`
-        );
-        topPosition =
-          prevTopPosition +
-          marginFromTop +
-          this.decisionBlock.nativeElement.offsetHeight; //parentElementRef.nativeElement.offsetTop;
-
-        this.renderer.setStyle(
-          this.decisionBlock.nativeElement,
-          'top',
-          `${topPosition}px`
-        );
-      }
-      this.renderer.setStyle(
-        this.decisionBlock.nativeElement,
-        'left',
-        `${this.decisionBlock.nativeElement.offsetLeft}px`
-      );
-      console.log('offset top', this.decisionBlock.nativeElement.offsetTop);
-      //* save the coordinates  x & y
-      this.position = {
-        x: this.decisionBlock.nativeElement.offsetLeft,
-        y: topPosition,
-        componentId: this.componentId,
-        isChild: true,
-      };
+      this.positionNodeNearLeftEdgeForChild();
     }
     //send to parent component
     this.sendPosition.emit(this.position);
@@ -413,9 +416,7 @@ export class SingleBlockComponent
     this.addOrUpdateLabel(this.lineLabel, this.nodeOutcome);
   }
 
-  onDragStart(e: any) {
-    // console.log('drag Started', e);
-  }
+  onDragStart(e: any) {}
 
   onDragOver(e: any) {
     this.parentComponent.linesMap.forEach((line, key, map) => {
@@ -491,7 +492,6 @@ export class SingleBlockComponent
 
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
-    console.log('childNode', childNode);
     this.selectedNode = childNode;
     //get the properties of the child node & display...
     this.displayNode = false;
