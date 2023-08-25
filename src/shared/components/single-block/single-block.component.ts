@@ -19,8 +19,6 @@ import { ModalComponent } from '../modal/modal.component';
 import { DynamicComponentConfig } from 'src/shared/interfaces/configOptions.interface';
 
 declare var LeaderLine: any;
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-single-block',
   templateUrl: './single-block.component.html',
@@ -36,6 +34,7 @@ export class SingleBlockComponent
   @Input() componentId: string;
   @Input() isCreatedFromChild: boolean = false;
   @Input() lineLabel: string;
+  @Input() nodeOutcome: string | any;
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
@@ -46,6 +45,7 @@ export class SingleBlockComponent
     componentId: string;
     line: any;
     label: string;
+    color?: string;
   }> = new EventEmitter<{ componentId: string; line: any; label: string }>();
   line: any;
   lineOptions: LineOptions = {
@@ -82,6 +82,10 @@ export class SingleBlockComponent
     },
   ];
   filterText: string = 'ALL';
+  nodeConnectorColorsHash = {
+    positive: '#66FF00',
+    negative: '#FF4F00',
+  };
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
@@ -138,11 +142,6 @@ export class SingleBlockComponent
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
     this.renderLinesBetweenComponents();
-    // adding css styles
-    // this.renderer.addClass(
-    //   this.decisionBlock.nativeElement,
-    //   `box-border box-border-actions`
-    // );
     this.renderer.setAttribute(
       this.decisionBlock.nativeElement,
       'class',
@@ -150,7 +149,7 @@ export class SingleBlockComponent
     );
   };
 
-  addComponent(label: string): void {
+  addComponent(label: string, nodeOutcome?: string | null): void {
     this.displayModal = !this.displayModal;
     const componentConfigurations: DynamicComponentConfig = {
       isChildComponentCall: this.nodeDate.isChildrComponentCall,
@@ -158,6 +157,7 @@ export class SingleBlockComponent
       parentElementRef: this.decisionBlock,
       parentIndex: this.nodeDate.parentIndex,
       parentComponent: this,
+      nodeOutcome,
     };
     this.parentComponent.createComponent(componentConfigurations);
   }
@@ -408,7 +408,7 @@ export class SingleBlockComponent
         this.lineOptions
       );
     }
-    this.addOrUpdateLabel(this.lineLabel);
+    this.addOrUpdateLabel(this.nodeOutcome, this.lineLabel);
   }
 
   onDragStart(e: any) {}
@@ -471,6 +471,8 @@ export class SingleBlockComponent
   }
 
   showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
+    this.selectedNode = {};
+    this.displayNode = false;
     this.nodeDate = {
       parentIndex: parentIndex,
       isChildrComponentCall: isChildrComponentCall,
@@ -488,6 +490,8 @@ export class SingleBlockComponent
   onSelectChildNodeDisplayProperties = async (e: Event, childNode: any) => {
     e.preventDefault();
     this.selectedNode = childNode;
+    console.log('selected node', this.selectedNode);
+
     //get the properties of the child node & display...
     this.displayNode = false;
     this.loading = true;
@@ -503,29 +507,18 @@ export class SingleBlockComponent
       const tempModel = this.nodeProperties.find(
         (x) => x.displayName === this.selectedNode.childNodeName
       );
-      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
+      //remove value if there is any value in model
+      if (tempModel) {
+        for (const key in tempModel.model) {
+          tempModel.model[key].value = '';
+        }
+        this.nodeModel = tempModel.model;
+      } else {
+        this.nodeModel = {};
+      }
       this.nodeDetails.parentNodeCategory === 'DECISION' &&
       Object.keys(this.nodeModel).length > 0
-        ? (this.nodeModel['decisionOutcome'] = {
-            label: 'Take this action if previous decision outcome is',
-            type: 'select',
-            value: null,
-            placeholder: '',
-            hidden: false,
-            rules: {
-              required: true,
-            },
-            options: [
-              {
-                label: 'positive',
-                value: 'positive',
-              },
-              {
-                label: 'negative',
-                value: 'negative',
-              },
-            ],
-          })
+        ? this.addDecisionOutcome(this.nodeModel)
         : null;
       setTimeout(() => {
         this.spinner.hide('nodePropertyLoader');
@@ -534,7 +527,34 @@ export class SingleBlockComponent
     });
   };
 
+  addDecisionOutcome = (obj: object) => {
+    obj['decisionOutcome'] = {
+      label: 'Take this action if previous decision outcome is',
+      type: 'select',
+      value: null,
+      placeholder: '',
+      hidden: false,
+      rules: {
+        required: true,
+      },
+      options: [
+        {
+          label: 'positive',
+          value: 'positive',
+        },
+        {
+          label: 'negative',
+          value: 'negative',
+        },
+      ],
+    };
+  };
+
   openModalWithNodeProps = async (e: any) => {
+    console.log(
+      'while open modal with node prop filled data: ',
+      this.nodeDetails.parentNodeCategory
+    );
     await this.displayNodeInformationsForEdit();
     this.showModalForm = true;
     this.displayModal = true;
@@ -576,9 +596,15 @@ export class SingleBlockComponent
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    // decisionOutcome: "positive"
+    const nodeOutcome = this.activityState.state?.decisionOutcome
+      ? this.activityState.state?.decisionOutcome
+      : null;
+    // console.log('Node Outcome', nodeOutcome);
+
     this.closeModal();
     const label: any = await this.getLineLabel(e);
-    this.addComponent(label);
+    this.addComponent(label, nodeOutcome);
   };
 
   getLineLabel = (nodeData: any) => {
@@ -603,7 +629,9 @@ export class SingleBlockComponent
     });
   };
 
-  onEditNodeDetailsSave = async (data) => {
+  onEditNodeDetailsSave = async (data: any) => {
+    console.log('data on edit', data, data?.decisionOutcome);
+    let nodeOutcome = data?.decisionOutcome;
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
     );
@@ -615,16 +643,21 @@ export class SingleBlockComponent
       ...this.parentComponent.activities.get(this.componentId),
     };
     const label: any = await this.getLineLabel(data);
-    label && label != '' ? this.addOrUpdateLabel(label) : null;
+    this.addOrUpdateLabel(nodeOutcome, label);
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     this.closeModal();
   };
 
-  addOrUpdateLabel = (label: string) => {
+  addOrUpdateLabel = (nodeOutcome: string | any, label: string) => {
+    console.log('addOrUpdateLabel triggered', label, nodeOutcome);
+    let color = nodeOutcome
+      ? this.nodeConnectorColorsHash[nodeOutcome]
+      : '#d5d5d5';
     this.sendLines.emit({
       componentId: this.componentId,
       line: this.line,
       label: label,
+      color,
     });
   };
 

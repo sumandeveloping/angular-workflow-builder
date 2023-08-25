@@ -257,6 +257,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           isChildComponentCall: false,
           isEditRendering: true,
           editComponentId: comp.componentId,
+          nodeOutcome: null,
         });
       }
     }
@@ -271,6 +272,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentIndex,
       isEditRendering,
       editComponentId,
+      nodeOutcome,
     } = configOptions;
     const dynamicComponent: ComponentRef<UpdateSingleBlockComponent> =
       this.container.createComponent<UpdateSingleBlockComponent>(
@@ -280,6 +282,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     let newComponentId: string;
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('lineLabel', componentLabel);
+    dynamicComponent.setInput('nodeOutcome', nodeOutcome);
     /* -------------------------------------------------------------------------- */
     /*    Two block is =>  `isEditRendering` & `!isEditRendering`            
       Inside these two block there will be another two blocks
@@ -384,7 +387,12 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
 
     //Get connected lines
     this.linesSubscriptions = dynamicComponent.instance.sendLines.subscribe(
-      (linesObj: { componentId: string; line: any; label: string }) => {
+      (linesObj: {
+        componentId: string;
+        line: any;
+        label: string;
+        color: string;
+      }) => {
         this.lineSubscriptionsHandler(linesObj);
       }
     );
@@ -429,12 +437,17 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     componentId: string;
     line: any;
     label: string;
+    color: string;
   }) => {
-    const { componentId, line, label } = lineConfig;
-    if (label)
-      line.setOptions({
-        middleLabel: label,
-      });
+    const { componentId, line, label, color } = lineConfig;
+    label
+      ? line.setOptions({
+          endLabel: label,
+          color,
+        })
+      : line.setOptions({
+          color,
+        });
 
     this.linesMap.set(componentId, line);
   };
@@ -612,6 +625,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     this.createComponent({
       isChildComponentCall: false,
       isEditRendering: false,
+      nodeOutcome: null,
     });
   };
 

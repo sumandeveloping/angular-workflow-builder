@@ -10,10 +10,12 @@ interface ConfigOptions {
 }
 
 export interface DynamicComponentConfig extends ConfigOptions {
+  nodeOutcome: string | any;
   parentComponent?: SingleBlockComponent;
 }
 
 export interface DynamicComponentEditConfig extends ConfigOptions {
+  nodeOutcome: string | any;
   parentComponent?: UpdateSingleBlockComponent;
   isEditRendering?: boolean;
   editComponentId?: string;

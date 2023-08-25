@@ -1,14 +1,12 @@
 import { ElementRef } from '@angular/core';
 
 export interface DynamicComponent {
-  addComponent?(
-    event: any,
-    parentIndex: number,
-    isChildrComponentCall: boolean
-  ): void | any;
+  addComponent?(label: string, nodeOutcome?: string | null): void | any;
   addComponentOnEdit?(
     isEditRendering: boolean,
-    editComponentID?: string
+    label: string,
+    nodeOutcome: string | any,
+    editComponentId?: string
   ): void | any;
   deleteComponent(): void | any;
   dynamicPositionOfParentComponents(): void;

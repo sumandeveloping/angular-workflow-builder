@@ -35,6 +35,7 @@ export class UpdateSingleBlockComponent
   @Input() isEditRendering: boolean = false;
   @Input() isCreatedFromChild: boolean = false;
   @Input() lineLabel: string;
+  @Input() nodeOutcome: string | any;
   @Input() decisionOutcome: string = 'positive';
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
@@ -80,6 +81,10 @@ export class UpdateSingleBlockComponent
     },
   ];
   filterText: string = 'ALL';
+  nodeConnectorColorsHash = {
+    positive: '#66FF00',
+    negative: '#FF4F00',
+  };
   /* -------------------------------------------------------------------------- */
   /*                 FOR Data related stuff                                     */
   /* -------------------------------------------------------------------------- */
@@ -128,11 +133,11 @@ export class UpdateSingleBlockComponent
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
     this.renderLinesBetweenComponents();
-    this.initializeParentComponent();
-    this.addOrUpdateLabel();
+    this.initializePreviouslySavedComponent();
+    this.addOrUpdateLabel(this.nodeOutcome);
   };
 
-  initializeParentComponent = () => {
+  initializePreviouslySavedComponent = () => {
     this.parentComponent.componentsToRender =
       this.parentComponent.componentsToRender.filter(
         (compObj: any) => compObj.componentId !== this.componentId
@@ -149,7 +154,11 @@ export class UpdateSingleBlockComponent
           this.parentComponent.dynamicComponentsObj[
             childComponentID
           ].nodeInformation;
-        this.addComponentOnEdit(true, '', childComponentID);
+        //get the saved node outcome
+        let nodeOutcome =
+          this.parentComponent.dynamicComponentsObj[childComponentID].activity
+            .state?.decisionOutcome;
+        this.addComponentOnEdit(true, '', nodeOutcome, childComponentID);
       }
     }
   };
@@ -157,6 +166,7 @@ export class UpdateSingleBlockComponent
   async addComponentOnEdit(
     isEditRendering: boolean,
     label: string,
+    nodeOutcome: string | any,
     editComponentId?: string
   ): Promise<void> {
     if (isEditRendering) {
@@ -168,6 +178,7 @@ export class UpdateSingleBlockComponent
         parentElementRef: this.decisionBlock,
         parentIndex: this.nodeDate.parentIndex,
         parentComponent: this,
+        nodeOutcome,
       });
     } else {
       this.parentComponent.createComponent({
@@ -176,6 +187,7 @@ export class UpdateSingleBlockComponent
         parentElementRef: this.decisionBlock,
         parentIndex: this.parentIndex,
         parentComponent: this,
+        nodeOutcome,
       });
     }
   }
@@ -529,6 +541,8 @@ export class UpdateSingleBlockComponent
   }
 
   showModal = (e: any, parentIndex: number, isChildrComponentCall: boolean) => {
+    this.selectedNode = {};
+    this.displayNode = false;
     this.nodeDate = {
       event: e,
       parentIndex: parentIndex,
@@ -562,7 +576,15 @@ export class UpdateSingleBlockComponent
       const tempModel = this.nodeProperties.find(
         (x) => x.displayName === this.selectedNode.childNodeName
       );
-      tempModel ? (this.nodeModel = tempModel.model) : (this.nodeModel = {});
+      //remove value if there is any value in model
+      if (tempModel) {
+        for (const key in tempModel.model) {
+          tempModel.model[key].value = '';
+        }
+        this.nodeModel = tempModel.model;
+      } else {
+        this.nodeModel = {};
+      }
       this.nodeDetails.parentNodeCategory === 'DECISION' &&
       Object.keys(this.nodeModel).length > 0
         ? this.addDecisionOutcome(this.nodeModel)
@@ -644,9 +666,14 @@ export class UpdateSingleBlockComponent
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    // decisionOutcome: "positive"
+    const nodeOutcome = this.activityState.state?.decisionOutcome
+      ? this.activityState.state?.decisionOutcome
+      : null;
+    console.log('Node Outcome', nodeOutcome);
     this.closeModal();
     const label: any = await this.getLineLabel(e);
-    this.addComponentOnEdit(false, label);
+    this.addComponentOnEdit(false, label, nodeOutcome);
   };
 
   getLineLabel = (nodeData: any) => {
@@ -673,6 +700,8 @@ export class UpdateSingleBlockComponent
   };
 
   onEditNodeDetailsSave = async (data: any) => {
+    console.log('data on edit', data, data?.decisionOutcome);
+    let nodeOutcome = data?.decisionOutcome;
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
     );
@@ -686,11 +715,15 @@ export class UpdateSingleBlockComponent
     };
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     const label: any = await this.getLineLabel(data);
-    label && label != '' ? this.addOrUpdateLabel(label) : null;
+    label && label != '' ? this.addOrUpdateLabel(nodeOutcome, label) : null;
     this.closeModal();
   };
 
-  addOrUpdateLabel = async (label?: any) => {
+  addOrUpdateLabel = async (nodeOutcome: string | any, label?: any) => {
+    console.log('addOrUpdateLabel triggered', label, nodeOutcome);
+    let color = nodeOutcome
+      ? this.nodeConnectorColorsHash[nodeOutcome]
+      : '#d5d5d5';
     !label
       ? (label = await this.getLineLabel(
           this.parentComponent.activities.get(this.componentId).state
@@ -700,6 +733,7 @@ export class UpdateSingleBlockComponent
       componentId: this.componentId,
       line: this.line,
       label: label,
+      color,
     });
   };
 
