@@ -1438,10 +1438,11 @@ export const nodeProperties = [
     },
   },
   // new data model
+  //lead status
   {
     displayName: 'Update Lead Status',
     description: 'Update lead status with the defined value from this action',
-    category: 'Decision',
+    category: 'ACTION',
     icon: 'fa fa-window-maximize',
     model: {
       name: {
@@ -1471,6 +1472,149 @@ export const nodeProperties = [
           {
             value: 'uuid-formSubmitted',
             label: 'Form Submitted',
+          },
+        ],
+      },
+    },
+  },
+  //lead score
+  {
+    displayName: 'Change Lead Score',
+    description:
+      "This action will add the specified value to the lead's existing score",
+    category: 'ACTION',
+    icon: 'fa fa-window-maximize',
+    model: {
+      name: {
+        label: 'Name',
+        type: 'text',
+        value: null,
+        hidden: false,
+        rules: {
+          required: true,
+        },
+      },
+      leadScore: {
+        label: 'Lead Score',
+        type: 'number',
+        value: null,
+        placeholder: 'Change lead score to...',
+        hidden: false,
+      },
+    },
+  },
+  //lead rating
+  {
+    displayName: 'Change Lead Rating',
+    description: 'Change lead rating with the defined value from this action',
+    category: 'ACTION',
+    icon: 'fa fa-window-maximize',
+    model: {
+      name: {
+        label: 'Name',
+        type: 'text',
+        value: null,
+        hidden: false,
+        rules: {
+          required: true,
+        },
+      },
+      leadRating: {
+        label: 'Lead Rating',
+        type: 'select',
+        value: null,
+        placeholder: 'Change lead rating to...',
+        hidden: false,
+        options: [
+          {
+            value: 'uuid-cold',
+            label: 'COLD',
+          },
+          {
+            value: 'uuid-warm',
+            label: 'WARM',
+          },
+          {
+            value: 'uuid-hot',
+            label: 'HOT',
+          },
+        ],
+      },
+    },
+  },
+  //lead owner
+  {
+    displayName: 'Change Lead Owner',
+    description: 'Change lead owner with the defined value from this action',
+    category: 'ACTION',
+    icon: 'fa fa-window-maximize',
+    model: {
+      name: {
+        label: 'Name',
+        type: 'text',
+        value: null,
+        hidden: false,
+        rules: {
+          required: true,
+        },
+      },
+      leadOwner: {
+        label: 'Lead Owner',
+        type: 'select',
+        value: null,
+        placeholder: 'Change lead owner to...',
+        hidden: false,
+        options: [
+          {
+            value: 'uuid-suman',
+            label: 'Suman Tapader',
+          },
+          {
+            value: 'uuid-akshit',
+            label: 'Akshit Singh',
+          },
+          {
+            value: 'uuid-smita',
+            label: 'Smita Chakraborty',
+          },
+        ],
+      },
+    },
+  },
+  //change assignee
+  {
+    displayName: 'Change Assign Lead To',
+    description: 'Change lead assignee with the defined value from this action',
+    category: 'ACTION',
+    icon: 'fa fa-window-maximize',
+    model: {
+      name: {
+        label: 'Name',
+        type: 'text',
+        value: null,
+        hidden: false,
+        rules: {
+          required: true,
+        },
+      },
+      assignedTo: {
+        label: 'Assign To',
+        type: 'select',
+        value: null,
+        placeholder: 'Assign lead to...',
+        hidden: false,
+        options: [
+          {
+            value: 'uuid-suman',
+            label: 'Suman Tapader',
+          },
+          {
+            value: 'uuid-akshit',
+            label: 'Akshit Singh',
+          },
+          {
+            value: 'uuid-smita',
+            label: 'Smita Chakraborty',
           },
         ],
       },
