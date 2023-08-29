@@ -220,99 +220,101 @@ export const MULTITOUCH_NODE_RULES = [
     ],
   },
   // End of new actions
-  {
-    parentNodeId: 'UUID-inactionSendEmail',
-    parentNodeName: 'Inaction Send Email',
-    parentNodeNameType: 'inactionSendEmail',
-    parentNodeType: null,
-    parentNodeCategory: 'ACTION',
-    // childNodeIds: [
-    //   'Send Email',
-    //   'Update Lead',
-    //   'Open Email',
-    //   'Download Asset',
-    //   'Visit Landing Page',
-    //   'Submit Form',
-    // ],
-    childNodeIds: [
-      {
-        id: 'UUID-sendEmail',
-        childNodeName: 'Send Email',
-        childNodeNameType: 'sendEmail',
-        childNodeDescription: 'Send the selected email to the lead.',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-updateLead',
-        childNodeName: 'Update Lead',
-        childNodeNameType: 'updateLead',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-openEmail',
-        childNodeName: 'Open Email',
-        childNodeNameType: 'openEmail',
-        childNodeCategory: 'DECISION',
-        childNodeDescription:
-          "Trigger actions when an email is opened. Connect a 'Send Email' action to the top of this decision.",
-      },
-      {
-        id: 'UUID-downloadAsset',
-        childNodeName: 'Download Asset',
-        childNodeNameType: 'downloadAsset',
-        childNodeCategory: 'DECISION',
-        childNodeDescription: 'Trigger actions upon downloading an asset.',
-      },
-      {
-        id: 'UUID-visitLandingPage',
-        childNodeName: 'Visit Landing Page',
-        childNodeNameType: 'visitLandingPage',
-        childNodeCategory: 'DECISION',
-        childNodeDescription: 'Trigger actions on a page/url hit.',
-      },
-      {
-        id: 'UUID-submitForm',
-        childNodeName: 'Submit Form',
-        childNodeNameType: 'submitForm',
-        childNodeCategory: 'DECISION',
-        childNodeDescription: 'Trigger actions when a lead submits a form',
-      },
-    ],
-  },
+  //start of old actions
   {
     parentNodeId: 'UUID-updateLead',
     parentNodeName: 'Update Lead',
     parentNodeNameType: 'updateLead',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
-    // childNodeIds: ['Send Email'],
+    description:
+      "Update the current lead's fields with the defined values from this action",
     childNodeIds: [
-      {
-        id: 'UUID-sendEmail',
-        childNodeName: 'Send Email',
-        childNodeNameType: 'sendEmail',
-        childNodeDescription: 'Send the selected email to the lead.',
-        childNodeCategory: 'ACTION',
-      },
+      // {
+      //   id: 'UUID-sendEmail',
+      //   childNodeName: 'Send Email',
+      //   childNodeNameType: 'sendEmail',
+      //   childNodeDescription: 'Send the selected email to the lead.',
+      //   childNodeCategory: 'ACTION',
+      // },
     ],
   },
-  {
-    parentNodeId: 'UUID-inactionUpdateLead',
-    parentNodeName: 'Inaction Update Lead',
-    parentNodeNameType: 'inactionUpdateLead',
-    parentNodeType: null,
-    parentNodeCategory: 'ACTION',
-    // childNodeIds: ['Send Email'],
-    childNodeIds: [
-      {
-        id: 'UUID-sendEmail',
-        childNodeName: 'Send Email',
-        childNodeNameType: 'sendEmail',
-        childNodeDescription: 'Send the selected email to the lead.',
-        childNodeCategory: 'ACTION',
-      },
-    ],
-  },
+  // {
+  //   parentNodeId: 'UUID-inactionSendEmail',
+  //   parentNodeName: 'Inaction Send Email',
+  //   parentNodeNameType: 'inactionSendEmail',
+  //   parentNodeType: null,
+  //   parentNodeCategory: 'ACTION',
+  //   // childNodeIds: [
+  //   //   'Send Email',
+  //   //   'Update Lead',
+  //   //   'Open Email',
+  //   //   'Download Asset',
+  //   //   'Visit Landing Page',
+  //   //   'Submit Form',
+  //   // ],
+  //   childNodeIds: [
+  //     {
+  //       id: 'UUID-sendEmail',
+  //       childNodeName: 'Send Email',
+  //       childNodeNameType: 'sendEmail',
+  //       childNodeDescription: 'Send the selected email to the lead.',
+  //       childNodeCategory: 'ACTION',
+  //     },
+  //     {
+  //       id: 'UUID-updateLead',
+  //       childNodeName: 'Update Lead',
+  //       childNodeNameType: 'updateLead',
+  //       childNodeCategory: 'ACTION',
+  //     },
+  //     {
+  //       id: 'UUID-openEmail',
+  //       childNodeName: 'Open Email',
+  //       childNodeNameType: 'openEmail',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription:
+  //         "Trigger actions when an email is opened. Connect a 'Send Email' action to the top of this decision.",
+  //     },
+  //     {
+  //       id: 'UUID-downloadAsset',
+  //       childNodeName: 'Download Asset',
+  //       childNodeNameType: 'downloadAsset',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription: 'Trigger actions upon downloading an asset.',
+  //     },
+  //     {
+  //       id: 'UUID-visitLandingPage',
+  //       childNodeName: 'Visit Landing Page',
+  //       childNodeNameType: 'visitLandingPage',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription: 'Trigger actions on a page/url hit.',
+  //     },
+  //     {
+  //       id: 'UUID-submitForm',
+  //       childNodeName: 'Submit Form',
+  //       childNodeNameType: 'submitForm',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription: 'Trigger actions when a lead submits a form',
+  //     },
+  //   ],
+  // },
+  // {
+  //   parentNodeId: 'UUID-inactionUpdateLead',
+  //   parentNodeName: 'Inaction Update Lead',
+  //   parentNodeNameType: 'inactionUpdateLead',
+  //   parentNodeType: null,
+  //   parentNodeCategory: 'ACTION',
+  //   // childNodeIds: ['Send Email'],
+  //   childNodeIds: [
+  //     {
+  //       id: 'UUID-sendEmail',
+  //       childNodeName: 'Send Email',
+  //       childNodeNameType: 'sendEmail',
+  //       childNodeDescription: 'Send the selected email to the lead.',
+  //       childNodeCategory: 'ACTION',
+  //     },
+  //   ],
+  // },
   // ========== END OF ACTION BLOCK =================================
   // ===== START OF DECISION BLOCKS ===========================
   {

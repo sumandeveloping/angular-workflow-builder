@@ -57,6 +57,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponentId: '',
       childs: ['99819ba5-3317-424d-8358-60cd02bb579b'],
       connecters: [],
+      nodeTitle: 'CL1',
       nodeInformation: {
         id: 'UUID-segment',
         childNodeName: 'Segment',
@@ -84,6 +85,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         'a6c6b0f1-67b9-4122-8438-287fc5d0b18e',
       ],
       connecters: [],
+      nodeTitle: 'Send Email Action',
       nodeInformation: {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
@@ -110,6 +112,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponentId: '99819ba5-3317-424d-8358-60cd02bb579b',
       childs: ['6c65fcff-0c79-437b-8d77-524f95d88df3'],
       connecters: [],
+      nodeTitle: 'Opening Email Action',
       nodeInformation: {
         id: 'UUID-openEmail',
         childNodeName: 'Open Email',
@@ -129,6 +132,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponentId: '99819ba5-3317-424d-8358-60cd02bb579b',
       childs: [],
       connecters: [],
+      nodeTitle: 'Download an asset',
       nodeInformation: {
         id: 'UUID-downloadAsset',
         childNodeName: 'Download Asset',
@@ -149,6 +153,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentComponentId: 'a22bde8c-b97e-4fdd-857e-ff5a069cbf9f',
       childs: [],
       connecters: [],
+      nodeTitle: 'Send Email Again',
       nodeInformation: {
         id: 'UUID-sendEmail',
         childNodeName: 'Send Email',
@@ -258,6 +263,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
           isEditRendering: true,
           editComponentId: comp.componentId,
           nodeOutcome: null,
+          nodeTitle: comp.nodeTitle,
         });
       }
     }
@@ -273,6 +279,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       isEditRendering,
       editComponentId,
       nodeOutcome,
+      nodeTitle,
     } = configOptions;
     const dynamicComponent: ComponentRef<UpdateSingleBlockComponent> =
       this.container.createComponent<UpdateSingleBlockComponent>(
@@ -283,6 +290,8 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
     dynamicComponent.setInput('isCreatedFromChild', isChildComponentCall);
     dynamicComponent.setInput('lineLabel', componentLabel);
     dynamicComponent.setInput('nodeOutcome', nodeOutcome);
+    dynamicComponent.setInput('nodeTitle', nodeTitle);
+
     /* -------------------------------------------------------------------------- */
     /*    Two block is =>  `isEditRendering` & `!isEditRendering`            
       Inside these two block there will be another two blocks
@@ -315,6 +324,7 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
         connecters: [],
         nodeInformation: {},
         activity: {},
+        nodeTitle,
       };
       //irrespective of `isEditRendering` value
       if (isChildComponentCall) {
@@ -621,12 +631,31 @@ export class UpdateWorkflowBuilderComponent implements OnInit, AfterViewInit {
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    console.log('On ADD', this.activityState.state, this.selectedNode);
+    const nodeTitle = this.evaluateNodeTitle(
+      this.activityState.state,
+      this.selectedNode.childNodeNameType
+    );
     this.closeModal();
     this.createComponent({
       isChildComponentCall: false,
       isEditRendering: false,
       nodeOutcome: null,
+      nodeTitle,
     });
+  };
+
+  evaluateNodeTitle = (nodeData: any, nodeName: string): string => {
+    let title: string;
+    if (nodeName === 'segment') {
+      title =
+        nodeData.sources === 'CL'
+          ? nodeData.campaignList
+          : nodeData.segmentList;
+    } else {
+      title = nodeData.name;
+    }
+    return title;
   };
 
   populateActivity = async (

@@ -117,6 +117,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       parentElementRef,
       parentIndex,
       nodeOutcome,
+      nodeTitle,
     } = configOptions;
     // this.container.clear();
     const dynamicComponent: ComponentRef<SingleBlockComponent> =
@@ -129,6 +130,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
     dynamicComponent.setInput('componentId', newComponentId);
     dynamicComponent.setInput('lineLabel', componentLabel);
     dynamicComponent.setInput('nodeOutcome', nodeOutcome);
+    dynamicComponent.setInput('nodeTitle', nodeTitle);
 
     //ADD logic for hashing components ID ** Important **
     this.dynamicComponentsObj[newComponentId] = {
@@ -137,6 +139,7 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       connecters: [],
       nodeInformation: {},
       activity: {},
+      nodeTitle: nodeTitle,
     };
     if (isChildComponentCall) {
       dynamicComponent.setInput('parentIndex', parentIndex);
@@ -444,8 +447,30 @@ export class WorkflowBuilderComponent implements OnInit, AfterViewInit {
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    console.log('On ADD', this.activityState.state, this.selectedNode);
+    const nodeTitle = this.evaluateNodeTitle(
+      this.activityState.state,
+      this.selectedNode.childNodeNameType
+    );
     this.closeModal();
-    this.createComponent({ isChildComponentCall: false, nodeOutcome: null });
+    this.createComponent({
+      isChildComponentCall: false,
+      nodeOutcome: null,
+      nodeTitle,
+    });
+  };
+
+  evaluateNodeTitle = (nodeData: any, nodeName: string): string => {
+    let title: string;
+    if (nodeName === 'segment') {
+      title =
+        nodeData.sources === 'CL'
+          ? nodeData.campaignList
+          : nodeData.segmentList;
+    } else {
+      title = nodeData.name;
+    }
+    return title;
   };
 
   populateActivity = async (componentID: string, x: number, y: number) => {

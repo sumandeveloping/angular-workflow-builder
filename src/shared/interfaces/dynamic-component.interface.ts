@@ -1,11 +1,16 @@
 import { ElementRef } from '@angular/core';
 
 export interface DynamicComponent {
-  addComponent?(label: string, nodeOutcome?: string | null): void | any;
+  addComponent?(
+    label: string,
+    nodeOutcome: string | null,
+    nodeTitle: string
+  ): void | any;
   addComponentOnEdit?(
     isEditRendering: boolean,
     label: string,
     nodeOutcome: string | any,
+    nodeTitle: string,
     editComponentId?: string
   ): void | any;
   deleteComponent(): void | any;
