@@ -328,8 +328,9 @@ export const nodeProperties = [
       },
     },
   },
+  // Update Lead
   {
-    displayName: 'Update lead',
+    displayName: 'Update Lead',
     description:
       "Update the current lead's fields with the defined values from this action",
     category: 'Actions',
@@ -343,165 +344,6 @@ export const nodeProperties = [
         hidden: false,
         rules: {
           required: true,
-        },
-      },
-      executeThisEvent: {
-        id: 'executeThisEvent',
-        label: 'Execute this event',
-        type: 'select',
-        value: null,
-        placeholder: "All date/time are based on the user's system timezone.",
-        hidden: false,
-        linkedFields: true,
-        rules: {
-          required: true,
-        },
-        options: [
-          {
-            label: 'immediately',
-            value: 'immediately',
-          },
-          {
-            label: 'at a relative time period',
-            value: 'at a relative time period',
-          },
-          {
-            label: 'at a specific date/time',
-            value: 'at a specific date/time',
-          },
-        ],
-      },
-      intervalValue: {
-        label: 'Interval Value',
-        type: 'number',
-        value: null,
-        placeholder: 'Should be a number.',
-        link: 'executeThisEvent',
-        linkValue: 'at a relative time period',
-        hidden: true,
-        requiredWhenDisplayed: true,
-      },
-      intervalUnit: {
-        label: 'Interval Unit',
-        type: 'select',
-        value: null,
-        link: 'executeThisEvent',
-        linkValue: 'at a relative time period',
-        hidden: true,
-        requiredWhenDisplayed: true,
-        options: [
-          {
-            label: 'minute(s)',
-            value: 'minute(s)',
-          },
-          {
-            label: 'hour(s)',
-            value: 'hour(s)',
-          },
-          {
-            label: 'day(s)',
-            value: 'day(s)',
-          },
-          {
-            label: 'month(s)',
-            value: 'month(s)',
-          },
-          {
-            label: 'year(s)',
-            value: 'year(s)',
-          },
-        ],
-      },
-      date: {
-        type: 'date',
-        value: null,
-        label: 'Date',
-        link: 'executeThisEvent',
-        linkValue: 'at a specific date/time',
-        hidden: true,
-        requiredWhenDisplayed: true,
-      },
-      salutation: {
-        label: 'Salutation',
-        type: 'select',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-        },
-        options: [
-          {
-            label: 'MR',
-            value: 'MR',
-          },
-          {
-            label: 'MRS',
-            value: 'MRS',
-          },
-          {
-            label: 'MS',
-            value: 'MS',
-          },
-          {
-            label: 'Dr.',
-            value: 'Dr.',
-          },
-          {
-            label: 'Prof',
-            value: 'Prof',
-          },
-        ],
-      },
-      firstName: {
-        label: 'First Name',
-        type: 'text',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-        },
-      },
-      lastName: {
-        label: 'Last Name',
-        type: 'text',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-        },
-      },
-      primaryPhone: {
-        label: 'Primary Phone',
-        type: 'number',
-        value: null,
-        placeholder: 'Format should be like 91-9876543210',
-        hidden: false,
-        rules: {
-          required: true,
-          maxLength: 12,
-          pattern: '[0-9]*',
-        },
-      },
-      mobile: {
-        label: 'Mobile',
-        type: 'number',
-        value: null,
-        placeholder: 'Format should be like 91-9876543210',
-        hidden: false,
-        rules: {
-          required: true,
-          maxLength: 12,
-          pattern: '[0-9]*',
-        },
-      },
-      email: {
-        label: 'Email',
-        type: 'text',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-          email: true,
         },
       },
       assignedTo: {
@@ -608,220 +450,54 @@ export const nodeProperties = [
           },
         ],
       },
-      secondaryPhone: {
-        label: 'Secondary Phone',
+      leadStatus: {
+        label: 'Lead Status',
+        type: 'select',
+        value: null,
+        placeholder: 'Change lead status to...',
+        hidden: false,
+        options: [
+          {
+            value: 'uuid-clickedThrough',
+            label: 'Clicked Through',
+          },
+          {
+            value: 'uuid-converted',
+            label: 'Converted',
+          },
+          {
+            value: 'uuid-formSubmitted',
+            label: 'Form Submitted',
+          },
+        ],
+      },
+      leadScore: {
+        label: 'Lead Score',
         type: 'number',
         value: null,
-        placeholder: 'Format should be like 91-9876543210',
-        hidden: false,
-        rules: {
-          required: true,
-          maxLength: 12,
-          pattern: '[0-9]*',
-        },
-      },
-      jobTitle: {
-        label: 'Job Title',
-        type: 'text',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-        },
-      },
-      followUpDate: {
-        label: 'Follow up date',
-        type: 'date',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-        },
-      },
-      companyName: {
-        label: 'Company Name',
-        type: 'text',
-        value: null,
-        hidden: false,
-        rules: {
-          required: true,
-        },
-      },
-      website: {
-        label: 'Website',
-        type: 'text',
-        value: null,
+        placeholder: 'Change lead score to...',
         hidden: false,
       },
-      noOfEmployee: {
-        label: 'Number of Employee',
+      leadOwner: {
+        label: 'Lead Owner',
         type: 'select',
         value: null,
+        placeholder: 'Change lead owner to...',
         hidden: false,
         options: [
           {
-            value: '1-10',
-            label: '1-10',
+            value: 'uuid-suman',
+            label: 'Suman Tapader',
           },
           {
-            value: '11-100',
-            label: '11-100',
+            value: 'uuid-akshit',
+            label: 'Akshit Singh',
           },
           {
-            value: '101-500',
-            label: '101-500',
-          },
-          {
-            value: '501-1000',
-            label: '501-1000',
-          },
-          {
-            value: '1001-5000',
-            label: '1001-5000',
-          },
-          {
-            value: '5000+',
-            label: '5000+',
+            value: 'uuid-smita',
+            label: 'Smita Chakraborty',
           },
         ],
-      },
-      annualRevenue: {
-        label: 'Annual Revenue',
-        type: 'text',
-        value: null,
-        hidden: false,
-      },
-      state: {
-        label: 'State/Province',
-        type: 'select',
-        value: null,
-        hidden: false,
-        options: [
-          {
-            value: 'Aargau',
-            label: 'Aargau',
-          },
-          {
-            value: 'Aberdeen',
-            label: 'Aberdeen',
-          },
-          {
-            value: 'Aberdeenshire',
-            label: 'Aberdeenshire',
-          },
-          {
-            value: 'Abia',
-            label: 'Abia',
-          },
-          {
-            value: 'Abidjan',
-            label: 'Abidjan',
-          },
-          {
-            value: 'Abim District',
-            label: 'Abim District',
-          },
-        ],
-      },
-      city: {
-        label: 'City',
-        type: 'text',
-        value: null,
-        hidden: false,
-      },
-      industry: {
-        label: 'Industry Type',
-        type: 'select',
-        value: null,
-        hidden: false,
-        options: [
-          {
-            value: 'Agriculture',
-            label: 'Agriculture',
-          },
-          {
-            value: 'Apparel',
-            label: 'Apparel',
-          },
-          {
-            value: 'Banking',
-            label: 'Banking',
-          },
-          {
-            value: 'Biotechnology',
-            label: 'Biotechnology',
-          },
-          {
-            value: 'Chemicals',
-            label: 'Chemicals',
-          },
-          {
-            value: 'Communications',
-            label: 'Communications',
-          },
-        ],
-      },
-      zipcode: {
-        label: 'Zip/Postal Code',
-        type: 'text',
-        value: null,
-        hidden: false,
-      },
-      country: {
-        label: 'Country',
-        type: 'select',
-        value: null,
-        hidden: false,
-        options: [
-          {
-            value: 'Afghanistan',
-            label: 'Afghanistan',
-          },
-          {
-            value: 'Aland Islands',
-            label: 'Aland Islands',
-          },
-          {
-            value: 'Albania',
-            label: 'Albania',
-          },
-          {
-            value: 'Algeria',
-            label: 'Algeria',
-          },
-          {
-            value: 'American Samoa',
-            label: 'American Samoa',
-          },
-          {
-            value: 'Andorra',
-            label: 'Andorra',
-          },
-        ],
-      },
-      companyPrimaryPhone: {
-        label: 'Company Primary Phone',
-        type: 'number',
-        value: null,
-        placeholder: 'Format should be like 91-9876543210',
-        hidden: false,
-        rules: {
-          required: true,
-          maxLength: 12,
-          pattern: '[0-9]*',
-        },
-      },
-      addressLine1: {
-        label: 'Address Line 1',
-        type: 'text',
-        value: null,
-        hidden: false,
-      },
-      addressLine2: {
-        label: 'Address Line 2',
-        type: 'text',
-        value: null,
-        hidden: false,
       },
     },
   },
