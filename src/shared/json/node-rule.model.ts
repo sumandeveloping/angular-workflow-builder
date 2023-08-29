@@ -220,99 +220,101 @@ export const MULTITOUCH_NODE_RULES = [
     ],
   },
   // End of new actions
-  {
-    parentNodeId: 'UUID-inactionSendEmail',
-    parentNodeName: 'Inaction Send Email',
-    parentNodeNameType: 'inactionSendEmail',
-    parentNodeType: null,
-    parentNodeCategory: 'ACTION',
-    // childNodeIds: [
-    //   'Send Email',
-    //   'Update Lead',
-    //   'Open Email',
-    //   'Download Asset',
-    //   'Visit Landing Page',
-    //   'Submit Form',
-    // ],
-    childNodeIds: [
-      {
-        id: 'UUID-sendEmail',
-        childNodeName: 'Send Email',
-        childNodeNameType: 'sendEmail',
-        childNodeDescription: 'Send the selected email to the lead.',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-updateLead',
-        childNodeName: 'Update Lead',
-        childNodeNameType: 'updateLead',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-openEmail',
-        childNodeName: 'Open Email',
-        childNodeNameType: 'openEmail',
-        childNodeCategory: 'DECISION',
-        childNodeDescription:
-          "Trigger actions when an email is opened. Connect a 'Send Email' action to the top of this decision.",
-      },
-      {
-        id: 'UUID-downloadAsset',
-        childNodeName: 'Download Asset',
-        childNodeNameType: 'downloadAsset',
-        childNodeCategory: 'DECISION',
-        childNodeDescription: 'Trigger actions upon downloading an asset.',
-      },
-      {
-        id: 'UUID-visitLandingPage',
-        childNodeName: 'Visit Landing Page',
-        childNodeNameType: 'visitLandingPage',
-        childNodeCategory: 'DECISION',
-        childNodeDescription: 'Trigger actions on a page/url hit.',
-      },
-      {
-        id: 'UUID-submitForm',
-        childNodeName: 'Submit Form',
-        childNodeNameType: 'submitForm',
-        childNodeCategory: 'DECISION',
-        childNodeDescription: 'Trigger actions when a lead submits a form',
-      },
-    ],
-  },
+  //start of old actions
   {
     parentNodeId: 'UUID-updateLead',
     parentNodeName: 'Update Lead',
     parentNodeNameType: 'updateLead',
     parentNodeType: null,
     parentNodeCategory: 'ACTION',
-    // childNodeIds: ['Send Email'],
+    description:
+      "Update the current lead's fields with the defined values from this action",
     childNodeIds: [
-      {
-        id: 'UUID-sendEmail',
-        childNodeName: 'Send Email',
-        childNodeNameType: 'sendEmail',
-        childNodeDescription: 'Send the selected email to the lead.',
-        childNodeCategory: 'ACTION',
-      },
+      // {
+      //   id: 'UUID-sendEmail',
+      //   childNodeName: 'Send Email',
+      //   childNodeNameType: 'sendEmail',
+      //   childNodeDescription: 'Send the selected email to the lead.',
+      //   childNodeCategory: 'ACTION',
+      // },
     ],
   },
-  {
-    parentNodeId: 'UUID-inactionUpdateLead',
-    parentNodeName: 'Inaction Update Lead',
-    parentNodeNameType: 'inactionUpdateLead',
-    parentNodeType: null,
-    parentNodeCategory: 'ACTION',
-    // childNodeIds: ['Send Email'],
-    childNodeIds: [
-      {
-        id: 'UUID-sendEmail',
-        childNodeName: 'Send Email',
-        childNodeNameType: 'sendEmail',
-        childNodeDescription: 'Send the selected email to the lead.',
-        childNodeCategory: 'ACTION',
-      },
-    ],
-  },
+  // {
+  //   parentNodeId: 'UUID-inactionSendEmail',
+  //   parentNodeName: 'Inaction Send Email',
+  //   parentNodeNameType: 'inactionSendEmail',
+  //   parentNodeType: null,
+  //   parentNodeCategory: 'ACTION',
+  //   // childNodeIds: [
+  //   //   'Send Email',
+  //   //   'Update Lead',
+  //   //   'Open Email',
+  //   //   'Download Asset',
+  //   //   'Visit Landing Page',
+  //   //   'Submit Form',
+  //   // ],
+  //   childNodeIds: [
+  //     {
+  //       id: 'UUID-sendEmail',
+  //       childNodeName: 'Send Email',
+  //       childNodeNameType: 'sendEmail',
+  //       childNodeDescription: 'Send the selected email to the lead.',
+  //       childNodeCategory: 'ACTION',
+  //     },
+  //     {
+  //       id: 'UUID-updateLead',
+  //       childNodeName: 'Update Lead',
+  //       childNodeNameType: 'updateLead',
+  //       childNodeCategory: 'ACTION',
+  //     },
+  //     {
+  //       id: 'UUID-openEmail',
+  //       childNodeName: 'Open Email',
+  //       childNodeNameType: 'openEmail',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription:
+  //         "Trigger actions when an email is opened. Connect a 'Send Email' action to the top of this decision.",
+  //     },
+  //     {
+  //       id: 'UUID-downloadAsset',
+  //       childNodeName: 'Download Asset',
+  //       childNodeNameType: 'downloadAsset',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription: 'Trigger actions upon downloading an asset.',
+  //     },
+  //     {
+  //       id: 'UUID-visitLandingPage',
+  //       childNodeName: 'Visit Landing Page',
+  //       childNodeNameType: 'visitLandingPage',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription: 'Trigger actions on a page/url hit.',
+  //     },
+  //     {
+  //       id: 'UUID-submitForm',
+  //       childNodeName: 'Submit Form',
+  //       childNodeNameType: 'submitForm',
+  //       childNodeCategory: 'DECISION',
+  //       childNodeDescription: 'Trigger actions when a lead submits a form',
+  //     },
+  //   ],
+  // },
+  // {
+  //   parentNodeId: 'UUID-inactionUpdateLead',
+  //   parentNodeName: 'Inaction Update Lead',
+  //   parentNodeNameType: 'inactionUpdateLead',
+  //   parentNodeType: null,
+  //   parentNodeCategory: 'ACTION',
+  //   // childNodeIds: ['Send Email'],
+  //   childNodeIds: [
+  //     {
+  //       id: 'UUID-sendEmail',
+  //       childNodeName: 'Send Email',
+  //       childNodeNameType: 'sendEmail',
+  //       childNodeDescription: 'Send the selected email to the lead.',
+  //       childNodeCategory: 'ACTION',
+  //     },
+  //   ],
+  // },
   // ========== END OF ACTION BLOCK =================================
   // ===== START OF DECISION BLOCKS ===========================
   {
@@ -333,46 +335,16 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeDescription: 'Send the selected email to the lead.',
         childNodeCategory: 'ACTION',
       },
+      // UPDATE LEAD
       {
-        id: 'UUID-updateLeadStatus',
-        childNodeName: 'Update Lead Status',
-        childNodeNameType: 'updateLeadStatus',
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeNameType: 'updateLead',
         childNodeDescription:
-          'Update lead status with the defined value from this action',
+          "Update the current lead's fields with the defined values from this action",
         childNodeCategory: 'ACTION',
       },
-      {
-        id: 'UUID-changeLeadScore',
-        childNodeName: 'Change Lead Score',
-        childNodeNameType: 'changeLeadScore',
-        childNodeDescription:
-          "This action will add the specified value to the lead's existing score",
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadRating',
-        childNodeName: 'Change Lead Rating',
-        childNodeNameType: 'changeLeadRating',
-        childNodeDescription:
-          'Change lead rating with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadOwner',
-        childNodeName: 'Change Lead Owner',
-        childNodeNameType: 'changeLeadOwner',
-        childNodeDescription:
-          'Change lead owner with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeAssignLeadTo',
-        childNodeName: 'Change Assign Lead To',
-        childNodeNameType: 'changeAssignLeadTo',
-        childNodeDescription:
-          'Change lead assignee with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
+      // END UPDATE LEAD
     ],
   },
   {
@@ -392,46 +364,16 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeDescription: 'Send the selected email to the lead.',
         childNodeCategory: 'ACTION',
       },
+      // UPDATE LEAD
       {
-        id: 'UUID-updateLeadStatus',
-        childNodeName: 'Update Lead Status',
-        childNodeNameType: 'updateLeadStatus',
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeNameType: 'updateLead',
         childNodeDescription:
-          'Update lead status with the defined value from this action',
+          "Update the current lead's fields with the defined values from this action",
         childNodeCategory: 'ACTION',
       },
-      {
-        id: 'UUID-changeLeadScore',
-        childNodeName: 'Change Lead Score',
-        childNodeNameType: 'changeLeadScore',
-        childNodeDescription:
-          "This action will add the specified value to the lead's existing score",
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadRating',
-        childNodeName: 'Change Lead Rating',
-        childNodeNameType: 'changeLeadRating',
-        childNodeDescription:
-          'Change lead rating with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadOwner',
-        childNodeName: 'Change Lead Owner',
-        childNodeNameType: 'changeLeadOwner',
-        childNodeDescription:
-          'Change lead owner with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeAssignLeadTo',
-        childNodeName: 'Change Assign Lead To',
-        childNodeNameType: 'changeAssignLeadTo',
-        childNodeDescription:
-          'Change lead assignee with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
+      // END UPDATE LEAD
     ],
   },
   {
@@ -451,46 +393,16 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeDescription: 'Send the selected email to the lead.',
         childNodeCategory: 'ACTION',
       },
+      // UPDATE LEAD
       {
-        id: 'UUID-updateLeadStatus',
-        childNodeName: 'Update Lead Status',
-        childNodeNameType: 'updateLeadStatus',
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeNameType: 'updateLead',
         childNodeDescription:
-          'Update lead status with the defined value from this action',
+          "Update the current lead's fields with the defined values from this action",
         childNodeCategory: 'ACTION',
       },
-      {
-        id: 'UUID-changeLeadScore',
-        childNodeName: 'Change Lead Score',
-        childNodeNameType: 'changeLeadScore',
-        childNodeDescription:
-          "This action will add the specified value to the lead's existing score",
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadRating',
-        childNodeName: 'Change Lead Rating',
-        childNodeNameType: 'changeLeadRating',
-        childNodeDescription:
-          'Change lead rating with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadOwner',
-        childNodeName: 'Change Lead Owner',
-        childNodeNameType: 'changeLeadOwner',
-        childNodeDescription:
-          'Change lead owner with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeAssignLeadTo',
-        childNodeName: 'Change Assign Lead To',
-        childNodeNameType: 'changeAssignLeadTo',
-        childNodeDescription:
-          'Change lead assignee with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
+      // END UPDATE LEAD
     ],
   },
   {
@@ -510,46 +422,16 @@ export const MULTITOUCH_NODE_RULES = [
         childNodeDescription: 'Send the selected email to the lead.',
         childNodeCategory: 'ACTION',
       },
+      // UPDATE LEAD
       {
-        id: 'UUID-updateLeadStatus',
-        childNodeName: 'Update Lead Status',
-        childNodeNameType: 'updateLeadStatus',
+        id: 'UUID-updateLead',
+        childNodeName: 'Update Lead',
+        childNodeNameType: 'updateLead',
         childNodeDescription:
-          'Update lead status with the defined value from this action',
+          "Update the current lead's fields with the defined values from this action",
         childNodeCategory: 'ACTION',
       },
-      {
-        id: 'UUID-changeLeadScore',
-        childNodeName: 'Change Lead Score',
-        childNodeNameType: 'changeLeadScore',
-        childNodeDescription:
-          "This action will add the specified value to the lead's existing score",
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadRating',
-        childNodeName: 'Change Lead Rating',
-        childNodeNameType: 'changeLeadRating',
-        childNodeDescription:
-          'Change lead rating with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeLeadOwner',
-        childNodeName: 'Change Lead Owner',
-        childNodeNameType: 'changeLeadOwner',
-        childNodeDescription:
-          'Change lead owner with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
-      {
-        id: 'UUID-changeAssignLeadTo',
-        childNodeName: 'Change Assign Lead To',
-        childNodeNameType: 'changeAssignLeadTo',
-        childNodeDescription:
-          'Change lead assignee with the defined value from this action',
-        childNodeCategory: 'ACTION',
-      },
+      // END UPDATE LEAD
     ],
   },
   // ===== END OF DECISION BLOCKS ===========================

@@ -4,15 +4,14 @@
   (started)="onDragStart($event)"
   (movingOffset)="onDragOver($event)"
   (endOffset)="onDragMoveEnd($event, {isCreatedFromChild, componentId})"
-  class="dynamic-component card"
+  class="card dynamic-component"
   #decisionBlock
 >
-  <div class="card-body">
+  <div class="card-body dynamic-component-cardBody">
     <h5
       class="dynamic-component-name"
       (dblclick)="openModalWithNodeProps($event)"
     >
-      {{ nodeDetails?.parentNodeName }} -
       <span
         class="dynamic-component-nodeCategory"
         [ngClass]="
@@ -24,7 +23,19 @@
         <!--  -->
         {{ nodeCategory }}
       </span>
-      {{ index }}
+      <!-- {{ nodeDetails?.parentNodeName }} - -->
+      {{ nodeTitle }}
+
+      <ng-template #tipContent
+        ><small>{{ nodeDetails.parentNodeName }}</small></ng-template
+      >
+      <i
+        class="fa fa-info dynamic-component-tooltip"
+        aria-hidden="true"
+        placement="right"
+        [ngbTooltip]="tipContent"
+      ></i>
+      <!-- {{ index }} -->
     </h5>
     <a
       type="button"

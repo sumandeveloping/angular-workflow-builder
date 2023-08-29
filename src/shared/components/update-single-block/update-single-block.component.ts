@@ -36,6 +36,7 @@ export class UpdateSingleBlockComponent
   @Input() isCreatedFromChild: boolean = false;
   @Input() lineLabel: string;
   @Input() nodeOutcome: string | any;
+  @Input() nodeTitle: string;
   @Input() decisionOutcome: string = 'positive';
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
@@ -129,6 +130,10 @@ export class UpdateSingleBlockComponent
   }
 
   initializeNodeInformationAfterViewInit = async () => {
+    console.log(
+      'Dynamic Object Hash ⬇️⬇️',
+      this.parentComponent.dynamicComponentsObj
+    );
     //Set Dynamic Position of the components
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
@@ -158,7 +163,15 @@ export class UpdateSingleBlockComponent
         let nodeOutcome =
           this.parentComponent.dynamicComponentsObj[childComponentID].activity
             .state?.decisionOutcome;
-        this.addComponentOnEdit(true, '', nodeOutcome, childComponentID);
+        let nodeTitle =
+          this.parentComponent.dynamicComponentsObj[childComponentID].nodeTitle;
+        this.addComponentOnEdit(
+          true,
+          '',
+          nodeOutcome,
+          nodeTitle,
+          childComponentID
+        );
       }
     }
   };
@@ -167,6 +180,7 @@ export class UpdateSingleBlockComponent
     isEditRendering: boolean,
     label: string,
     nodeOutcome: string | any,
+    nodeTitle: string,
     editComponentId?: string
   ): Promise<void> {
     if (isEditRendering) {
@@ -179,6 +193,7 @@ export class UpdateSingleBlockComponent
         parentIndex: this.nodeDate.parentIndex,
         parentComponent: this,
         nodeOutcome,
+        nodeTitle,
       });
     } else {
       this.parentComponent.createComponent({
@@ -188,6 +203,7 @@ export class UpdateSingleBlockComponent
         parentIndex: this.parentIndex,
         parentComponent: this,
         nodeOutcome,
+        nodeTitle,
       });
     }
   }
@@ -666,14 +682,18 @@ export class UpdateSingleBlockComponent
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    console.log('On ADD', this.activityState.state, this.selectedNode);
     // decisionOutcome: "positive"
     const nodeOutcome = this.activityState.state?.decisionOutcome
       ? this.activityState.state?.decisionOutcome
       : null;
-    console.log('Node Outcome', nodeOutcome);
+    const nodeTitle = this.parentComponent.evaluateNodeTitle(
+      this.activityState.state,
+      this.selectedNode.childNodeNameType
+    );
     this.closeModal();
     const label: any = await this.getLineLabel(e);
-    this.addComponentOnEdit(false, label, nodeOutcome);
+    this.addComponentOnEdit(false, label, nodeOutcome, nodeTitle);
   };
 
   getLineLabel = (nodeData: any) => {
@@ -701,6 +721,10 @@ export class UpdateSingleBlockComponent
 
   onEditNodeDetailsSave = async (data: any) => {
     console.log('data on edit', data, data?.decisionOutcome);
+    console.log(
+      'on edit selected node',
+      this.parentComponent.dynamicComponentsObj[this.componentId]
+    );
     let nodeOutcome = data?.decisionOutcome;
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
@@ -713,6 +737,19 @@ export class UpdateSingleBlockComponent
     this.parentComponent.dynamicComponentsObj[this.componentId].activity = {
       ...this.parentComponent.activities.get(this.componentId),
     };
+    const nodeTitle = this.parentComponent.evaluateNodeTitle(
+      data,
+      this.parentComponent.dynamicComponentsObj[this.componentId]
+        .nodeInformation?.childNodeNameType
+    );
+    this.nodeTitle = nodeTitle;
+    this.parentComponent.dynamicComponentsObj[this.componentId].nodeTitle =
+      this.nodeTitle;
+    console.log(
+      'nodeTitle',
+      this.nodeTitle,
+      this.parentComponent.dynamicComponentsObj
+    );
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
     const label: any = await this.getLineLabel(data);
     label && label != '' ? this.addOrUpdateLabel(nodeOutcome, label) : null;

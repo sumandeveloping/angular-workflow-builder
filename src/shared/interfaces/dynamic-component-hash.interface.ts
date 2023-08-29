@@ -3,10 +3,11 @@ export interface dynamicComponentHash {
     parentComponentId: string;
     childs: string[];
     connecters: any[];
-    nodeInformation: object;
+    nodeInformation: any;
     activity: any;
     xPos?: number;
     yPos?: number;
+    nodeTitle?: string;
     [propName: string]: any;
   };
 }

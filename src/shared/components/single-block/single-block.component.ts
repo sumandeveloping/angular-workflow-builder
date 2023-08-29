@@ -35,6 +35,7 @@ export class SingleBlockComponent
   @Input() isCreatedFromChild: boolean = false;
   @Input() lineLabel: string;
   @Input() nodeOutcome: string | any;
+  @Input() nodeTitle: string;
   @Input() nodeInformation: any;
   @Input() parentIndex: number;
   @Input() parentElementRef: ElementRef;
@@ -138,6 +139,10 @@ export class SingleBlockComponent
   };
 
   initializeNodeInformationAfterViewInit = () => {
+    console.log(
+      'Dynamic Object Hash ⬇️⬇️',
+      this.parentComponent.dynamicComponentsObj
+    );
     //Set Dynamic Position of the components
     this.setDynamicPosition(this.isCreatedFromChild, this.parentElementRef);
     //Creating Line between the components === After dynamic positioning are in place *Important*
@@ -149,7 +154,11 @@ export class SingleBlockComponent
     );
   };
 
-  addComponent(label: string, nodeOutcome?: string | null): void {
+  addComponent(
+    label: string,
+    nodeOutcome: string | null,
+    nodeTitle: string
+  ): void {
     this.displayModal = !this.displayModal;
     const componentConfigurations: DynamicComponentConfig = {
       isChildComponentCall: this.nodeDate.isChildrComponentCall,
@@ -158,6 +167,7 @@ export class SingleBlockComponent
       parentIndex: this.nodeDate.parentIndex,
       parentComponent: this,
       nodeOutcome,
+      nodeTitle,
     };
     this.parentComponent.createComponent(componentConfigurations);
   }
@@ -591,20 +601,23 @@ export class SingleBlockComponent
     });
   };
 
-  onAdd = async (e) => {
+  onAdd = async (e: any) => {
     this.activityState = {
       state: e,
       type: this.selectedNode.childNodeNameType,
     };
+    console.log('On ADD', this.activityState.state, this.selectedNode);
     // decisionOutcome: "positive"
     const nodeOutcome = this.activityState.state?.decisionOutcome
       ? this.activityState.state?.decisionOutcome
       : null;
-    // console.log('Node Outcome', nodeOutcome);
-
+    const nodeTitle = this.parentComponent.evaluateNodeTitle(
+      this.activityState.state,
+      this.selectedNode.childNodeNameType
+    );
     this.closeModal();
     const label: any = await this.getLineLabel(e);
-    this.addComponent(label, nodeOutcome);
+    this.addComponent(label, nodeOutcome, nodeTitle);
   };
 
   getLineLabel = (nodeData: any) => {
@@ -631,6 +644,10 @@ export class SingleBlockComponent
 
   onEditNodeDetailsSave = async (data: any) => {
     console.log('data on edit', data, data?.decisionOutcome);
+    console.log(
+      'on edit selected node',
+      this.parentComponent.dynamicComponentsObj[this.componentId]
+    );
     let nodeOutcome = data?.decisionOutcome;
     const preVNodeDetails = this.parentComponent.activities.get(
       this.componentId
@@ -642,6 +659,19 @@ export class SingleBlockComponent
     this.parentComponent.dynamicComponentsObj[this.componentId].activity = {
       ...this.parentComponent.activities.get(this.componentId),
     };
+    const nodeTitle = this.parentComponent.evaluateNodeTitle(
+      data,
+      this.parentComponent.dynamicComponentsObj[this.componentId]
+        .nodeInformation?.childNodeNameType
+    );
+    this.nodeTitle = nodeTitle;
+    this.parentComponent.dynamicComponentsObj[this.componentId].nodeTitle =
+      this.nodeTitle;
+    console.log(
+      'nodeTitle',
+      this.nodeTitle,
+      this.parentComponent.dynamicComponentsObj
+    );
     const label: any = await this.getLineLabel(data);
     this.addOrUpdateLabel(nodeOutcome, label);
     // NEED TO ADD SUCCESS TOASTER AFTER SUCCESSFUL NODE DETAILS UPDATE
